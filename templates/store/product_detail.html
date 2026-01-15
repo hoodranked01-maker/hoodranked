@@ -1,0 +1,544 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ product.name }} – Hood Ranked</title>
+    <meta name="description" content="{{ product.description|truncatewords:30 }}" />
+    
+    <link rel="icon" href="{% static 'hoodrankedlogo.jpg' %}" type="image/png" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { 
+                    fontFamily: { 
+                        bebas: ['Bebas Neue', 'sans-serif'],
+                        Poppins: ['Poppins', 'sans-serif'],
+                    } 
+                } 
+            }
+        }
+    </script>
+
+    <style>
+        .thumbnail:hover {
+            border-color: black;
+        }
+        .main-image {
+            transition: transform 0.6s ease;
+        }
+        .main-image:hover {
+            transform: scale(1.03);
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        #cart-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: black;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            font-weight: 500;
+        }
+        #cart-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white font-Poppins antialiased">
+
+    <header class="sticky top-0 z-50 bg-black text-white backdrop-blur-sm border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="hidden md:flex space-x-8">
+                <a href="/" class="font-medium">HOME</a>
+                <a href="/store" class="font-medium">SHOP</a>
+                <a href="/contact.html" class="font-medium">CONTACT</a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <a href="/" class="font-bebas text-3xl tracking-wider">
+                <!-- <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked"> -->
+                 <p>hoodranked</p>
+            </a>
+
+            <a href="/cart" class="py-2 flex items-center">
+                <i class="fas fa-shopping-bag mr-2"></i> 
+                (<span class="cart-count">0</span>)
+            </a>
+        </nav>
+    </header>
+
+    <div class="mobile-menu-container md:hidden">
+        <div id="mobile-menu"
+            class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
+            <div class="container mx-auto px-6 py-4 flex justify-end">
+                <button id="menu-close" class="text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 py-12 md:py-16">
+        
+        <nav class="text-sm text-gray-600 mb-8">
+            <a href="/" class="hover:underline">Home</a> /
+            <a href="/store" class="hover:underline">Shop</a> /
+            <span class="text-white font-medium">{{ product.name }}</span>
+        </nav>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+            
+            <!-- Product Images -->
+            <div class="space-y-6">
+                <div class="overflow-hidden rounded-lg border border-black bg-gray-900">
+                    <img src="{{ product.get_primary_image }}" 
+                        alt="{{ product.name }}" 
+                        class="w-full h-[480px] md:h-[720px] object-cover object-top main-image"
+                        id="mainImage">
+                </div>
+
+                {% if product.images.exists %}
+                <div class="grid grid-cols-4 gap-4">
+                    {% for image in product.images.all %}
+                    <button type="button" 
+                            class="border border-black thumbnail focus:border-2 rounded overflow-hidden focus:outline-none focus:border-black transition"
+                            data-full="{{ image.image.url }}">
+                        <img src="{{ image.image.url }}" 
+                            alt="{{ product.name }} - view {{ forloop.counter }}" 
+                            class="w-full h-20 md:h-24 object-cover object-top">
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Product Info & Cart Actions -->
+            <div class="space-y-8">
+                <div>
+                    <h1 class="font-bebas text-5xl md:text-6xl tracking-tighter mb-3">
+                        {{ product.name }}
+                    </h1>
+                    <div class="flex flex-col md:flex-row md:items-center gap-6 mb-6">
+                        <p class="text-3xl font-bold">
+                            ₦{{ product.price|intcomma }}
+                        </p>
+                        <span class="inline-block bg-white text-black w-48 md:w-auto px-4 py-1 text-sm uppercase tracking-wider rounded">
+                            {{ product.collection.name }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Size / Variant Selection -->
+                <div>
+                    <label class="block text-sm font-medium uppercase tracking-wider mb-3">Size</label>
+                    <div class="flex flex-wrap gap-3" id="size-buttons">
+                        {% for variant in product.variants.all %}
+                        <button type="button" 
+                                class="size-btn px-6 py-3 border-1 border-white text-sm font-medium rounded hover:bg-black hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                data-variant-id="{{ variant.id }}"
+                                data-size="{{ variant.size }}"
+                                data-add-price="{{ variant.additional_price|default:0 }}"
+                                data-stock="{{ variant.stock }}"
+                                {% if variant.stock == 0 %}disabled{% endif %}>
+                            {{ variant.size }}
+                            {% if variant.additional_price > 0 %}+₦{{ variant.additional_price|intcomma }}{% endif %}
+                        </button>
+                        {% empty %}
+                        <p class="text-gray-600">Sizes coming soon</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Quantity & Add to Cart -->
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center gap-6">
+                        <div class="flex items-center border border-gray-400 rounded overflow-hidden w-40 md:w-auto">
+                            <button type="button" class="px-5 py-3 text-lg hover:bg-gray-200 transition" 
+                                    onclick="document.getElementById('quantity').value = Math.max(1, parseInt(document.getElementById('quantity').value) - 1)">-</button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10" 
+                                   class="w-20 bg-transparent text-center border-none focus:outline-none text-lg font-medium">
+                            <button type="button" class="px-5 py-3 text-lg hover:bg-gray-200 transition" 
+                                    onclick="document.getElementById('quantity').value = parseInt(document.getElementById('quantity').value) + 1">+</button>
+                        </div>
+
+                        <button id="add-to-cart-btn"
+                                class="flex-1 bg-white text-black py-4 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="pt-6 border-t border-gray-200">
+                    <h3 class="text-xl font-bold mb-4">Description</h3>
+                    <div class="text-gray-700 leading-relaxed space-y-4">
+                        {{ product.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="pt-6 border-t border-gray-200 text-sm text-gray-600">
+                    <p>• Premium heavyweight fabric</p>
+                    <p>• Limited edition drop</p>
+                    <p>• Made for the streets</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="cart-toast">Added to cart!</div>
+
+    <button id="guide-toggle" class="w-full text-left py-5 px-6 bg-black rounded-lg flex justify-between items-center transition">
+        <span class="text-xl font-medium">Size Guide</span>
+        <span class="material-symbols-outlined">expand_more</span>
+    </button>
+    <div class="hidden" id="size-guide-content">
+        <section class="pt-12 border-t border-black">
+            <h3 class="text-2xl md:text-3xl font-bebas tracking-tight mb-8 text-center">
+                SIZE GUIDE
+            </h3>
+            
+            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+                All our pieces are unisex and designed with a relaxed, premium streetwear fit.<br>
+                We recommend comparing with a favorite item you already own.
+            </p>
+
+            {% if product.category == 'hoodies' %}
+            <div class="mb-12">
+                <h4 class="text-xl font-bold mb-4 text-center">Hoodie Size Guide (Unisex - Relaxed Fit)</h4>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-black">
+                                <th class="p-4 border-b">Size</th>
+                                <th class="p-4 border-b">Chest (cm)</th>
+                                <th class="p-4 border-b">Length (cm)</th>
+                                <th class="p-4 border-b">Sleeve (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-4 border-b font-medium">XS</td>
+                                <td class="p-4 border-b">104-109</td>
+                                <td class="p-4 border-b">68</td>
+                                <td class="p-4 border-b">87</td>
+                            </tr>
+                            <tr class="bg-black">
+                                <td class="p-4 border-b font-medium">S</td>
+                                <td class="p-4 border-b">110-115</td>
+                                <td class="p-4 border-b">70</td>
+                                <td class="p-4 border-b">88.5</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b font-medium">M</td>
+                                <td class="p-4 border-b">116-121</td>
+                                <td class="p-4 border-b">72</td>
+                                <td class="p-4 border-b">90</td>
+                            </tr>
+                            <tr class="bg-black">
+                                <td class="p-4 border-b font-medium">L</td>
+                                <td class="p-4 border-b">122-127</td>
+                                <td class="p-4 border-b">74</td>
+                                <td class="p-4 border-b">91.5</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b font-medium">XL</td>
+                                <td class="p-4 border-b">128-135</td>
+                                <td class="p-4 border-b">76</td>
+                                <td class="p-4 border-b">93</td>
+                            </tr>
+                            <tr class="bg-black">
+                                <td class="p-4 border-b font-medium">XXL</td>
+                                <td class="p-4 border-b">136-143</td>
+                                <td class="p-4 border-b">78</td>
+                                <td class="p-4 border-b">94.5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <p class="text-sm text-gray-600 mt-4 text-center">
+                    Chest: measured across the fullest part<br>
+                    Length: from highest shoulder point to hem<br>
+                    Sleeve: from center back neck to cuff
+                </p>
+            </div>
+            {% elif product.category == 'tees' %}
+            <div>
+                <h4 class="text-xl font-bold mb-4 text-center">T-Shirt Size Guide (Unisex - Classic Fit)</h4>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gblack">
+                                <th class="p-4 border-b">Size</th>
+                                <th class="p-4 border-b">Chest (cm)</th>
+                                <th class="p-4 border-b">Length (cm)</th>
+                                <th class="p-4 border-b">Shoulder (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-4 border-b font-medium">XS</td>
+                                <td class="p-4 border-b">48</td>
+                                <td class="p-4 border-b">68</td>
+                                <td class="p-4 border-b">44</td>
+                            </tr>
+                            <tr class="bg-black">
+                                <td class="p-4 border-b font-medium">S</td>
+                                <td class="p-4 border-b">52</td>
+                                <td class="p-4 border-b">70</td>
+                                <td class="p-4 border-b">46</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b font-medium">M</td>
+                                <td class="p-4 border-b">56</td>
+                                <td class="p-4 border-b">73</td>
+                                <td class="p-4 border-b">49</td>
+                            </tr>
+                            <tr class="bg-black">
+                                <td class="p-4 border-b font-medium">L</td>
+                                <td class="p-4 border-b">60</td>
+                                <td class="p-4 border-b">76</td>
+                                <td class="p-4 border-b">52</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 border-b font-medium">XL</td>
+                                <td class="p-4 border-b">64</td>
+                                <td class="p-4 border-b">79</td>
+                                <td class="p-4 border-b">55</td>
+                            </tr>
+                            <tr class="bg-black">
+                                <td class="p-4 border-b font-medium">XXL</td>
+                                <td class="p-4 border-b">68</td>
+                                <td class="p-4 border-b">82</td>
+                                <td class="p-4 border-b">58</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <p class="text-sm text-gray-600 mt-4 text-center">
+                    Chest: measured 2.5cm below armpit<br>
+                    Length: from highest shoulder point to hem<br>
+                    Relaxed fit – size down for a more fitted look
+                </p>
+            </div>
+            {% else %}
+            <p class="text-center text-gray-600">
+                Size guide coming soon – contact us for fit advice!
+            </p>
+            {% endif %}
+        </section>
+    </div>
+
+    <footer class="py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="font-bebas text-2xl mb-4 tracking-tight">HOOD RANKED</h4>
+                <p class="text-gray-400">Streetwear for the unfiltered.</p>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">QUICK LINKS</h5>
+                <ul class="space-y-2">
+                    <li><a href="/" class="transition">Home</a></li>
+                    <li><a href="/store" class="transition">Shop</a></li>
+                    <li><a href="/cart" class="transition">Cart</a></li>
+                    <li><a href="/store" class="transition">Drops</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">FOLLOW HOOD RANKED</h5>
+                <div class="flex space-x-4">
+                    <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
+                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i class="fa-brands fa-snapchat"></i></a>
+                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
+                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('guide-toggle').addEventListener('click', function() {
+            const content = document.getElementById('size-guide-content');
+            content.classList.toggle('hidden');
+        });
+    </script>
+
+    <script>
+        // Mobile Menu
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+        });
+
+        menuClose.addEventListener('click', () => closeMenu());
+
+        menuLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+        mobileMenu.addEventListener('click', e => { if (e.target === mobileMenu) closeMenu(); });
+
+        function closeMenu() {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+
+        // Thumbnail Gallery
+        document.querySelectorAll('[data-full]').forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                document.getElementById('mainImage').src = this.dataset.full;
+                document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('border-black'));
+                this.classList.add('border-black');
+            });
+        });
+
+        // Cart Functionality
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const qtyInput = document.getElementById('quantity');
+        const sizeButtons = document.querySelectorAll('.size-btn');
+        let selectedVariant = null;
+
+        // Size selection
+        sizeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                sizeButtons.forEach(b => b.classList.remove('bg-black', 'text-white'));
+                this.classList.add('bg-black', 'text-white');
+                selectedVariant = {
+                    id: this.dataset.variantId,
+                    size: this.dataset.size,
+                    addPrice: parseFloat(this.dataset.addPrice || 0),
+                    stock: parseInt(this.dataset.stock)
+                };
+                addToCartBtn.disabled = false;
+            });
+        });
+
+        // Cart Helpers
+        function getCart() {
+            const cart = localStorage.getItem('hoodranked_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('hoodranked_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = count;
+            });
+        }
+
+        function showToast(message = 'Added to cart!') {
+            const toast = document.getElementById('cart-toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Add to Cart Action
+        addToCartBtn.addEventListener('click', () => {
+            if (!selectedVariant) {
+                showToast('Please select a size first');
+                return;
+            }
+
+            const quantity = parseInt(qtyInput.value) || 1;
+            if (quantity < 1) return;
+
+            const basePrice = {{ product.price }};
+            const finalPrice = basePrice + selectedVariant.addPrice;
+            const productImage = "{{ product.get_primary_image|escapejs }}";
+
+            let cart = getCart();
+            const existingIndex = cart.findIndex(item => item.variant_id === selectedVariant.id);
+
+            if (existingIndex !== -1) {
+                const newQty = cart[existingIndex].quantity + quantity;
+                if (newQty > selectedVariant.stock) {
+                    showToast(`Only ${selectedVariant.stock} left in stock!`);
+                    return;
+                }
+                cart[existingIndex].quantity = newQty;
+                showToast(`Cart updated (${newQty})`);
+            } else {
+                if (quantity > selectedVariant.stock) {
+                    showToast(`Only ${selectedVariant.stock} left in stock!`);
+                    return;
+                }
+                cart.push({
+                    variant_id: selectedVariant.id,
+                    product_id: "{{ product.id }}",
+                    name: "{{ product.name|escapejs }}",
+                    size: selectedVariant.size,
+                    price: finalPrice,
+                    quantity: quantity,
+                    image: productImage,
+                    slug: "{{ product.slug }}"
+                });
+                showToast();
+            }
+
+            saveCart(cart);
+        });
+
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+</body>
+</html>

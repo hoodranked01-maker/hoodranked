@@ -1,0 +1,348 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout – Hood Ranked</title>
+    <meta name="description" content="Secure checkout for your Hood Ranked premium streetwear." />
+    
+    <link rel="icon" href="{% static 'hoodrankedlogo.jpg' %}" type="image/png" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { 
+                    fontFamily: { 
+                        bebas: ['Bebas Neue', 'sans-serif'],
+                        Poppins: ['Poppins', 'sans-serif'],
+                    } 
+                } 
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-black text-white font-Poppins antialiased">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="hidden md:flex space-x-8">
+                <a href="/" class="font-medium">HOME</a>
+                <a href="/store" class="font-medium">SHOP</a>
+                <a href="/contact.html" class="font-medium">CONTACT</a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <a href="/" class="font-bebas text-3xl tracking-wider">
+                <!-- <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked"> -->
+                <p>hoodranked</p>
+            </a>
+
+            <a href="/cart" class="py-2 flex items-center">
+                <i class="fas fa-shopping-bag mr-2"></i> 
+                (<span class="cart-count">0</span>)
+            </a>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-container md:hidden">
+        <div id="mobile-menu" class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
+            <!-- Your mobile menu content -->
+            <div class="container mx-auto px-6 py-4 flex justify-end">
+                <button id="menu-close" class="text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 py-12 md:py-16">
+        <h1 class="font-bebas text-5xl md:text-7xl text-center mb-12 tracking-tighter">
+            CHECKOUT
+        </h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+            <!-- Left Column - Forms -->
+            <div class="lg:col-span-3 space-y-12">
+                <!-- Contact Information -->
+                <section>
+                    <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Full Name *</label>
+                            <input type="text" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Email Address *</label>
+                            <input type="email" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Phone Number *</label>
+                            <input type="tel" required placeholder="08012345678"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Shipping Address -->
+                <section>
+                    <h2 class="text-2xl font-bold mb-6">Shipping Address</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Address *</label>
+                            <input type="text" required placeholder="Street address"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium uppercase tracking-wider mb-2">City *</label>
+                                <input type="text" required placeholder="Ibadan"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium uppercase tracking-wider mb-2">State *</label>
+                                <input type="text" required placeholder="Oyo"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Additional Notes (optional)</label>
+                            <textarea rows="3" placeholder="Apartment, suite, etc."
+                                      class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black"></textarea>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="lg:col-span-2 text-black">
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 sticky top-24">
+                    <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
+
+                    <div id="order-items" class="space-y-6 mb-8"></div>
+
+                    <div class="space-y-4 border-t border-gray-300 pt-6">
+                        <div class="flex justify-between text-lg">
+                            <span>Subtotal</span>
+                            <span id="order-subtotal">₦0</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span>Shipping</span>
+                            <span id="shipping-cost">Calculated</span>
+                        </div>
+                        <div class="flex justify-between text-xl font-bold pt-4 border-t border-gray-300">
+                            <span>Total</span>
+                            <span id="order-total">₦0</span>
+                        </div>
+                    </div>
+
+                    <button id="place-order-btn"
+                            class="w-full mt-8 bg-black text-white py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled>
+                        Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-12 border-t border-gray-800 mt-16">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="font-bebas text-2xl mb-4 tracking-tight">HOOD RANKED</h4>
+                <p class="text-gray-400">Streetwear for the unfiltered.</p>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">QUICK LINKS</h5>
+                <ul class="space-y-2">
+                    <li><a href="/" class="transition">Home</a></li>
+                    <li><a href="/store" class="transition">Shop</a></li>
+                    <li><a href="/cart" class="transition">Cart</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">FOLLOW HOOD RANKED</h5>
+                <div class="flex space-x-4">
+                    <a href="https://www.instagram.com/hoodranked" target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i class="fa-brands fa-snapchat"></i></a>
+                    <a href="https://www.tiktok.com/@hoodranked1" target="_blank" class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu (copy your existing logic)
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuToggle?.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+        });
+
+        menuClose?.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        });
+
+        // Cart Functions
+        function getCart() {
+            const cart = localStorage.getItem('hoodranked_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(el => el.textContent = count);
+        }
+
+        function renderOrderSummary() {
+            const cart = getCart();
+            const container = document.getElementById('order-items');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-600 py-8">Your cart is empty</p>';
+                document.getElementById('place-order-btn').disabled = true;
+                return;
+            }
+
+            document.getElementById('place-order-btn').disabled = false;
+
+            let subtotal = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                container.innerHTML += `
+                    <div class="flex gap-4 pb-6 border-b border-gray-200 last:border-b-0 last:pb-0">
+                        <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover object-top rounded">
+                        <div class="flex-1">
+                            <h4 class="font-medium">${item.name}</h4>
+                            <p class="text-sm text-gray-600">Size: ${item.size} × ${item.quantity}</p>
+                            <p class="text-sm font-medium mt-1">₦${itemTotal.toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('order-subtotal').textContent = `₦${subtotal.toLocaleString()}`;
+            document.getElementById('order-total').textContent = `₦${subtotal.toLocaleString()}`;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOrderSummary();
+            updateCartCount();
+        });
+
+        document.getElementById('place-order-btn')?.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const btn = e.target;
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
+
+            // 1. Collect form data
+            const formData = {
+                full_name: document.querySelector('input[placeholder*="Street address"]')?.previousElementSibling?.textContent.includes('Full Name') 
+                    ? document.querySelector('input[type="text"]').value : '',
+                email: document.querySelector('input[type="email"]').value,
+                phone: document.querySelector('input[type="tel"]').value,
+                address: document.querySelector('input[placeholder*="Street address"]').value,
+                city: document.querySelector('input[placeholder="Ibadan"]').value,
+                state: document.querySelector('input[placeholder="Oyo"]').value,
+                additional_notes: document.querySelector('textarea').value,
+                payment_method: document.querySelector('input[name="payment"]:checked')?.value || 'paystack',
+                cart_items: getCart()  // your existing getCart() function
+            };
+
+            // Basic validation
+            if (!formData.email || !formData.phone || !formData.address || !formData.cart_items.length) {
+                alert('Please fill all required fields and ensure cart is not empty');
+                btn.disabled = false;
+                btn.textContent = 'Place Order';
+                return;
+            }
+
+            try {
+                const response = await fetch('/checkout/process/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')  // very important!
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Something went wrong');
+                }
+
+                // 2. Redirect to payment gateway
+                if (data.authorization_url) {
+                    window.location.href = data.authorization_url;
+                } else {
+                    alert('Payment initialization failed. Please try again.');
+                }
+
+            } catch (error) {
+                alert(error.message);
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Place Order';
+            }
+        });
+
+        // Helper: get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>

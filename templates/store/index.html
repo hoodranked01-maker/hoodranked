@@ -1,0 +1,261 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hood Ranked | Premium Streetwear Clothing & Urban Fashion</title>
+    <meta name="description" content="Hood Ranked - Authentic premium streetwear. Exclusive drops of urban fashion hoodies, tees & collections for those who define their own lane." />
+    <meta name="keywords" content="Hood Ranked, premium streetwear, urban fashion, streetwear hoodies, streetwear tees, limited drops, Nigerian streetwear" />
+    
+    <meta property="og:title" content="Hood Ranked | Premium Streetwear Clothing" />
+    <meta property="og:description" content="Authentic premium streetwear that hits different. Exclusive drops of urban hoodies & tees." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hoodranked.store" />
+    <link rel="canonical" href="https://hoodranked.store" />
+    
+    <link rel="icon" href="{% static 'hoodrankedlogo.jpg' %}" type="image/png" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400;700&family=Poppins:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css" />
+    
+    <style>
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .scrolling-text-container {
+            display: flex;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background-color: white;
+            border-bottom: 1px solid #333;
+            padding: 8px 0;
+        }
+        .scrolling-text {
+            display: inline-flex;
+            animation: scroll 15s linear infinite;
+        }
+
+        #featured-grid {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: minmax(250px, 1fr);
+            overflow-x: auto;
+            gap: 4rem;
+            padding-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: #333 transparent;
+            margin-left: 2rem;
+        }
+        #featured-grid::-webkit-scrollbar { height: 8px; }
+        #featured-grid::-webkit-scrollbar-track { background: transparent; }
+        #featured-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        #featured-grid::-webkit-scrollbar-thumb:hover { background: #555; }
+        #featured-grid > * { flex-shrink: 0; }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { 
+                    fontFamily: { 
+                        dela: ['Dela Gothic One', 'sans-serif'],
+                        bebas: ['Bebas Neue', 'sans-serif'],
+                        Poppins: ['Poppins', 'sans-serif'],
+                    } 
+                } 
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-black text-black font-Poppins antialiased">
+    <header class="sticky top-0 z-50 bg-black text-white backdrop-blur-sm border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="hidden md:flex space-x-8">
+                <a href="/" class="font-medium">HOME</a>
+                <a href="/store" class="font-medium">SHOP</a>
+                <a href="/contact.html" class="font-medium">CONTACT</a>
+            </div>
+            <button id="menu-toggle" class="focus:outline-none md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <a href="/" class="font-bebas text-3xl tracking-wider">
+                {% comment %} <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked Logo"> {% endcomment %}
+                <p class="">hoodranked</p>
+            </a>
+
+            <a href="/cart" class="py-2 flex items-center">
+                <i class="fas fa-shopping-bag mr-2"></i>
+                (<span class="cart-count">0</span>)
+            </a>
+        </nav>
+    </header>
+
+    <div class="mobile-menu-container md:hidden">
+        <div id="mobile-menu"
+            class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
+            <div class="container mx-auto px-6 py-4 flex justify-end">
+                <button id="menu-close" class="text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="relative bg-black h-[540px] md:h-[720px] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-transparent bg-cover bg-top opacity-40">
+            <div class="glide">
+                <div class="glide__track" data-glide-el="track">
+                    <ul class="glide__slides">
+                        <li class="glide__slide">
+                            <img src="{% static 'hrft1.jpeg' %}" alt="Hood Ranked Fashion Brand" class="w-full h-full object-cover md:object-contain">
+                        </li>
+                        <li class="glide__slide">
+                            <img src="{% static 'hrft2.jpeg' %}" alt="Hood Ranked Fashion Brand" class="w-full h-full object-contain">
+                        </li>
+                        <li class="glide__slide">
+                            <img src="{% static 'hrftr1.jpeg' %}" alt="Hood Ranked Streetwear Collection"
+                                class="w-full h-full object-contain object-center">
+                        </li>
+                        <li class="glide__slide">
+                            <img src="{% static 'hrtee1.jpeg' %}" alt="Hood Ranked Premium Hoodies"
+                                class="w-full h-full object-contain">
+                        </li>
+                        <li class="glide__slide">
+                            <img src="{% static 'hrtee2.jpeg' %}" alt="Hood Ranked Urban Fashion"
+                                class="w-full h-full object-contain">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container font-dela mx-auto px-6 text-center relative z-10 mb-8 font-Bebas">
+            <a href="/store">
+                <button class="px-8 py-4 md:py-4 bg-transparent border-2 border-white text-white uppercase md:text-lg hover:bg-white hover:text-black duration-300 rounded-md">Shop</button>
+            </a>
+        </div>
+    </section>
+
+    <section id="featured" class="py-12 mx-auto px-6 bg-white border-y border-gray-800">
+        <img src="{% static 'hr.jpeg' %}" class="md:hidden" alt="">
+        <img src="{% static 'hrdesktop.png' %}" class="hidden md:block mx-auto" alt="">
+    </section>
+
+    <footer class="py-12 border-t text-white border-gray-800">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="font-bebas text-2xl mb-4 tracking-tight">HOOD RANKED</h4>
+                <p class="text-gray-400">Streetwear for the unfiltered.</p>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">QUICK LINKS</h5>
+                <ul class="space-y-2">
+                    <li><a href="/" class="transition">Home</a></li>
+                    <li><a href="/store" class="transition">Shop</a></li>
+                    <li><a href="/cart" class="transition">Cart</a></li>
+                    <li><a href="/store" class="transition">Drops</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">FOLLOW HOOD RANKED</h5>
+                <div class="flex space-x-4">
+                    <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
+                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i
+                            class="fa-brands fa-snapchat"></i></a>
+                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
+                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Glide('.glide', {
+                type: 'carousel',
+                startAt: 0,
+                perView: 1,
+                autoplay: 1500,
+                hoverpause: true,
+                animationDuration: 800,
+                gap: 0
+            }).mount();
+        });
+            
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+        });
+
+        menuClose.addEventListener('click', () => {
+            closeMenu();
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeMenu();
+            });
+        });
+
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                closeMenu();
+            }
+        });
+
+        function closeMenu() {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+
+        function getCart() {
+            const cart = localStorage.getItem('hoodranked_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = count;
+            });
+        }
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+</body>
+
+</html>

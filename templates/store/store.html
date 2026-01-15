@@ -1,0 +1,396 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Store – Hood Ranked | Premium Streetwear Drops</title>
+    <meta name="description" content="Shop the latest Hood Ranked drops — premium hoodies, tees, limited editions. Streetwear that hits different." />
+    
+    <link rel="icon" href="{% static 'hoodrankedlogo.jpg' %}" type="image/png" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { 
+                    fontFamily: { 
+                        bebas: ['Bebas Neue', 'sans-serif'],
+                        Poppins: ['Poppins', 'sans-serif'],
+                        dela: ['Dela Gothic One', 'sans-serif'],
+                    } 
+                } 
+            }
+        }
+    </script>
+
+    <style>
+        .product-card:hover img {
+            transform: scale(1.06);
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white font-Poppins antialiased">
+    <header class="sticky top-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="hidden md:flex space-x-8">
+                <a href="/" class="font-medium">HOME</a>
+                <a href="/store" class="font-medium">SHOP</a>
+                <a href="/contact.html" class="font-medium">CONTACT</a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <a href="/" class="font-bebas text-3xl tracking-wider">
+                <!-- <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked"> -->
+                 <p class="">hoodranked</p>
+            </a>
+
+            <a href="/cart" class="py-2 flex items-center">
+                <i class="fas fa-shopping-bag mr-2"></i>
+                (<span class="cart-count">0</span>)
+            </a>
+        </nav>
+    </header>
+
+    <div class="mobile-menu-container md:hidden">
+        <div id="mobile-menu"
+            class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
+            <div class="container mx-auto px-6 py-4 flex justify-end">
+                <button id="menu-close" class="text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="py-12 md:py-16 px-6 bg-black">
+        <div class="container mx-auto">
+
+            <section class="flex justify-between items-center px-4 md:px-8 pb-6 bg-black">
+                <button id="filter-toggle"
+                        class="flex items-center gap-2 text-sm md:text-base font-medium uppercase tracking-wider hover:text-gray-700 transition">
+                    <span>Filter</span>
+                    <span class="material-symbols-outlined text-lg">tune</span>
+                </button>
+
+                <button id="sort-toggle"
+                        class="flex items-center gap-2 text-sm md:text-base font-medium uppercase tracking-wider hover:text-gray-700 transition">
+                    <span>Sort by</span>
+                    <span class="material-symbols-outlined text-lg">sort</span>
+                </button>
+            </section>
+
+            <div id="filter-panel"
+                class="hidden bg-black text-white overflow-hidden transition-all duration-500 ease-in-out max-h-0">
+                <div class="px-4 md:px-8 py-8 space-y-8">
+                    <div>
+                        <label for="collection" class="block text-sm font-medium uppercase tracking-wider mb-3">Collection</label>
+                        <select id="collection" name="collection"
+                                class="w-full md:w-64 border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black">
+                            {% for collection in collections %}
+                            <option value="">All Collections</option>
+                            <option value="hoodies">{{ collection.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="min_price" class="block text-sm font-medium uppercase tracking-wider mb-3">Min Price (₦)</label>
+                            <input type="number" id="min_price" name="min_price" placeholder="0"
+                                class="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div>
+                            <label for="max_price" class="block text-sm font-medium uppercase tracking-wider mb-3">Max Price (₦)</label>
+                            <input type="number" id="max_price" name="max_price" placeholder="500000"
+                                class="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="apply-filters"
+                                class="flex-1 bg-white text-black py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
+                            Apply Filters
+                        </button>
+                        <button id="close-filter"
+                                class="flex-1 border border-gray-300 py-4 uppercase font-medium tracking-wider hover:bg-gray-100 transition rounded">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sort-panel"
+                class="hidden bg-black border-b overflow-hidden transition-all duration-500 ease-in-out max-h-0">
+                <div class="px-4 md:px-8 py-8">
+                    <label for="sort" class="block text-sm font-medium uppercase tracking-wider mb-3">Sort By</label>
+                    <select id="sort" name="sort"
+                            class="w-full md:w-64 border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black">
+                        <option value="newest">Newest</option>
+                        <option value="price_asc">Price: Low to High</option>
+                        <option value="price_desc">Price: High to Low</option>
+                        <option value="name_asc">Name A-Z</option>
+                        <option value="name_desc">Name Z-A</option>
+                    </select>
+
+                    <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                        <button id="apply-sort"
+                                class="flex-1 bg-white text-black py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
+                            Apply Sort
+                        </button>
+                        <button id="close-sort"
+                                class="flex-1 border border-gray-300 py-4 uppercase font-medium tracking-wider hover:bg-gray-100 transition rounded">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10">
+                {% for product in products %}
+                <a href="{% url 'product_detail' product.slug %}">
+                    <div class="group product-card bg-black overflow-hidden">
+                        <div class="relative overflow-hidden bg-gray-900">
+                            <img src="{{ product.get_primary_image }}" 
+                                alt="Signature Hoodie" 
+                                class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                        </div>
+                        <div class="text-left">
+                            <h3 class="font-bold font-dela text-sm md:text-base mb-1">{{ product.name }}</h3>
+                            <p class="text-gray-300 text-sm mb-4">₦{{ product.price|intcomma }}</p>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+                <div class="col-span-full text-center py-20 text-gray-600 hidden" x-show="products.length === 0">
+                    <p class="text-2xl">No available products...</p>
+                </div>
+            </div>
+
+            {% if products.has_other_pages %}
+            <div class="mt-16 flex flex-wrap justify-center items-center gap-3 md:gap-6">
+
+                <!-- Previous -->
+                {% if products.has_previous %}
+                <a href="?page={{ products.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                class="px-5 py-3 bg-black text-white font-medium uppercase tracking-wider hover:bg-gray-800 transition rounded">
+                    ← Prev
+                </a>
+                {% else %}
+                <span class="px-5 py-3 bg-gray-200 text-gray-500 font-medium uppercase tracking-wider rounded cursor-not-allowed">
+                    ← Prev
+                </span>
+                {% endif %}
+
+                <!-- Page numbers -->
+                {% for num in products.paginator.page_range %}
+                    {% if products.number == num %}
+                    <span class="px-5 py-3 bg-black text-white font-bold uppercase tracking-wider rounded">
+                        {{ num }}
+                    </span>
+                    {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                    <a href="?page={{ num }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                    class="px-5 py-3 border border-black text-black font-medium uppercase tracking-wider hover:bg-black hover:text-white transition rounded">
+                        {{ num }}
+                    </a>
+                    {% elif num == products.number|add:'-3' or num == products.number|add:'3' %}
+                    <span class="px-4 py-3 text-gray-500">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next -->
+                {% if products.has_next %}
+                <a href="?page={{ products.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                class="px-5 py-3 bg-black text-white font-medium uppercase tracking-wider hover:bg-gray-800 transition rounded">
+                    Next →
+                </a>
+                {% else %}
+                <span class="px-5 py-3 bg-gray-200 text-gray-500 font-medium uppercase tracking-wider rounded cursor-not-allowed">
+                    Next →
+                </span>
+                {% endif %}
+
+            </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="font-bebas text-2xl mb-4 tracking-tight">HOOD RANKED</h4>
+                <p class="text-gray-400">Streetwear for the unfiltered.</p>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">QUICK LINKS</h5>
+                <ul class="space-y-2">
+                    <li><a href="/" class="transition">Home</a></li>
+                    <li><a href="/store" class="transition">Shop</a></li>
+                    <li><a href="/cart" class="transition">Cart</a></li>
+                    <li><a href="/store" class="transition">Drops</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">FOLLOW HOOD RANKED</h5>
+                <div class="flex space-x-4">
+                    <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
+                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i
+                            class="fa-brands fa-snapchat"></i></a>
+                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
+                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+        });
+
+        menuClose.addEventListener('click', () => {
+            closeMenu();
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeMenu();
+            });
+        });
+
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                closeMenu();
+            }
+        });
+
+        function closeMenu() {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+    </script>
+    <script>
+    const filterToggle = document.getElementById('filter-toggle');
+    const filterPanel = document.getElementById('filter-panel');
+    const closeFilter = document.getElementById('close-filter');
+
+    filterToggle?.addEventListener('click', () => {
+        filterPanel.classList.toggle('hidden');
+        if (!filterPanel.classList.contains('hidden')) {
+            filterPanel.style.maxHeight = filterPanel.scrollHeight + 'px';
+        } else {
+            filterPanel.style.maxHeight = '0';
+        }
+    });
+
+    closeFilter?.addEventListener('click', () => {
+        filterPanel.style.maxHeight = '0';
+        setTimeout(() => {
+            filterPanel.classList.add('hidden');
+        }, 2000);
+    });
+
+    const sortToggle = document.getElementById('sort-toggle');
+    const sortPanel = document.getElementById('sort-panel');
+    const closeSort = document.getElementById('close-sort');
+
+    sortToggle?.addEventListener('click', () => {
+        sortPanel.classList.toggle('hidden');
+        if (!sortPanel.classList.contains('hidden')) {
+            sortPanel.style.maxHeight = sortPanel.scrollHeight + 'px';
+        } else {
+            sortPanel.style.maxHeight = '0';
+        }
+    });
+
+    closeSort?.addEventListener('click', () => {
+        sortPanel.style.maxHeight = '0';
+        setTimeout(() => {
+            sortPanel.classList.add('hidden');
+        }, 2000);
+    });
+
+    document.getElementById('apply-filters')?.addEventListener('click', () => {
+        const collection = document.getElementById('collection').value;
+        const minPrice = document.getElementById('min_price').value;
+        const maxPrice = document.getElementById('max_price').value;
+
+        let url = new URL(window.location.href);
+        url.searchParams.delete('page');
+
+        if (collection) url.searchParams.set('collection', collection);
+        else url.searchParams.delete('collection');
+
+        if (minPrice) url.searchParams.set('min_price', minPrice);
+        else url.searchParams.delete('min_price');
+
+        if (maxPrice) url.searchParams.set('max_price', maxPrice);
+        else url.searchParams.delete('max_price');
+
+        window.location.href = url.toString();
+    });
+
+    document.getElementById('apply-sort')?.addEventListener('click', () => {
+        const sort = document.getElementById('sort').value;
+
+        let url = new URL(window.location.href);
+        url.searchParams.delete('page');
+
+        if (sort && sort !== 'newest') url.searchParams.set('sort', sort);
+        else url.searchParams.delete('sort');
+
+        window.location.href = url.toString();
+    });
+
+    function getCart() {
+        const cart = localStorage.getItem('hoodranked_cart');
+        return cart ? JSON.parse(cart) : [];
+    }
+
+    function updateCartCount() {
+        const cart = getCart();
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.querySelectorAll('.cart-count').forEach(el => {
+            el.textContent = count;
+        });
+    }
+    document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+
+</body>
+</html>

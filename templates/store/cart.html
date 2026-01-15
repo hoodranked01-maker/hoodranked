@@ -1,0 +1,330 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart – Hood Ranked</title>
+    <meta name="description" content="Your Hood Ranked cart – premium streetwear ready to checkout." />
+    
+    <link rel="icon" href="{% static 'hoodrankedlogo.jpg' %}" type="image/png" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { 
+                    fontFamily: { 
+                        bebas: ['Bebas Neue', 'sans-serif'],
+                        Poppins: ['Poppins', 'sans-serif'],
+                    } 
+                } 
+            }
+        }
+    </script>
+
+    <style>
+        #cart-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: black;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+            font-weight: 500;
+        }
+        #cart-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white font-Poppins antialiased">
+
+    <header class="sticky top-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="hidden md:flex space-x-8">
+                <a href="/" class="font-medium">HOME</a>
+                <a href="/store" class="font-medium">SHOP</a>
+                <a href="/contact.html" class="font-medium">CONTACT</a>
+            </div>
+
+            <button id="menu-toggle" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+
+            <a href="/" class="font-bebas text-3xl tracking-wider">
+                <!-- <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked"> -->
+                <p>hoodranked</p>
+            </a>
+
+            <a href="/cart" class="py-2 flex items-center">
+                <i class="fas fa-shopping-bag mr-2"></i> 
+                (<span class="cart-count">0</span>)
+            </a>
+        </nav>
+    </header>
+
+    <div class="mobile-menu-container md:hidden">
+        <div id="mobile-menu"
+            class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
+            <div class="container mx-auto px-6 py-4 flex justify-end">
+                <button id="menu-close" class="text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
+                <a href="/store" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 py-12 md:py-16 min-h-[70vh]">
+        <h1 class="font-bebas text-5xl md:text-7xl text-center mb-12 tracking-tighter">
+            YOUR CART
+        </h1>
+
+        <div id="cart-empty" class="text-center py-20 hidden">
+            <p class="text-2xl md:text-3xl font-medium mb-6">Your cart is empty</p>
+            <a href="/store" class="inline-block bg-white text-black px-10 py-4 font-bold uppercase tracking-wider hover:bg-gray-800 transition rounded">
+                Start Shopping
+            </a>
+        </div>
+
+        <div id="cart-content" class="hidden">
+            <div class="space-y-6 mb-12">
+                <div class="hidden md:grid grid-cols-12 gap-4 p-6 bg-gray-50 font-medium uppercase text-sm tracking-wider border-b border-gray-200">
+                    <div class="col-span-6">Product</div>
+                    <div class="col-span-2 text-center">Size</div>
+                    <div class="col-span-2 text-center">Price</div>
+                    <div class="col-span-2 text-center">Qty</div>
+                </div>
+
+                <div id="cart-items" class="space-y-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="md:col-start-2">
+                    <div class="bg-black text-white border border-gray-200 rounded-lg p-6 md:p-8">
+                        <h3 class="font-bebas text-3xl md:text-4xl tracking-tight mb-6">Order Summary</h3>
+                        
+                        <div class="space-y-4 mb-8">
+                            <div class="flex justify-between text-lg">
+                                <span>Subtotal</span>
+                                <span id="cart-subtotal">₦0</span>
+                            </div>
+                            <div class="flex justify-between text-xl font-bold border-t border-gray-200 pt-4">
+                                <span>Total</span>
+                                <span id="cart-total">₦0</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <a href="{% url 'checkout' %}" id="checkout-btn">
+                                <button class="w-full bg-white text-sm md:text-base text-black py-5 text-center font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded">
+                                Proceed to Checkout
+                                </button>
+                            </a>
+                            <a href="/store"
+                               class="block w-full border-2 text-sm md:text-base border-black py-5 text-center font-bold uppercase tracking-wider hover:bg-black hover:text-white transition rounded">
+                                Continue Shopping
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="cart-toast"></div>
+
+    <footer class="py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="font-bebas text-2xl mb-4 tracking-tight">HOOD RANKED</h4>
+                <p class="text-gray-400">Streetwear for the unfiltered.</p>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">QUICK LINKS</h5>
+                <ul class="space-y-2">
+                    <li><a href="/" class="transition">Home</a></li>
+                    <li><a href="/store" class="transition">Shop</a></li>
+                    <li><a href="/cart" class="transition">Cart</a></li>
+                    <li><a href="/store" class="transition">Drops</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-medium mb-4">FOLLOW HOOD RANKED</h5>
+                <div class="flex space-x-4">
+                    <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
+                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i class="fa-brands fa-snapchat"></i></a>
+                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
+                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        menuToggle?.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+        });
+
+        menuClose?.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        });
+
+        menuLinks?.forEach(link => link.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }));
+
+        function getCart() {
+            const cart = localStorage.getItem('hoodranked_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem('hoodranked_cart', JSON.stringify(cart));
+            updateCartCount();
+            renderCart();
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = count;
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('cart-toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function renderCart() {
+            const cart = getCart();
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                document.getElementById('cart-content').classList.add('hidden');
+                document.getElementById('cart-empty').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('cart-content').classList.remove('hidden');
+            document.getElementById('cart-empty').classList.add('hidden');
+
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                const row = `
+                    <div class="bg-black border border-gray-200 rounded-lg overflow-hidden md:grid md:grid-cols-12 md:gap-6 md:p-6 md:items-center transition">
+                        <!-- Product Info -->
+                        <div class="md:col-span-6 p-5 md:p-0 flex items-start md:items-center gap-5">
+                            <img src="${item.image}" alt="${item.name}" class="w-28 h-28 md:w-24 md:h-24 object-cover object-top rounded flex-shrink-0">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-lg md:text-base">${item.name}</h4>
+                                <a href="/product/${item.slug}" class="text-gray-600 text-sm hover:underline mt-1 block">
+                                    View product
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Size -->
+                        <div class="md:col-span-2 px-5 py-3 md:p-0 text-sm md:text-base md:text-center">
+                            <span class="font-medium md:hidden inline-block mr-2">Size:</span> ${item.size}
+                        </div>
+
+                        <!-- Price -->
+                        <div class="md:col-span-2 px-5 py-3 md:p-0 text-sm md:text-base md:text-center">
+                            <span class="font-medium md:hidden inline-block mr-2">Price:</span> ₦${item.price.toLocaleString()}
+                        </div>
+
+                        <!-- Quantity & Remove -->
+                        <div class="md:col-span-2 px-5 py-5 md:p-0 flex items-center justify-between md:justify-center gap-6">
+                            <div class="flex items-center border border-gray-400 rounded overflow-hidden">
+                                <button class="px-4 py-2 bg-black transition text-lg" 
+                                        onclick="updateQuantity(${index}, -1)">-</button>
+                                <span class="px-6 py-2 text-lg">${item.quantity}</span>
+                                <button class="px-4 py-2 bg-black transition text-lg" 
+                                        onclick="updateQuantity(${index}, 1)">+</button>
+                            </div>
+                            <button class="text-red-600 hover:text-red-800 text-xl md:text-base" 
+                                    onclick="removeItem(${index})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML += row;
+            });
+
+            document.getElementById('cart-subtotal').textContent = `₦${subtotal.toLocaleString()}`;
+            document.getElementById('cart-total').textContent = `₦${subtotal.toLocaleString()}`;
+        }
+
+        function updateQuantity(index, change) {
+            let cart = getCart();
+            const newQty = cart[index].quantity + change;
+            if (newQty < 1) return;
+            cart[index].quantity = newQty;
+            saveCart(cart);
+        }
+
+        function removeItem(index) {
+            let cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            showToast('Item removed');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCart();
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
