@@ -41,23 +41,22 @@
 </head>
 
 <body class="bg-black text-white font-Poppins antialiased">
-    <header class="sticky top-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+    <header class="sticky top-0 z-50 bg-white text-black backdrop-blur-sm border-b border-gray-800">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
                 <a href="/store" class="font-medium">SHOP</a>
                 <a href="/contact.html" class="font-medium">CONTACT</a>
             </div>
-
-            <button id="menu-toggle" class="md:hidden">
+            <button id="menu-toggle" class="focus:outline-none md:hidden">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                 </svg>
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <!-- <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked"> -->
-                 <p class="">hoodranked</p>
+                <img class="w-[100px] md:w-[120px] h-[100px] md:h-[120px] -my-4 md:mr-32" src="{% static 'hrlogowhite.jpeg' %}" alt="Hood Ranked Logo">
+                <!-- <p class="">hoodranked</p> -->
             </a>
 
             <a href="/cart" class="py-2 flex items-center">
@@ -87,10 +86,10 @@
         </div>
     </div>
 
-    <section class="py-12 md:py-16 px-6 bg-black">
+    <section class="py-12 md:py-16 px-6 bg-white">
         <div class="container mx-auto">
 
-            <section class="flex justify-between items-center px-4 md:px-8 pb-6 bg-black">
+            <section class="flex justify-between items-center px-4 md:px-8 pb-6 bg-white text-black">
                 <button id="filter-toggle"
                         class="flex items-center gap-2 text-sm md:text-base font-medium uppercase tracking-wider hover:text-gray-700 transition">
                     <span>Filter</span>
@@ -105,7 +104,7 @@
             </section>
 
             <div id="filter-panel"
-                class="hidden bg-black text-white overflow-hidden transition-all duration-500 ease-in-out max-h-0">
+                class="hidden bg-white text-black overflow-hidden transition-all duration-500 ease-in-out max-h-0">
                 <div class="px-4 md:px-8 py-8 space-y-8">
                     <div>
                         <label for="collection" class="block text-sm font-medium uppercase tracking-wider mb-3">Collection</label>
@@ -133,7 +132,7 @@
 
                     <div class="flex flex-col sm:flex-row gap-4">
                         <button id="apply-filters"
-                                class="flex-1 bg-white text-black py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
+                                class="flex-1 bg-black text-white py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
                             Apply Filters
                         </button>
                         <button id="close-filter"
@@ -145,7 +144,7 @@
             </div>
 
             <div id="sort-panel"
-                class="hidden bg-black border-b overflow-hidden transition-all duration-500 ease-in-out max-h-0">
+                class="hidden bg-white border-b overflow-hidden transition-all duration-500 ease-in-out max-h-0">
                 <div class="px-4 md:px-8 py-8">
                     <label for="sort" class="block text-sm font-medium uppercase tracking-wider mb-3">Sort By</label>
                     <select id="sort" name="sort"
@@ -159,7 +158,7 @@
 
                     <div class="mt-8 flex flex-col sm:flex-row gap-4">
                         <button id="apply-sort"
-                                class="flex-1 bg-white text-black py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
+                                class="flex-1 bg-black text-white py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
                             Apply Sort
                         </button>
                         <button id="close-sort"
@@ -174,15 +173,15 @@
             <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10">
                 {% for product in products %}
                 <a href="{% url 'product_detail' product.slug %}">
-                    <div class="group product-card bg-black overflow-hidden">
+                    <div class="group product-card bg-white overflow-hidden">
                         <div class="relative overflow-hidden bg-gray-900">
                             <img src="{{ product.get_primary_image }}" 
                                 alt="Signature Hoodie" 
                                 class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
                         </div>
                         <div class="text-left">
-                            <h3 class="font-bold font-dela text-sm md:text-base mb-1">{{ product.name }}</h3>
-                            <p class="text-gray-300 text-sm mb-4">₦{{ product.price|intcomma }}</p>
+                            <h3 class="font-bold font-dela text-black text-sm md:text-base mb-1">{{ product.name }}</h3>
+                            <p class="text-gray-600 text-sm mb-4">₦{{ product.price|intcomma }}</p>
                         </div>
                     </div>
                 </a>
@@ -241,7 +240,7 @@
         </div>
     </section>
 
-    <footer class="py-12 border-t border-gray-800">
+    <footer class="py-12 border-t border-white bg-white text-black">
         <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
                 <h4 class="font-bebas text-2xl mb-4 tracking-tight">HOOD RANKED</h4>

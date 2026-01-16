@@ -54,9 +54,9 @@
     </style>
 </head>
 
-<body class="bg-black text-white font-Poppins antialiased">
+<body class="bg-white text-black font-Poppins antialiased">
 
-    <header class="sticky top-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+    <header class="sticky top-0 z-50 bg-white backdrop-blur-sm border-b border-gray-800">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
@@ -71,8 +71,9 @@
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <!-- <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked"> -->
-                <p>hoodranked</p>
+                <img class="w-[100px] md:w-[120px] h-[100px] md:h-[120px] -my-4 md:mr-32" src="{% static 'hrlogowhite.jpeg' %}"
+                    alt="Hood Ranked Logo">
+                <!-- <p class="">hoodranked</p> -->
             </a>
 
             <a href="/cart" class="py-2 flex items-center">
@@ -128,7 +129,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="md:col-start-2">
-                    <div class="bg-black text-white border border-gray-200 rounded-lg p-6 md:p-8">
+                    <div class="bg-white text-black border border-gray-200 rounded-lg p-6 md:p-8">
                         <h3 class="font-bebas text-3xl md:text-4xl tracking-tight mb-6">Order Summary</h3>
                         
                         <div class="space-y-4 mb-8">
@@ -144,7 +145,7 @@
 
                         <div class="space-y-4">
                             <a href="{% url 'checkout' %}" id="checkout-btn">
-                                <button class="w-full bg-white text-sm md:text-base text-black py-5 text-center font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded">
+                                <button class="w-full bg-black text-sm md:text-base text-white py-5 text-center font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded">
                                 Proceed to Checkout
                                 </button>
                             </a>
@@ -260,7 +261,7 @@
                 subtotal += itemTotal;
 
                 const row = `
-                    <div class="bg-black border border-gray-200 rounded-lg overflow-hidden md:grid md:grid-cols-12 md:gap-6 md:p-6 md:items-center transition">
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden md:grid md:grid-cols-12 md:gap-6 md:p-6 md:items-center transition">
                         <!-- Product Info -->
                         <div class="md:col-span-6 p-5 md:p-0 flex items-start md:items-center gap-5">
                             <img src="${item.image}" alt="${item.name}" class="w-28 h-28 md:w-24 md:h-24 object-cover object-top rounded flex-shrink-0">
