@@ -184,6 +184,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
     <script>
+        document.getElementById('year').textContent = new Date().getFullYear()
+        
         document.addEventListener('DOMContentLoaded', function () {
             new Glide('.glide', {
                 type: 'carousel',
