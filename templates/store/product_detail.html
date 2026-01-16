@@ -10,7 +10,7 @@
     <title>{{ product.name }} – Hood Ranked</title>
     <meta name="description" content="{{ product.description|truncatewords:30 }}" />
     
-    <link rel="icon" href="{% static 'hoodrankedlogo.jpg' %}" type="image/png" />
+    <link rel="icon" href="{% static 'hoodranked.png' %}" type="image/png" />
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
@@ -71,9 +71,9 @@
     </style>
 </head>
 
-<body class="bg-black text-white font-Poppins antialiased">
+<body class="bg-white text-black font-Poppins antialiased">
 
-    <header class="sticky top-0 z-50 bg-black text-white backdrop-blur-sm border-b border-gray-800">
+    <header class="sticky top-0 z-50 bg-white text-black backdrop-blur-sm border-b border-gray-800">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
@@ -88,8 +88,9 @@
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <!-- <img class="w-24 h-24 -my-4 md:mr-32" src="{% static 'hoodrankedlogo.jpg' %}" alt="Hood Ranked"> -->
-                 <p>hoodranked</p>
+                <img class="w-[140px] md:w-[120px] h-[140px] md:h-[120px] -my-12 md:mr-32" src="{% static 'hoodranked.png' %}"
+                    alt="Hood Ranked Logo">
+                <!-- <p class="">hoodranked</p> -->
             </a>
 
             <a href="/cart" class="py-2 flex items-center">
@@ -124,7 +125,7 @@
         <nav class="text-sm text-gray-600 mb-8">
             <a href="/" class="hover:underline">Home</a> /
             <a href="/store" class="hover:underline">Shop</a> /
-            <span class="text-white font-medium">{{ product.name }}</span>
+            <span class="text-black font-medium">{{ product.name }}</span>
         </nav>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
@@ -163,7 +164,7 @@
                         <p class="text-3xl font-bold">
                             ₦{{ product.price|intcomma }}
                         </p>
-                        <span class="inline-block bg-white text-black w-48 md:w-auto px-4 py-1 text-sm uppercase tracking-wider rounded">
+                        <span class="inline-block bg-black text-white w-48 md:w-auto px-4 py-1 text-sm uppercase tracking-wider rounded">
                             {{ product.collection.name }}
                         </span>
                     </div>
@@ -175,7 +176,7 @@
                     <div class="flex flex-wrap gap-3" id="size-buttons">
                         {% for variant in product.variants.all %}
                         <button type="button" 
-                                class="size-btn px-6 py-3 border-1 border-white text-sm font-medium rounded hover:bg-black hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                class="size-btn px-6 py-3 border border-black text-sm font-medium rounded hover:bg-black hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                                 data-variant-id="{{ variant.id }}"
                                 data-size="{{ variant.size }}"
                                 data-add-price="{{ variant.additional_price|default:0 }}"
@@ -203,7 +204,7 @@
                         </div>
 
                         <button id="add-to-cart-btn"
-                                class="flex-1 bg-white text-black py-4 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                class="flex-1 bg-black text-white py-4 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled>
                             Add to Cart
                         </button>
@@ -231,12 +232,12 @@
     <!-- Toast Notification -->
     <div id="cart-toast">Added to cart!</div>
 
-    <button id="guide-toggle" class="w-full text-left py-5 px-6 bg-black rounded-lg flex justify-between items-center transition">
+    <button id="guide-toggle" class="w-full text-left py-5 px-6 bg-white rounded-lg flex justify-between items-center transition">
         <span class="text-xl font-medium">Size Guide</span>
         <span class="material-symbols-outlined">expand_more</span>
     </button>
     <div class="hidden" id="size-guide-content">
-        <section class="pt-12 border-t border-black">
+        <section class="pt-12 border-t border-white">
             <h3 class="text-2xl md:text-3xl font-bebas tracking-tight mb-8 text-center">
                 SIZE GUIDE
             </h3>
@@ -253,7 +254,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
-                            <tr class="bg-black">
+                            <tr class="bg-white">
                                 <th class="p-4 border-b">Size</th>
                                 <th class="p-4 border-b">Chest (cm)</th>
                                 <th class="p-4 border-b">Length (cm)</th>
@@ -267,7 +268,7 @@
                                 <td class="p-4 border-b">68</td>
                                 <td class="p-4 border-b">87</td>
                             </tr>
-                            <tr class="bg-black">
+                            <tr class="bg-white">
                                 <td class="p-4 border-b font-medium">S</td>
                                 <td class="p-4 border-b">110-115</td>
                                 <td class="p-4 border-b">70</td>
@@ -279,7 +280,7 @@
                                 <td class="p-4 border-b">72</td>
                                 <td class="p-4 border-b">90</td>
                             </tr>
-                            <tr class="bg-black">
+                            <tr class="bg-white">
                                 <td class="p-4 border-b font-medium">L</td>
                                 <td class="p-4 border-b">122-127</td>
                                 <td class="p-4 border-b">74</td>
@@ -291,7 +292,7 @@
                                 <td class="p-4 border-b">76</td>
                                 <td class="p-4 border-b">93</td>
                             </tr>
-                            <tr class="bg-black">
+                            <tr class="bg-white">
                                 <td class="p-4 border-b font-medium">XXL</td>
                                 <td class="p-4 border-b">136-143</td>
                                 <td class="p-4 border-b">78</td>
@@ -314,7 +315,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
-                            <tr class="bg-gblack">
+                            <tr class="bg-white">
                                 <th class="p-4 border-b">Size</th>
                                 <th class="p-4 border-b">Chest (cm)</th>
                                 <th class="p-4 border-b">Length (cm)</th>
@@ -328,7 +329,7 @@
                                 <td class="p-4 border-b">68</td>
                                 <td class="p-4 border-b">44</td>
                             </tr>
-                            <tr class="bg-black">
+                            <tr class="bg-white">
                                 <td class="p-4 border-b font-medium">S</td>
                                 <td class="p-4 border-b">52</td>
                                 <td class="p-4 border-b">70</td>
@@ -340,7 +341,7 @@
                                 <td class="p-4 border-b">73</td>
                                 <td class="p-4 border-b">49</td>
                             </tr>
-                            <tr class="bg-black">
+                            <tr class="bg-white">
                                 <td class="p-4 border-b font-medium">L</td>
                                 <td class="p-4 border-b">60</td>
                                 <td class="p-4 border-b">76</td>
@@ -352,7 +353,7 @@
                                 <td class="p-4 border-b">79</td>
                                 <td class="p-4 border-b">55</td>
                             </tr>
-                            <tr class="bg-black">
+                            <tr class="bg-white">
                                 <td class="p-4 border-b font-medium">XXL</td>
                                 <td class="p-4 border-b">68</td>
                                 <td class="p-4 border-b">82</td>
@@ -377,34 +378,22 @@
     </div>
 
     <footer class="py-12 border-t border-gray-800">
-        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-                <h4 class="font-bebas text-2xl mb-4 tracking-tight">HOOD RANKED</h4>
-                <p class="text-gray-400">Streetwear for the unfiltered.</p>
-            </div>
-            <div>
-                <h5 class="font-medium mb-4">QUICK LINKS</h5>
-                <ul class="space-y-2">
-                    <li><a href="/" class="transition">Home</a></li>
-                    <li><a href="/store" class="transition">Shop</a></li>
-                    <li><a href="/cart" class="transition">Cart</a></li>
-                    <li><a href="/store" class="transition">Drops</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-medium mb-4">FOLLOW HOOD RANKED</h5>
-                <div class="flex space-x-4">
+        <div>
+            <div class="flex flex-col items-center space-y-4">
+                <div class="flex space-x-8">
                     <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
                         target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
                     <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i class="fa-brands fa-snapchat"></i></a>
                     <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
                         class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
                 </div>
+                <p>© <span id="year"></span>, HoodRanked</p>
             </div>
         </div>
     </footer>
 
     <script>
+        document.getElementById('year').textContent = new Date().getFullYear()
         document.getElementById('guide-toggle').addEventListener('click', function() {
             const content = document.getElementById('size-guide-content');
             content.classList.toggle('hidden');
