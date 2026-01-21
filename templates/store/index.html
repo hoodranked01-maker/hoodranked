@@ -86,7 +86,7 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
-                <a href="/store" class="font-medium">SHOP</a>
+                <a href="{% url 'store' %}" class="font-medium">SHOP</a>
                 <a href="/contact.html" class="font-medium">CONTACT</a>
             </div>
             <button id="menu-toggle" class="focus:outline-none md:hidden">
@@ -101,7 +101,7 @@
                 <!-- <p class="">hoodranked</p> -->
             </a>
 
-            <a href="/cart" class="py-2 flex items-center">
+            <a href="{% url 'cart' %}" class="py-2 flex items-center">
                 <i class="fas fa-shopping-bag mr-2"></i>
                 (<span class="cart-count">0</span>)
             </a>
@@ -121,9 +121,9 @@
             </div>
 
             <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="/store" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
                 <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
-                <a href="/store" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
             </div>
         </div>
     </div>
@@ -156,7 +156,7 @@
             </div>
         </div>
         <div class="container font-dela mx-auto px-6 text-center relative z-10 mb-8 font-Bebas">
-            <a href="/store">
+            <a href="{% url 'store' %}">
                 <button class="px-8 py-4 md:py-4 bg-transparent border-2 border-white text-white uppercase md:text-lg hover:bg-white hover:text-black duration-300 rounded-md">Shop</button>
             </a>
         </div>
