@@ -200,11 +200,11 @@
                 {% if products.has_previous %}
                 <a href="?page={{ products.previous_page_number }}"
                 class="px-5 py-3 bg-black text-white font-medium uppercase tracking-wider hover:bg-gray-800 transition rounded">
-                    ← Prev
+                    <i class="fa-solid fa-angle-left"></i>
                 </a>
                 {% else %}
                 <span class="px-5 py-3 bg-gray-200 text-gray-500 font-medium uppercase tracking-wider rounded cursor-not-allowed">
-                    ← Prev
+                    <i class="fa-solid fa-angle-left"></i>
                 </span>
                 {% endif %}
 
@@ -215,7 +215,7 @@
                         {{ num }}
                     </span>
                     {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
-                    <a href="?page={{ num }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                    <a href="?page={{ num }}"
                     class="px-5 py-3 border border-black text-black font-medium uppercase tracking-wider hover:bg-black hover:text-white transition rounded">
                         {{ num }}
                     </a>
@@ -226,13 +226,13 @@
 
                 <!-- Next -->
                 {% if products.has_next %}
-                <a href="?page={{ products.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+                <a href="?page={{ products.next_page_number }}"
                 class="px-5 py-3 bg-black text-white font-medium uppercase tracking-wider hover:bg-gray-800 transition rounded">
-                    Next →
+                    <i class="fa-solid fa-angle-right"></i>
                 </a>
                 {% else %}
                 <span class="px-5 py-3 bg-gray-200 text-gray-500 font-medium uppercase tracking-wider rounded cursor-not-allowed">
-                    Next →
+                    <i class="fa-solid fa-angle-right"></i>
                 </span>
                 {% endif %}
 
