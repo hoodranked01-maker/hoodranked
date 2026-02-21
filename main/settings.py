@@ -54,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'store.middleware.SiteLockMiddleware',
 ]
 
 ROOT_URLCONF = 'main.urls'
@@ -181,7 +180,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login'
-
-SITE_LOCK_ENABLED = True          # ← flip to False when done
-SITE_UNLOCK_HOUR = 20             # 8 PM
-SITE_UNLOCK_MINUTE = 0
