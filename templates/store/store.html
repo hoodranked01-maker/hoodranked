@@ -88,10 +88,10 @@
         </div>
     </div>
 
-    <section class="py-12 md:py-16 px-6 bg-white">
+    <section class="py-12 md:py-16 px-6 bg-black">
         <div class="container mx-auto">
 
-            <section class="flex justify-between items-center px-4 md:px-8 pb-6 bg-white text-black">
+            <section class="flex justify-between items-center px-4 md:px-8 pb-6 bg-black text-white">
                 <button id="filter-toggle"
                         class="flex items-center gap-2 text-sm md:text-base font-medium uppercase tracking-wider hover:text-gray-700 transition">
                     <span>Filter</span>
@@ -106,7 +106,7 @@
             </section>
 
             <div id="filter-panel"
-                class="hidden bg-white text-black overflow-hidden transition-all duration-500 ease-in-out max-h-0">
+                class="hidden bg-black text-black overflow-hidden transition-all duration-500 ease-in-out max-h-0">
                 <div class="px-4 md:px-8 py-8 space-y-8">
                     <div>
                         <label for="collection" class="block text-sm font-medium uppercase tracking-wider mb-3">Collection</label>
@@ -134,7 +134,7 @@
 
                     <div class="flex flex-col sm:flex-row gap-4">
                         <button id="apply-filters"
-                                class="flex-1 bg-black text-white py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
+                                class="flex-1 bg-white text-black py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
                             Apply Filters
                         </button>
                         <button id="close-filter"
@@ -146,7 +146,7 @@
             </div>
 
             <div id="sort-panel"
-                class="hidden bg-white border-b overflow-hidden transition-all duration-500 ease-in-out max-h-0">
+                class="hidden bg-black border-b overflow-hidden transition-all duration-500 ease-in-out max-h-0">
                 <div class="px-4 md:px-8 py-8">
                     <label for="sort" class="block text-sm font-medium uppercase tracking-wider mb-3">Sort By</label>
                     <select id="sort" name="sort"
@@ -160,7 +160,7 @@
 
                     <div class="mt-8 flex flex-col sm:flex-row gap-4">
                         <button id="apply-sort"
-                                class="flex-1 bg-black text-white py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
+                                class="flex-1 bg-white text-black py-4 uppercase font-medium tracking-wider hover:bg-gray-900 transition rounded">
                             Apply Sort
                         </button>
                         <button id="close-sort"
@@ -175,15 +175,15 @@
             <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10">
                 {% for product in products %}
                 <a href="{% url 'product_detail' product.slug %}">
-                    <div class="group product-card bg-white overflow-hidden">
-                        <div class="relative overflow-hidden bg-gray-900">
+                    <div class="group product-card bg-black overflow-hidden">
+                        <div class="relative overflow-hidden bg-black">
                             <img src="{{ product.get_primary_image }}" 
                                 alt="Signature Hoodie" 
-                                class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                                class="w-full h-full bg-black object-cover object-top transition-transform duration-700 group-hover:scale-105">
                         </div>
                         <div class="text-left">
-                            <h3 class="font-bold font-dela text-black text-sm md:text-base mb-1">{{ product.name }}</h3>
-                            <p class="text-gray-600 text-sm mb-4">₦{{ product.price|intcomma }}</p>
+                            <h3 class="font-bold font-dela text-white text-sm md:text-base mb-1">{{ product.name }}</h3>
+                            <p class="text-gray-300 text-sm mb-4">₦{{ product.price|intcomma }}</p>
                         </div>
                     </div>
                 </a>
@@ -193,13 +193,13 @@
                 </div>
             </div>
 
-            {% if products.has_other_pages %}
+            {% comment %} {% if products.has_other_pages %}
             <div class="mt-16 flex flex-wrap justify-center items-center gap-3 md:gap-6">
 
                 <!-- Previous -->
                 {% if products.has_previous %}
                 <a href="?page={{ products.previous_page_number }}"
-                class="px-5 py-3 bg-black text-white font-medium uppercase tracking-wider hover:bg-gray-800 transition rounded">
+                class="px-5 py-3 bg-white text-black font-medium uppercase tracking-wider hover:bg-gray-800 transition rounded">
                     <i class="fa-solid fa-angle-left"></i>
                 </a>
                 {% else %}
@@ -237,12 +237,12 @@
                 {% endif %}
 
             </div>
-            {% endif %}
+            {% endif %} {% endcomment %}
 
         </div>
     </section>
 
-    <footer class="py-12 border-t bg-white text-black border-gray-800">
+    <footer class="py-12 border-t bg-black text-white border-gray-800">
         <div>
             <div class="flex flex-col items-center space-y-4">
                 <div class="flex space-x-8">

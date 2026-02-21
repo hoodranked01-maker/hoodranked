@@ -68,21 +68,23 @@ def store(request):
     else:
         products_list = products_list.order_by('-created_at')
 
-    paginator = Paginator(products_list, 8)
-    page = request.GET.get('page')
+    # paginator = Paginator(products_list, 8)
+    # page = request.GET.get('page')
 
-    try:
-        products = paginator.page(page)
-    except PageNotAnInteger:
-        products = paginator.page(1)
-    except EmptyPage:
-        products = paginator.page(paginator.num_pages)
+    # try:
+    #     products = paginator.page(page)
+    # except PageNotAnInteger:
+    #     products = paginator.page(1)
+    # except EmptyPage:
+    #     products = paginator.page(paginator.num_pages)
+    
+    products = products_list
 
     collections = Collection.objects.all()
 
     context = {
         'products': products,
-        'paginator': paginator,
+        # 'paginator': paginator,
         'collections': collections,
         'current_filters': {
             'collection': collection_id,

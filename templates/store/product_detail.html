@@ -125,7 +125,7 @@
         <nav class="text-sm text-gray-600 mb-8">
             <a href="/" class="hover:underline">Home</a> /
             <a href="{% url 'store' %}" class="hover:underline">Shop</a> /
-            <span class="text-black font-medium">{{ product.name }}</span>
+            <span class="text-white font-medium">{{ product.name }}</span>
         </nav>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
@@ -164,7 +164,7 @@
                         <p class="text-3xl font-bold">
                             ₦{{ product.price|intcomma }}
                         </p>
-                        <span class="inline-block bg-black text-white w-48 md:w-auto px-4 py-1 text-sm uppercase tracking-wider rounded">
+                        <span class="inline-block bg-white text-black w-48 md:w-auto px-4 py-1 text-sm uppercase tracking-wider rounded">
                             {{ product.collection.name }}
                         </span>
                     </div>
@@ -176,7 +176,7 @@
                     <div class="flex flex-wrap gap-3" id="size-buttons">
                         {% for variant in product.variants.all %}
                         <button type="button" 
-                                class="size-btn px-6 py-3 border border-black text-sm font-medium rounded hover:bg-black hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                class="size-btn px-6 py-3 border border-white text-sm font-medium rounded hover:bg-white hover:text-black transition disabled:opacity-50 disabled:cursor-not-allowed"
                                 data-variant-id="{{ variant.id }}"
                                 data-size="{{ variant.size }}"
                                 data-add-price="{{ variant.additional_price|default:0 }}"
@@ -204,7 +204,7 @@
                         </div>
 
                         <button id="add-to-cart-btn"
-                                class="flex-1 bg-black text-white py-4 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                class="flex-1 bg-white text-black py-4 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled>
                             Add to Cart
                         </button>
@@ -214,13 +214,13 @@
                 <!-- Description -->
                 <div class="pt-6 border-t border-gray-200">
                     <h3 class="text-xl font-bold mb-4">Description</h3>
-                    <div class="text-gray-700 leading-relaxed space-y-4">
+                    <div class="text-white leading-relaxed space-y-4">
                         {{ product.description|linebreaks }}
                     </div>
                 </div>
 
                 <!-- Additional Info -->
-                <div class="pt-6 border-t border-gray-200 text-sm text-gray-600">
+                <div class="pt-6 border-t border-gray-200 text-sm text-white">
                     <p>• Premium heavyweight fabric</p>
                     <p>• Limited edition drop</p>
                     <p>• Made for the streets</p>
@@ -232,7 +232,7 @@
     <!-- Toast Notification -->
     <div id="cart-toast">Added to cart!</div>
 
-    <button id="guide-toggle" class="w-full text-left py-5 px-6 bg-white rounded-lg flex justify-between items-center transition">
+    <button id="guide-toggle" class="w-full text-left py-5 px-6 bg-black rounded-lg flex justify-between items-center transition">
         <span class="text-xl font-medium">Size Guide</span>
         <span class="material-symbols-outlined">expand_more</span>
     </button>
@@ -242,7 +242,7 @@
                 SIZE GUIDE
             </h3>
             
-            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
+            <p class="text-center text-white mb-10 max-w-2xl mx-auto">
                 All our pieces are unisex and designed with a relaxed, premium streetwear fit.<br>
                 We recommend comparing with a favorite item you already own.
             </p>
@@ -254,7 +254,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <th class="p-4 border-b">Size</th>
                                 <th class="p-4 border-b">Chest (cm)</th>
                                 <th class="p-4 border-b">Length (cm)</th>
@@ -268,7 +268,7 @@
                                 <td class="p-4 border-b">68</td>
                                 <td class="p-4 border-b">87</td>
                             </tr>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <td class="p-4 border-b font-medium">S</td>
                                 <td class="p-4 border-b">110-115</td>
                                 <td class="p-4 border-b">70</td>
@@ -280,7 +280,7 @@
                                 <td class="p-4 border-b">72</td>
                                 <td class="p-4 border-b">90</td>
                             </tr>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <td class="p-4 border-b font-medium">L</td>
                                 <td class="p-4 border-b">122-127</td>
                                 <td class="p-4 border-b">74</td>
@@ -292,7 +292,7 @@
                                 <td class="p-4 border-b">76</td>
                                 <td class="p-4 border-b">93</td>
                             </tr>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <td class="p-4 border-b font-medium">XXL</td>
                                 <td class="p-4 border-b">136-143</td>
                                 <td class="p-4 border-b">78</td>
@@ -315,7 +315,7 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left border-collapse">
                         <thead>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <th class="p-4 border-b">Size</th>
                                 <th class="p-4 border-b">Chest (cm)</th>
                                 <th class="p-4 border-b">Length (cm)</th>
@@ -329,7 +329,7 @@
                                 <td class="p-4 border-b">68</td>
                                 <td class="p-4 border-b">44</td>
                             </tr>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <td class="p-4 border-b font-medium">S</td>
                                 <td class="p-4 border-b">52</td>
                                 <td class="p-4 border-b">70</td>
@@ -341,7 +341,7 @@
                                 <td class="p-4 border-b">73</td>
                                 <td class="p-4 border-b">49</td>
                             </tr>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <td class="p-4 border-b font-medium">L</td>
                                 <td class="p-4 border-b">60</td>
                                 <td class="p-4 border-b">76</td>
@@ -353,7 +353,7 @@
                                 <td class="p-4 border-b">79</td>
                                 <td class="p-4 border-b">55</td>
                             </tr>
-                            <tr class="bg-white">
+                            <tr class="bg-black">
                                 <td class="p-4 border-b font-medium">XXL</td>
                                 <td class="p-4 border-b">68</td>
                                 <td class="p-4 border-b">82</td>
@@ -370,7 +370,7 @@
                 </p>
             </div>
             {% else %}
-            <p class="text-center text-gray-600">
+            <p class="text-center text-white mb-4">
                 Size guide coming soon – contact us for fit advice!
             </p>
             {% endif %}
