@@ -443,8 +443,8 @@
         // Size selection
         sizeButtons.forEach(btn => {
             btn.addEventListener('click', function() {
-                sizeButtons.forEach(b => b.classList.remove('bg-black', 'text-white'));
-                this.classList.add('bg-black', 'text-white');
+                sizeButtons.forEach(b => b.classList.remove('bg-white', 'text-black'));
+                this.classList.add('bg-white', 'text-black');
                 selectedVariant = {
                     id: this.dataset.variantId,
                     size: this.dataset.size,
