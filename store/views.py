@@ -252,3 +252,5 @@ def order_success_clean(request, order_id):
         'should_clear_cart': request.session.get('clear_cart_after_success', False)
     })
     
+def thank_you(request):
+    return render(request, 'store/thanks.html')
