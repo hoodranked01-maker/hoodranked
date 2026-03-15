@@ -173,20 +173,46 @@
 
             <!-- Products Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10">
-                {% for product in products %}
+            {% for product in products %}
+            
+            {% if product.is_sold_out %}
+            <div class="group product-card bg-white overflow-hidden opacity-70 cursor-not-allowed">
+                {% else %}
                 <a href="{% url 'product_detail' product.slug %}">
                     <div class="group product-card bg-white overflow-hidden">
+                        {% endif %}
+            
                         <div class="relative overflow-hidden bg-white">
-                            <img src="{{ product.get_primary_image }}" 
-                                alt="Signature Hoodie" 
+                            <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
                                 class="w-full h-full bg-white object-cover object-top transition-transform duration-700 group-hover:scale-105">
+            
+                            {% if product.is_sold_out %}
+                            <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                <span class="text-white text-sm md:text-base font-bold tracking-wider uppercase">
+                                    Sold Out
+                                </span>
+                            </div>
+                            {% endif %}
                         </div>
+            
                         <div class="text-left">
-                            <h3 class="font-bold font-dela text-black text-sm md:text-base mb-1">{{ product.name }}</h3>
+                            <h3 class="font-bold font-dela text-black text-sm md:text-base mb-1">
+                                {{ product.name }}
+                            </h3>
+            
+                            {% if product.is_sold_out %}
+                            <p class="text-red-600 text-sm font-medium">Sold Out</p>
+                            {% else %}
                             <p class="text-gray-700 text-sm mb-4">₦{{ product.price|intcomma }}</p>
+                            {% endif %}
                         </div>
+            
                     </div>
+            
+                    {% if not product.is_sold_out %}
                 </a>
+                {% endif %}
+            
                 {% endfor %}
                 <div class="col-span-full text-center py-20 text-gray-600 hidden" x-show="products.length === 0">
                     <p class="text-2xl">No available products...</p>
@@ -242,7 +268,7 @@
         </div>
     </section>
 
-    <footer class="py-12 border-t bg-black text-white border-gray-800">
+    <footer class="py-12 border-t bg-white text-black border-gray-800">
         <div>
             <div class="flex flex-col items-center space-y-4">
                 <div class="flex space-x-8">

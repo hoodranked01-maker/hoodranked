@@ -60,6 +60,10 @@ class Product(models.Model):
     def get_gallery_images(self):
         return self.images.all()
     
+    @property
+    def is_sold_out(self):
+        return not self.variants.filter(stock__gt=0).exists()
+    
 class ProductImage(models.Model):
     product = models.ForeignKey(
         Product,
