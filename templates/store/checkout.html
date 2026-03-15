@@ -32,10 +32,10 @@
     </script>
 </head>
 
-<body class="bg-black text-white font-Poppins antialiased">
+<body class="bg-white text-black font-Poppins antialiased">
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+    <header class="sticky top-0 z-50 bg-white backdrop-blur-sm border-b border-gray-800">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
@@ -50,7 +50,7 @@
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[360px] md:w-[120px]" src="{% static 'logo2.jpeg' %}"
+                <img class="w-[360px] md:w-[120px]" src="{% static 'hrlogowhite.jpeg' %}"
                     alt="Hood Ranked Logo">
                 <!-- <p class="">hoodranked</p> -->
             </a>
@@ -64,19 +64,19 @@
 
     <!-- Mobile Menu -->
     <div class="mobile-menu-container md:hidden">
-        <div id="mobile-menu" class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div id="mobile-menu" class="fixed inset-0 z-50 bg-white transform translate-x-full transition-transform duration-300 overflow-y-auto">
             <!-- Your mobile menu content -->
             <div class="container mx-auto px-6 py-4 flex justify-end">
-                <button id="menu-close" class="text-white focus:outline-none">
+                <button id="menu-close" class="text-black focus:outline-none">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
             <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
-                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+                <a href="{% url 'store' %}" class="menu-link block py-2 text-black transition-colors">SHOP</a>
+                <a href="#story" class="menu-link block py-2 text-black transition-colors">STORY</a>
+                <a href="{% url 'store' %}" class="menu-link block py-2 text-black transition-colors">DROPS</a>
             </div>
         </div>
     </div>
@@ -163,7 +163,7 @@
                     </div>
 
                     <button id="place-order-btn"
-                            class="w-full mt-8 bg-black text-white py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="w-full mt-8 bg-white text-black py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled>
                         Place Order
                     </button>

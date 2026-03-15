@@ -54,9 +54,9 @@
     </style>
 </head>
 
-<body class="bg-black text-white font-Poppins antialiased">
+<body class="bg-white text-black font-Poppins antialiased">
 
-    <header class="sticky top-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+    <header class="sticky top-0 z-50 bg-white backdrop-blur-sm border-b border-gray-800">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
@@ -71,7 +71,7 @@
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[360px] md:w-[120px]" src="{% static 'logo2.jpeg' %}"
+                <img class="w-[360px] md:w-[120px]" src="{% static 'hrlogowhite.jpeg' %}"
                     alt="Hood Ranked Logo">
                 <!-- <p class="">hoodranked</p> -->
             </a>
@@ -85,9 +85,9 @@
 
     <div class="mobile-menu-container md:hidden">
         <div id="mobile-menu"
-            class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
+            class="fixed inset-0 z-50 bg-white transform translate-x-full transition-transform duration-300 overflow-y-auto">
             <div class="container mx-auto px-6 py-4 flex justify-end">
-                <button id="menu-close" class="text-white focus:outline-none">
+                <button id="menu-close" class="text-black focus:outline-none">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
@@ -96,9 +96,9 @@
             </div>
 
             <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
-                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+                <a href="{% url 'store' %}" class="menu-link block py-2 text-black transition-colors">SHOP</a>
+                <a href="#story" class="menu-link block py-2 text-black transition-colors">STORY</a>
+                <a href="{% url 'store' %}" class="menu-link block py-2 text-black transition-colors">DROPS</a>
             </div>
         </div>
     </div>
@@ -110,7 +110,7 @@
 
         <div id="cart-empty" class="text-center py-20 hidden">
             <p class="text-2xl md:text-3xl font-medium mb-6">Your cart is empty</p>
-            <a href="{% url 'store' %}" class="inline-block bg-white text-black  px-10 py-4 font-bold uppercase tracking-wider hover:bg-gray-800 transition rounded">
+            <a href="{% url 'store' %}" class="inline-block bg-black text-white  px-10 py-4 font-bold uppercase tracking-wider hover:bg-gray-800 transition rounded">
                 Start Shopping
             </a>
         </div>
@@ -150,7 +150,7 @@
                                 </button>
                             </a>
                             <a href="{% url 'store' %}"
-                               class="block w-full border-2 text-sm md:text-base border-black py-5 text-center font-bold uppercase tracking-wider hover:bg-black hover:text-white transition rounded">
+                               class="block w-full border-2 text-sm md:text-base border-black py-5 text-center font-bold uppercase tracking-wider hover:bg-white hover:text-black transition rounded">
                                 Continue Shopping
                             </a>
                         </div>
@@ -251,7 +251,7 @@
                 subtotal += itemTotal;
 
                 const row = `
-                    <div class="bg-black border border-gray-200 rounded-lg overflow-hidden md:grid md:grid-cols-12 md:gap-6 md:p-6 md:items-center transition">
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden md:grid md:grid-cols-12 md:gap-6 md:p-6 md:items-center transition">
                         <!-- Product Info -->
                         <div class="md:col-span-6 p-5 md:p-0 flex items-start md:items-center gap-5">
                             <img src="${item.image}" alt="${item.name}" class="w-28 h-28 md:w-24 md:h-24 object-cover object-top rounded flex-shrink-0">
@@ -276,10 +276,10 @@
                         <!-- Quantity & Remove -->
                         <div class="md:col-span-2 px-5 py-5 md:p-0 flex items-center justify-between md:justify-center gap-6">
                             <div class="flex items-center border border-gray-400 rounded overflow-hidden">
-                                <button class="px-4 py-2 bg-black transition text-lg" 
+                                <button class="px-4 py-2 bg-white transition text-lg" 
                                         onclick="updateQuantity(${index}, -1)">-</button>
                                 <span class="px-6 py-2 text-lg">${item.quantity}</span>
-                                <button class="px-4 py-2 bg-black transition text-lg" 
+                                <button class="px-4 py-2 bg-white transition text-lg" 
                                         onclick="updateQuantity(${index}, 1)">+</button>
                             </div>
                             <button class="text-red-600 hover:text-red-800 text-xl md:text-base" 
