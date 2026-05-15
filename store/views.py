@@ -122,7 +122,9 @@ def process_checkout(request):
         if not cart_items:
             return JsonResponse({'error': 'Cart is empty'}, status=400)
 
-        total = sum(item['price'] * item['quantity'] for item in cart_items)
+        service_fee = int(data.get('service_fee', 0))
+        items_total = sum(item['price'] * item['quantity'] for item in cart_items)
+        total = items_total + service_fee
 
         order = Order.objects.create(
             name=data.get('full_name'),
@@ -133,6 +135,7 @@ def process_checkout(request):
             state=data.get('state'),
             postal_code=data.get('postal_code', ''),
             total_price=total,
+            service_fee=service_fee,
             payment_status='pending',
             status='pending'
         )

@@ -64,6 +64,149 @@
         #featured-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         #featured-grid::-webkit-scrollbar-thumb:hover { background: #555; }
         #featured-grid > * { flex-shrink: 0; }
+
+        .hr-widget {
+            position: fixed;
+            bottom: 20px;
+            z-index: 9999;
+            font-family: 'Poppins', sans-serif;
+        }
+        .hr-widget-inner {
+            background: #111;
+            color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+            overflow: hidden;
+            width: 272px;
+            transition: width 0.3s ease;
+        }
+        .hr-widget-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+            min-height: 52px;
+        }
+        .hr-widget-pill:hover { background: rgba(255,255,255,0.05); }
+        .pill-icon {
+            width: 32px; height: 32px;
+            background: #fff; color: #000;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .pill-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 14px; letter-spacing: 1.5px;
+            flex: 1; overflow: hidden;
+            white-space: nowrap; text-overflow: ellipsis;
+        }
+        .pill-chevron {
+            color: #555;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .hr-widget.expanded .pill-chevron { transform: rotate(180deg); }
+        .hr-widget-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hr-widget-body-inner {
+            padding: 0 16px 16px;
+            border-top: 1px solid #1e1e1e;
+        }
+        #musicWidget { left: 20px; }
+        .vinyl {
+            width: 68px; height: 68px; border-radius: 50%;
+            background: radial-gradient(circle at center, #444 0%, #111 28%, #222 42%, #111 48%, #1a1a1a 65%, #0a0a0a 100%);
+            border: 1.5px solid #333; position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6); flex-shrink: 0;
+        }
+        .vinyl::after {
+            content: ''; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 11px; height: 11px;
+            background: #fff; border-radius: 50%; border: 2px solid #111;
+        }
+        .vinyl.spinning { animation: vinylSpin 3s linear infinite; }
+        @keyframes vinylSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .track-meta { flex: 1; min-width: 0; }
+        .track-title {
+            font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .track-artist { font-size: 10px; color: #666; margin-top: 1px; }
+        .progress-area { margin: 12px 0 4px; cursor: pointer; }
+        .progress-track { height: 2px; background: #2a2a2a; border-radius: 4px; }
+        .progress-fill {
+            height: 100%; background: #fff; border-radius: 4px;
+            transition: width 0.5s linear; position: relative;
+        }
+        .progress-fill::after {
+            content: ''; position: absolute; right: -4px; top: -4px;
+            width: 8px; height: 8px; background: #fff; border-radius: 50%;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .progress-area:hover .progress-fill::after { opacity: 1; }
+        .time-row { display: flex; justify-content: space-between; font-size: 9px; color: #444; margin-top: 3px; }
+        .player-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+        .p-btn {
+            background: none; border: none; color: #666; cursor: pointer;
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: color 0.2s, background 0.2s;
+        }
+        .p-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+        .p-btn.p-play { width: 38px; height: 38px; background: #fff; color: #000; }
+        .p-btn.p-play:hover { background: #e0e0e0; }
+        .p-btn.p-active { color: #fff; }
+        .vol-row {
+            display: flex; align-items: center; gap: 8px;
+            margin-top: 10px; padding-top: 10px; border-top: 1px solid #1e1e1e;
+        }
+        .vol-row svg { color: #444; flex-shrink: 0; }
+        input[type=range] {
+            -webkit-appearance: none; flex: 1; height: 2px;
+            border-radius: 4px; background: #2a2a2a; cursor: pointer; outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 10px; height: 10px;
+            background: #fff; border-radius: 50%;
+        }
+        .playing-bars { display: none; align-items: flex-end; gap: 2px; height: 14px; }
+        .playing-bars span {
+            display: block; width: 3px; background: #fff; border-radius: 2px;
+            animation: barAnim 0.8s ease infinite alternate;
+        }
+        .playing-bars span:nth-child(2) { animation-delay: 0.2s; }
+        .playing-bars span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes barAnim { from{height:3px} to{height:13px} }
+        .is-playing .playing-bars { display: flex; }
+        .is-playing .pill-track-name { display: none; }
+
+        @media (max-width: 639px) {
+            .hr-widget { bottom: 16px; }
+            .hr-widget-inner {
+                width: 52px;
+                border-radius: 26px;
+                transition: width 0.35s cubic-bezier(0.16,1,0.3,1), border-radius 0.35s ease;
+            }
+            .hr-widget.expanded .hr-widget-inner {
+                width: calc(100vw - 40px);
+                max-width: 320px;
+                border-radius: 16px;
+            }
+            #musicWidget { left: 16px; right: auto; }
+            .hr-widget:not(.expanded) .pill-label,
+            .hr-widget:not(.expanded) .pill-chevron { display: none; }
+            .hr-widget:not(.expanded) .hr-widget-pill { justify-content: center; padding: 10px; gap: 0; }
+            .hr-widget.expanded .pill-label,
+            .hr-widget.expanded .pill-chevron { display: flex; }
+        }
     </style>
 
     <script>
@@ -96,7 +239,7 @@
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[360px] md:w-[120px]" src="{% static 'hrlogowhite.jpeg' %}"
+                <img class="w-[240px] md:w-[120px]" src="{% static 'hrlogowhite.jpeg' %}"
                     alt="Hood Ranked Logo">
                 <!-- <p class="">hoodranked</p> -->
             </a>
@@ -129,30 +272,24 @@
     </div>
 
     <section class="relative bg-black h-screen md:h-[720px] flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 bg-transparent bg-cover bg-top opacity-80">
-            <div class="glide">
-                <div class="glide__track" data-glide-el="track">
-                    <ul class="glide__slides">
-                        <li class="glide__slide">
-                            <img src="{% static 'newhero1.jpg' %}" alt="Hood Ranked Fashion Brand" class="w-full h-full object-contain object-center">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="{% static 'newhero2.jpg' %}" alt="Hood Ranked Fashion Brand" class="w-full h-full object-contain">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="{% static 'newhero3.jpg' %}" alt="Hood Ranked Streetwear Collection"
-                                class="w-full h-full object-contain object-center">
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="container font-dela mx-auto px-6 text-center relative z-10 mb-8 font-Bebas">
-            <a href="{% url 'store' %}">
-                <button class="px-8 py-4 md:py-4 bg-transparent border-2 border-white text-white uppercase md:text-lg hover:bg-white hover:text-black duration-300 rounded-md">Shop</button>
-            </a>
-        </div>
-    </section>
+    <div class="absolute inset-0 opacity-80">
+        <video
+            autoplay
+            muted
+            loop
+            playsinline
+            class="w-full h-full object-cover"
+        >
+            <source src="{% static 'hero.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- <div class="container font-dela mx-auto px-6 text-center relative z-10 mb-8 font-Bebas">
+        <a href="{% url 'store' %}">
+            <button class="px-8 py-4 md:py-4 bg-transparent border-2 border-white text-white uppercase md:text-lg hover:bg-white hover:text-black duration-300 rounded-md">Shop</button>
+        </a>
+    </div> -->
+</section>
 
     <footer class="py-12 border-t border-gray-800">
         <div>
@@ -168,6 +305,76 @@
             </div>
         </div>
     </footer>
+
+    <div class="hr-widget" id="musicWidget">
+        <div class="hr-widget-inner">
+            <div class="hr-widget-pill" id="musicPill">
+                <div class="pill-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z"/>
+                    </svg>
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <div class="pill-label">
+                        <span class="pill-track-name" id="pillTrackName">HOOD RADIO</span>
+                        <span class="playing-bars" id="playingBars">
+                            <span></span><span></span><span></span>
+                        </span>
+                    </div>
+                </div>
+                <svg class="pill-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="18 15 12 9 6 15"/>
+                </svg>
+            </div>
+
+            <div class="hr-widget-body" id="musicBody">
+                <div class="hr-widget-body-inner">
+                    <div style="display:flex;align-items:center;gap:12px;margin-top:14px;">
+                        <div class="vinyl" id="vinyl"></div>
+                        <div class="track-meta">
+                            <div class="track-title" id="trackName">HOOD ANTHEM</div>
+                            <div class="track-artist" id="artistName">Hood Ranked Radio</div>
+                        </div>
+                    </div>
+                    <div class="progress-area" id="progressWrap">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                        </div>
+                        <div class="time-row">
+                            <span id="currentTime">0:00</span>
+                            <span id="totalTime">0:00</span>
+                        </div>
+                    </div>
+                    <div class="player-controls">
+                        <button class="p-btn" id="shuffleBtn" title="Shuffle">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+                        </button>
+                        <button class="p-btn" id="prevBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 20L9 12l10-8v16zM5 4h2v16H5z"/></svg>
+                        </button>
+                        <button class="p-btn p-play" id="playBtn">
+                            <svg id="playIcon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                        <button class="p-btn" id="nextBtn">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M5 4l10 8-10 8V4zm14 0h2v16h-2z"/></svg>
+                        </button>
+                        <button class="p-btn" id="repeatBtn">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                        </button>
+                    </div>
+                    <div class="vol-row">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5z"/></svg>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5zm9.07 1.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioEl" preload="auto"></audio>
 
     <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
     <script>
@@ -231,6 +438,112 @@
             });
         }
         document.addEventListener('DOMContentLoaded', updateCartCount);
+    </script>
+    <script>
+        // ── Music widget toggle
+        const musicPillEl = document.getElementById('musicPill');
+        const musicWidget = document.getElementById('musicWidget');
+        const musicBody   = document.getElementById('musicBody');
+
+        musicPillEl.addEventListener('click', () => {
+            const opening = !musicWidget.classList.contains('expanded');
+            musicWidget.classList.toggle('expanded', opening);
+            if (opening) {
+                requestAnimationFrame(() => {
+                    musicBody.style.maxHeight = musicBody.querySelector('.hr-widget-body-inner').scrollHeight + 32 + 'px';
+                });
+            } else {
+                musicBody.style.maxHeight = '0';
+            }
+        });
+
+        // ── Player
+        const tracks = [
+            { title: "SLEEPLESS", artist: "Flume (feat. Jezzabell Doran)", src: "{% static 'sleepless.mp3' %}" },
+            { title: "OBA", artist: "Asake", src: "{% static 'oba.mp3' %}" },
+        ];
+
+        const audioEl       = document.getElementById('audioEl');
+        const vinyl         = document.getElementById('vinyl');
+        const playBtn       = document.getElementById('playBtn');
+        const playIcon      = document.getElementById('playIcon');
+        const trackNameEl   = document.getElementById('trackName');
+        const artistNameEl  = document.getElementById('artistName');
+        const progressFill  = document.getElementById('progressFill');
+        const currentTimeEl = document.getElementById('currentTime');
+        const totalTimeEl   = document.getElementById('totalTime');
+        const pillTrackName = document.getElementById('pillTrackName');
+        const volSlider     = document.getElementById('volumeSlider');
+
+        let currentTrack = 0, isPlaying = false, repeat = false, shuffle = false;
+
+        function fmt(s) { return `${Math.floor(s/60)}:${(s%60|0).toString().padStart(2,'0')}`; }
+
+        function setPlaying(state) {
+            isPlaying = state;
+            vinyl.classList.toggle('spinning', state);
+            playIcon.innerHTML = state
+                ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
+                : '<path d="M8 5v14l11-7z"/>';
+            musicPillEl.classList.toggle('is-playing', state);
+        }
+
+        function loadTrack(idx, autoPlay = false) {
+            const t = tracks[idx];
+            trackNameEl.textContent   = t.title;
+            artistNameEl.textContent  = t.artist;
+            pillTrackName.textContent = t.title;
+            progressFill.style.width  = '0%';
+            currentTimeEl.textContent = '0:00';
+            audioEl.src = t.src;
+            audioEl.load();
+            if (autoPlay) audioEl.play().then(() => setPlaying(true)).catch(() => {});
+        }
+
+        audioEl.addEventListener('loadedmetadata', () => { totalTimeEl.textContent = fmt(Math.floor(audioEl.duration)); });
+        audioEl.addEventListener('timeupdate', () => {
+            if (!audioEl.duration) return;
+            progressFill.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+            currentTimeEl.textContent = fmt(Math.floor(audioEl.currentTime));
+        });
+        audioEl.addEventListener('ended', () => {
+            if (repeat) { audioEl.currentTime = 0; audioEl.play(); }
+            else { currentTrack = (currentTrack + 1) % tracks.length; loadTrack(currentTrack, true); }
+        });
+        audioEl.addEventListener('play',  () => setPlaying(true));
+        audioEl.addEventListener('pause', () => setPlaying(false));
+
+        volSlider.addEventListener('input', () => { audioEl.volume = volSlider.value / 100; });
+        audioEl.volume = 0.7;
+
+        playBtn.addEventListener('click', () => {
+            isPlaying ? audioEl.pause() : audioEl.play().catch(() => {});
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentTrack = shuffle ? Math.floor(Math.random() * tracks.length) : (currentTrack + 1) % tracks.length;
+            loadTrack(currentTrack, true);
+        });
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (audioEl.currentTime > 3) { audioEl.currentTime = 0; return; }
+            currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+            loadTrack(currentTrack, true);
+        });
+        document.getElementById('shuffleBtn').addEventListener('click', function() { shuffle = !shuffle; this.classList.toggle('p-active', shuffle); });
+        document.getElementById('repeatBtn').addEventListener('click', function() { repeat = !repeat; audioEl.loop = repeat; this.classList.toggle('p-active', repeat); });
+        document.getElementById('progressWrap').addEventListener('click', function(e) {
+            const pct = (e.clientX - this.getBoundingClientRect().left) / this.offsetWidth;
+            if (audioEl.duration) audioEl.currentTime = pct * audioEl.duration;
+            progressFill.style.width = (pct * 100) + '%';
+        });
+
+        // Auto-play on page load (requires user interaction first on most browsers;
+        // this fires on the first click/touch anywhere on the page)
+        loadTrack(0);
+        document.addEventListener('click', function startOnInteraction() {
+            if (!isPlaying) audioEl.play().then(() => setPlaying(true)).catch(() => {});
+            document.removeEventListener('click', startOnInteraction);
+        }, { once: true });
     </script>
 </body>
 

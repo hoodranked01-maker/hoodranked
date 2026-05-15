@@ -153,8 +153,8 @@
                             <span id="order-subtotal">₦0</span>
                         </div>
                         <div class="flex justify-between text-lg">
-                            <span>Shipping</span>
-                            <span id="shipping-cost">Calculated</span>
+                            <span>Service Fee</span>
+                            <span id="service-fee">Calculated</span>
                         </div>
                         <div class="flex justify-between text-xl font-bold pt-4 border-t border-gray-300">
                             <span>Total</span>
@@ -163,7 +163,7 @@
                     </div>
 
                     <button id="place-order-btn"
-                            class="w-full mt-8 bg-white text-black py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="w-full mt-8 bg-black text-white py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled>
                         Place Order
                     </button>
@@ -250,8 +250,11 @@
                 `;
             });
 
+            const service_fee = 2000;
             document.getElementById('order-subtotal').textContent = `₦${subtotal.toLocaleString()}`;
-            document.getElementById('order-total').textContent = `₦${subtotal.toLocaleString()}`;
+            document.getElementById('service-fee').textContent = `₦${service_fee.toLocaleString()}`;
+            let order_total = subtotal + service_fee
+            document.getElementById('order-total').textContent = `₦${order_total.toLocaleString()}`;
         }
 
         // Initialize
@@ -269,16 +272,15 @@
 
             // 1. Collect form data
             const formData = {
-                full_name: document.querySelector('input[placeholder*="Street address"]')?.previousElementSibling?.textContent.includes('Full Name') 
-                    ? document.querySelector('input[type="text"]').value : '',
+                full_name: document.querySelectorAll('input[type="text"]')[0].value,
                 email: document.querySelector('input[type="email"]').value,
                 phone: document.querySelector('input[type="tel"]').value,
-                address: document.querySelector('input[placeholder*="Street address"]').value,
-                city: document.querySelector('input[placeholder="Ibadan"]').value,
-                state: document.querySelector('input[placeholder="Oyo"]').value,
+                address: document.querySelectorAll('input[type="text"]')[1].value,
+                city: document.querySelectorAll('input[type="text"]')[2].value,
+                state: document.querySelectorAll('input[type="text"]')[3].value,
                 additional_notes: document.querySelector('textarea').value,
-                payment_method: document.querySelector('input[name="payment"]:checked')?.value || 'paystack',
-                cart_items: getCart()  // your existing getCart() function
+                service_fee: 2000,
+                cart_items: getCart()
             };
 
             // Basic validation
