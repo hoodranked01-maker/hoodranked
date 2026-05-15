@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     
     <script src="https://unpkg.com/alpinejs" defer></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -264,12 +264,28 @@
             .hr-widget.expanded .pill-chevron { display: flex; }
             .hr-widget.expanded .cur-status { display: flex; }
         }
+    @keyframes marquee {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
     </style>
 </head>
 
 <body class="bg-black text-white font-Poppins antialiased">
 
     <!-- ════════ HEADER ════════ -->
+    <div class="overflow-hidden bg-black text-white py-2 border-b border-gray-800">
+        <div class="flex whitespace-nowrap" style="animation: marquee 20s linear infinite;">
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+        </div>
+    </div>
     <header class="sticky top-0 z-50 bg-white text-black backdrop-blur-sm border-b border-gray-800">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
