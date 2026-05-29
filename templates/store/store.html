@@ -411,7 +411,7 @@
             <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10">
             {% for product in products %}
             {% if product.is_sold_out %}
-            <div class="group product-card bg-white overflow-hidden opacity-70 cursor-not-allowed">
+            <div class="group product-card bg-white overflow-hidden cursor-not-allowed">
             {% else %}
             <a href="{% url 'product_detail' product.slug %}">
                 <div class="group product-card bg-white overflow-hidden">
@@ -420,7 +420,7 @@
                         <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
                             class="w-full h-full bg-white object-cover object-top transition-transform duration-700 group-hover:scale-105">
                         {% if product.is_sold_out %}
-                        <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <div class="absolute top-0 left-0 bg-black flex items-center justify-center rounded-full px-2 py-1">
                             <span class="text-white text-sm md:text-base font-bold tracking-wider uppercase">Sold Out</span>
                         </div>
                         {% endif %}
