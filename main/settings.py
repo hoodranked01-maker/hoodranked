@@ -105,11 +105,11 @@ AWS_S3_ENDPOINT_URL = os.getenv("SUPABASE_S3_ENDPOINT_URL")
 
 AWS_S3_SIGNATURE_VERSION = 's3v4'   
 AWS_S3_ADDRESSING_STYLE = 'path'    
-AWS_QUERYSTRING_AUTH = False
-AWS_DEFAULT_ACL = 'public-read'     
-AWS_S3_FILE_OVERWRITE = False      
+AWS_QUERYSTRING_AUTH = True         
+AWS_S3_FILE_OVERWRITE = False       
+AWS_DEFAULT_ACL = 'private'         
 AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'public, max-age=2592000',
+    'CacheControl': 'max-age=86400',
 }
 
 STORAGES = {
