@@ -455,6 +455,39 @@
 </head>
 
 <body class="bg-white text-black font-Poppins antialiased">
+    {% if show_site_lock_modal %}
+    <div id="ordersClosedModal" class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
+        <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 text-center shadow-2xl md:p-8">
+            <button id="closeOrdersModal" type="button"
+                class="absolute right-4 top-4 rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-black"
+                aria-label="Close modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <p class="text-xs uppercase tracking-[0.45em] text-gray-500">Important update</p>
+            <h2 class="mt-3 font-bebas text-4xl tracking-[0.2em] text-black">Orders are closed</h2>
+            <p class="mt-4 text-sm leading-6 text-gray-600">{{ thank_you_message }}</p>
+            <p class="mt-3 text-sm leading-6 text-gray-600">{{ explanation }}</p>
+            <p class="mt-4 font-semibold text-black">{{ when_back }}</p>
+            {% if social_links %}
+            <div class="mt-6 flex justify-center space-x-6 text-xl text-black">
+                <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
+                    target="_blank" rel="noopener noreferrer" class="transition hover:text-gray-600">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://t.snapchat.com/zZGXw5Ys" target="_blank" rel="noopener noreferrer"
+                    class="transition hover:text-gray-600">
+                    <i class="fa-brands fa-snapchat"></i>
+                </a>
+                <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
+                    rel="noopener noreferrer" class="transition hover:text-gray-600">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
     <div class="overflow-hidden bg-black text-white py-2 border-b border-gray-800">
         <div class="flex whitespace-nowrap" style="animation: marquee 20s linear infinite;">
             <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
@@ -697,6 +730,22 @@
             });
         }
         document.addEventListener('DOMContentLoaded', updateCartCount);
+
+        const ordersClosedModal = document.getElementById('ordersClosedModal');
+        const closeOrdersModalBtn = document.getElementById('closeOrdersModal');
+
+        if (ordersClosedModal && closeOrdersModalBtn) {
+            const dismissOrdersModal = () => {
+                ordersClosedModal.classList.add('hidden');
+            };
+
+            closeOrdersModalBtn.addEventListener('click', dismissOrdersModal);
+            ordersClosedModal.addEventListener('click', (event) => {
+                if (event.target === ordersClosedModal) {
+                    dismissOrdersModal();
+                }
+            });
+        }
     </script>
     <script>
         // ── Music widget toggle

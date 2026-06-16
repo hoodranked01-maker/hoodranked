@@ -21,6 +21,7 @@ class SiteLockMiddleware:
 
         # Show thank-you + temporarily closed page
         context = {
+            'show_site_lock_modal': True,
             'thank_you_message': (
                 "Thank you for your amazing support and patronage so far! "
                 "Every order, like, share, and repost has meant the world to us."
@@ -33,4 +34,4 @@ class SiteLockMiddleware:
             'social_links': True,  # optional flag to show IG/TikTok etc.
         }
 
-        return render(request, 'store/thanks.html', context)
+        return render(request, 'store/index.html', context)
