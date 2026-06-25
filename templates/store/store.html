@@ -410,31 +410,37 @@
             <!-- Products Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-10">
             {% for product in products %}
-            {% if product.is_sold_out %}
-            <div class="group product-card bg-white overflow-hidden cursor-not-allowed">
-            {% else %}
-            <a href="{% url 'product_detail' product.slug %}">
-                <div class="group product-card bg-white overflow-hidden">
-            {% endif %}
+                {% if product.is_sold_out %}
+                <div class="group product-card bg-white overflow-hidden cursor-not-allowed">
+                {% else %}
+                <a href="{% url 'product_detail' product.slug %}">
+                    <div class="group product-card bg-white overflow-hidden">
+                {% endif %}
                     <div class="relative overflow-hidden bg-white">
                         <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
                             class="w-full h-full bg-white object-cover object-top transition-transform duration-700 group-hover:scale-105">
-                        {% if product.is_sold_out %}
+                        <!-- {% if product.is_sold_out %}
                         <div class="absolute top-0 left-0 bg-black flex items-center justify-center rounded-full px-2 py-1">
                             <span class="text-white text-sm md:text-base font-bold tracking-wider uppercase">Sold Out</span>
                         </div>
-                        {% endif %}
+                        {% endif %} -->
                     </div>
-                    <div class="text-left">
-                        <h3 class="font-bold font-dela text-black text-sm md:text-base mb-1">{{ product.name }}</h3>
+                    <div class="text-left relative"> <!-- Added 'relative' here -->
+                        <!-- <h3 class="font-bold font-dela text-black text-sm md:text-base mb-1">{{ product.name }}</h3> -->
                         {% if product.is_sold_out %}
-                        <p class="text-red-600 text-sm font-medium">Sold Out</p>
+                        <div class="absolute -top-1 left-0 bg-black flex items-center justify-center rounded-full px-2 py-1 z-10">
+                            <!-- Added 'z-10' to ensure it's on top -->
+                            <span class="text-white text-sm md:text-base font-bold tracking-wider uppercase">Sold Out</span>
+                        </div>
+                        <!-- <p class="text-red-600 text-sm font-medium">Sold Out</p> -->
+                        <span class="text-white text-sm md:text-base font-bold tracking-wider uppercase">Sold Out</span>
                         {% else %}
-                        <p class="text-gray-700 text-sm mb-4" data-ngn-price="{{ product.price }}">
+                        <!-- <p class="text-gray-700 text-sm mb-4" data-ngn-price="{{ product.price }}">
                             ₦{{ product.price|intcomma }}
-                        </p>
+                        </p> -->
                         {% endif %}
                     </div>
+
                 </div>
             {% if not product.is_sold_out %}</a>{% endif %}
             {% endfor %}
