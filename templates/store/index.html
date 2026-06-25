@@ -566,13 +566,44 @@
     </div> -->
     </section>
 
-    <section class="relative bg-black h-[720px] flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0">
-            <img class="w-full h-full object-cover" src="{% static 'hrwomen.jpeg' %}" alt="">
-        </div>
-        <div class="container space-y-4 mx-auto px-6 text-center relative z-10 font-Bebas">
-            <p class="text-xl font-Montserrat">Coming soon...</p>
-            <h1 class="text-4xl font-Fjalla">Shop our Women's collection</h1>
+    <section id="women-slider" class="glide relative bg-black h-[540px] overflow-hidden">
+        <div class="glide__track h-full" data-glide-el="track">
+            <ul class="glide__slides h-full">
+    
+                <!-- Slide 1 -->
+                <li class="glide__slide relative flex items-center justify-center h-full">
+                    <div class="absolute inset-0">
+                        <img class="w-full h-full object-cover" src="{% static 'hrwomenpink.jpeg' %}" alt="Women collection 1">
+                    </div>
+                    <div class="container space-y-4 mx-auto px-6 text-center relative z-10 font-Bebas">
+                        <p class="text-xl font-Montserrat text-black">Coming soon...</p>
+                        <h1 class="text-4xl font-Fjalla text-black">Shop our Women's collection</h1>
+                    </div>
+                </li>
+    
+                <!-- Slide 1 -->
+                <li class="glide__slide relative flex items-center justify-center h-full">
+                    <div class="absolute inset-0">
+                        <img class="w-full h-full object-cover" src="{% static 'hrwomenblue.jpeg' %}" alt="Women collection 1">
+                    </div>
+                    <div class="container space-y-4 mx-auto px-6 text-center relative z-10 font-Bebas">
+                        <p class="text-xl font-Montserrat text-black">Coming soon...</p>
+                        <h1 class="text-4xl font-Fjalla text-black">Shop our Women's collection</h1>
+                    </div>
+                </li>
+    
+                <!-- Slide 1 -->
+                <li class="glide__slide relative flex items-center justify-center h-full">
+                    <div class="absolute inset-0">
+                        <img class="w-full h-full object-cover" src="{% static 'hrwomenblack.jpeg' %}" alt="Women collection 1">
+                    </div>
+                    <div class="container space-y-4 mx-auto px-6 text-center relative z-10 font-Bebas">
+                        <p class="text-xl font-Montserrat text-black">Coming soon...</p>
+                        <h1 class="text-4xl font-Fjalla text-black">Shop our Women's collection</h1>
+                    </div>
+                </li>
+    
+            </ul>
         </div>
     </section>
 
@@ -694,6 +725,16 @@
     <audio id="audioEl" preload="auto"></audio>
 
     <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Glide('#women-slider', {
+                type: 'carousel',      // Makes it loop infinitely
+                autoplay: 5000,        // Slide transitions every 5 seconds
+                hoverpause: false,     // Keeps sliding even if user hovers mouse
+                perView: 1             // Show one slide at a time
+            }).mount();
+        });
+    </script>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear()
 
