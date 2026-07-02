@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 import requests
 from .models import Order, OrderItem, Product, Variant, Collection
+from django.contrib.auth.decorators import user_passes_test
 import json
 from decimal import Decimal
 import json
@@ -12,6 +13,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from .models import Order, OrderItem, Product, Variant
 import logging
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +105,9 @@ def product_detail(request, slug):
         'product': product,
     }
     return render(request, 'store/product_detail.html', context)
+
+def contact(request):
+    return render(request, 'store/contact.html')
 
 def cart(request):
     return render(request, 'store/cart.html')
@@ -258,3 +263,49 @@ def order_success_clean(request, order_id):
     
 def thank_you(request):
     return render(request, 'store/thanks.html')
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin/')
+def admin_orders(request):
+    queryset = Order.objects.filter(payment_status='paid').order_by('-created_at')
+
+    # Search
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        queryset = queryset.filter(
+            Q(order_id__icontains=search_query) |
+            Q(name__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(reference__icontains=search_query)
+        )
+
+    # Status Filter
+    status = request.GET.get('status')
+    if status:
+        queryset = queryset.filter(status=status)
+
+    # Prefetch related items
+    queryset = queryset.prefetch_related('items')
+
+    # Pagination
+    paginator = Paginator(queryset, 15)
+    page_number = request.GET.get('page')
+    orders = paginator.get_page(page_number)
+
+    context = {
+        'orders': orders,
+        'search_query': search_query,   # To keep search term in input
+    }
+    return render(request, 'admin/orders.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def update_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in ['pending', 'processing', 'shipped', 'delivered', 'cancelled']:
+            order.status = new_status
+            order.save()
+            messages.success(request, f'Order {order.order_id} marked as {new_status}.')
+    
+    return redirect('admin_orders')

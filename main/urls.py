@@ -2,8 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from store.views import admin_orders, update_order_status
 
 urlpatterns = [
+    path('admin/orders/', admin_orders, name='admin_orders'),
+    path('admin/orders/<int:order_id>/update-status/', update_order_status, name='update_order_status'),
     path('admin/', admin.site.urls),
     path('', include('store.urls')),
 ]

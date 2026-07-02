@@ -32,6 +32,11 @@ DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://hoodranked.store',
+    'http://127.0.0.1',
+    'https://remonstratingly-pretorial-gaynelle.ngrok-free.dev'
+]
 
 # Application definition
 
