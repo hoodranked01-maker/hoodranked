@@ -1,923 +1,268 @@
+{% extends "base.html" %}
 {% load static %}
-{% load humanize %}
 
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hood Ranked | Premium Streetwear Clothing & Urban Fashion</title>
-    <meta name="description"
-        content="Hood Ranked - Authentic premium streetwear. Exclusive drops of urban fashion hoodies, tees & collections for those who define their own lane." />
-    <meta name="keywords"
-        content="Hood Ranked, premium streetwear, urban fashion, streetwear hoodies, streetwear tees, limited drops, Nigerian streetwear" />
-
-    <meta property="og:title" content="Hood Ranked | Premium Streetwear Clothing" />
-    <meta property="og:description"
-        content="Authentic premium streetwear that hits different. Exclusive drops of urban hoodies & tees." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://hoodranked.store" />
-    <link rel="canonical" href="https://hoodranked.store" />
-
-    <link rel="icon" href="{% static 'hoodranked.png' %}" type="image/png" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400;700&family=Poppins:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
-
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css" />
-
-    <style>
-        @keyframes scroll {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-
-        .scrolling-text-container {
-            display: flex;
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-            background-color: white;
-            border-bottom: 1px solid #333;
-            padding: 8px 0;
-        }
-
-        .scrolling-text {
-            display: inline-flex;
-            animation: scroll 15s linear infinite;
-        }
-
-        #featured-grid {
-            display: grid;
-            grid-auto-flow: column;
-            grid-auto-columns: minmax(250px, 1fr);
-            overflow-x: auto;
-            gap: 4rem;
-            padding-bottom: 1rem;
-            scrollbar-width: thin;
-            scrollbar-color: #333 transparent;
-            margin-left: 2rem;
-        }
-
-        #featured-grid::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        #featured-grid::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        #featured-grid::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
-        }
-
-        #featured-grid::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        #featured-grid>* {
-            flex-shrink: 0;
-        }
-
-        .hr-widget {
-            position: fixed;
-            bottom: 20px;
-            z-index: 9999;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .hr-widget-inner {
-            background: #111;
-            color: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
-            overflow: hidden;
-            width: 272px;
-            transition: width 0.3s ease;
-        }
-
-        .hr-widget-pill {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-            min-height: 52px;
-        }
-
-        .hr-widget-pill:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .pill-icon {
-            width: 32px;
-            height: 32px;
-            background: #fff;
-            color: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .pill-label {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 14px;
-            letter-spacing: 1.5px;
-            flex: 1;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        .pill-chevron {
-            color: #555;
-            transition: transform 0.3s;
-            flex-shrink: 0;
-        }
-
-        .hr-widget.expanded .pill-chevron {
-            transform: rotate(180deg);
-        }
-
-        .hr-widget-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .hr-widget-body-inner {
-            padding: 0 16px 16px;
-            border-top: 1px solid #1e1e1e;
-        }
-
-        #musicWidget {
-            left: 20px;
-        }
-
-        .vinyl {
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, #444 0%, #111 28%, #222 42%, #111 48%, #1a1a1a 65%, #0a0a0a 100%);
-            border: 1.5px solid #333;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-            flex-shrink: 0;
-        }
-
-        .vinyl::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 11px;
-            height: 11px;
-            background: #fff;
-            border-radius: 50%;
-            border: 2px solid #111;
-        }
-
-        .vinyl.spinning {
-            animation: vinylSpin 3s linear infinite;
-        }
-
-        @keyframes vinylSpin {
-            from {
-                transform: rotate(0deg)
-            }
-
-            to {
-                transform: rotate(360deg)
-            }
-        }
-
-        .track-meta {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .track-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 15px;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .track-artist {
-            font-size: 10px;
-            color: #666;
-            margin-top: 1px;
-        }
-
-        .progress-area {
-            margin: 12px 0 4px;
-            cursor: pointer;
-        }
-
-        .progress-track {
-            height: 2px;
-            background: #2a2a2a;
-            border-radius: 4px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #fff;
-            border-radius: 4px;
-            transition: width 0.5s linear;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            right: -4px;
-            top: -4px;
-            width: 8px;
-            height: 8px;
-            background: #fff;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .progress-area:hover .progress-fill::after {
-            opacity: 1;
-        }
-
-        .time-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 9px;
-            color: #444;
-            margin-top: 3px;
-        }
-
-        .player-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-
-        .p-btn {
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.2s, background 0.2s;
-        }
-
-        .p-btn:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .p-btn.p-play {
-            width: 38px;
-            height: 38px;
-            background: #fff;
-            color: #000;
-        }
-
-        .p-btn.p-play:hover {
-            background: #e0e0e0;
-        }
-
-        .p-btn.p-active {
-            color: #fff;
-        }
-
-        .vol-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #1e1e1e;
-        }
-
-        .vol-row svg {
-            color: #444;
-            flex-shrink: 0;
-        }
-
-        input[type=range] {
-            -webkit-appearance: none;
-            flex: 1;
-            height: 2px;
-            border-radius: 4px;
-            background: #2a2a2a;
-            cursor: pointer;
-            outline: none;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 10px;
-            height: 10px;
-            background: #fff;
-            border-radius: 50%;
-        }
-
-        .playing-bars {
-            display: none;
-            align-items: flex-end;
-            gap: 2px;
-            height: 14px;
-        }
-
-        .playing-bars span {
-            display: block;
-            width: 3px;
-            background: #fff;
-            border-radius: 2px;
-            animation: barAnim 0.8s ease infinite alternate;
-        }
-
-        .playing-bars span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .playing-bars span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes barAnim {
-            from {
-                height: 3px
-            }
-
-            to {
-                height: 13px
-            }
-        }
-
-        .is-playing .playing-bars {
-            display: flex;
-        }
-
-        .is-playing .pill-track-name {
-            display: none;
-        }
-
-        @media (max-width: 639px) {
-            .hr-widget {
-                bottom: 16px;
-            }
-
-            .hr-widget-inner {
-                width: 52px;
-                border-radius: 26px;
-                transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.35s ease;
-            }
-
-            .hr-widget.expanded .hr-widget-inner {
-                width: calc(100vw - 40px);
-                max-width: 320px;
-                border-radius: 16px;
-            }
-
-            #musicWidget {
-                left: 16px;
-                right: auto;
-            }
-
-            .hr-widget:not(.expanded) .pill-label,
-            .hr-widget:not(.expanded) .pill-chevron {
-                display: none;
-            }
-
-            .hr-widget:not(.expanded) .hr-widget-pill {
-                justify-content: center;
-                padding: 10px;
-                gap: 0;
-            }
-
-            .hr-widget.expanded .pill-label,
-            .hr-widget.expanded .pill-chevron {
-                display: flex;
-            }
-        }
-
-        @keyframes marquee {
-            0% {
-                transform: translateX(0);
-            }
-
-            100% {
-                transform: translateX(-50%);
-            }
-        }
-    </style>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        dela: ['Dela Gothic One', 'sans-serif'],
-                        bebas: ['Bebas Neue', 'sans-serif'],
-                        Poppins: ['Poppins', 'sans-serif'],
-                        Fjalla: ['Fjalla One', 'sans-serif'],
-                        Montserrat: ['Montserrat', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-
-<body class="bg-white text-black font-Poppins antialiased">
-    {% if show_site_lock_modal %}
-    <div id="ordersClosedModal" class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
-        <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 text-center shadow-2xl md:p-8">
-            <button id="closeOrdersModal" type="button"
-                class="absolute right-4 top-4 rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-black"
-                aria-label="Close modal">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <p class="text-xs uppercase tracking-[0.45em] text-gray-500">Important update</p>
-            <h2 class="mt-3 font-bebas text-4xl tracking-[0.2em] text-black">Orders are closed</h2>
-            <p class="mt-4 text-sm leading-6 text-gray-600">{{ thank_you_message }}</p>
-            <p class="mt-3 text-sm leading-6 text-gray-600">{{ explanation }}</p>
-            <p class="mt-4 font-semibold text-black">{{ when_back }}</p>
-            {% if social_links %}
-            <div class="mt-6 flex justify-center space-x-6 text-xl text-black">
-                <a href="https://www.instagram.com/hoodranked_/"
-                    target="_blank" rel="noopener noreferrer" class="transition hover:text-gray-600">
-                    <i class="fa-brands fa-instagram"></i>
-                </a>
-                <a href="https://t.snapchat.com/zZGXw5Ys" target="_blank" rel="noopener noreferrer"
-                    class="transition hover:text-gray-600">
-                    <i class="fa-brands fa-snapchat"></i>
-                </a>
-                <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
-                    rel="noopener noreferrer" class="transition hover:text-gray-600">
-                    <i class="fa-brands fa-tiktok"></i>
-                </a>
-            </div>
-            {% endif %}
-        </div>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/store-widgets.css' %}">
+{% endblock %}
+{% block content %}
+
+{# ---------- Hero ---------- #}
+<section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+    <div class="absolute inset-0 z-0">
+        <div class="hidden md:block w-full h-full bg-cover bg-center md:bg-[center_top_-50px] brightness-75"
+            style="background-image: url('{% static 'herodesktop.png' %}');"></div>
+        <div class="md:hidden w-full h-full bg-cover bg-center brightness-75"
+            style="background-image: url('{% static 'hero.jpeg' %}');"></div>
     </div>
-    {% endif %}
 
-    <div class="overflow-hidden bg-black text-white py-2 border-b border-gray-800">
-        <div class="flex whitespace-nowrap" style="animation: marquee 20s linear infinite;">
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-        </div>
-    </div>
-    <header class="sticky top-0 z-50 bg-white text-black backdrop-blur-sm border-b border-gray-800">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="hidden md:flex space-x-8">
-                <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'store' %}" class="font-medium">SHOP</a>
-                <a href="{% url 'contact' %}ct' %}" class="font-medium">CONTACT</a>
-            </div>
-            <button id="menu-toggle" class="focus:outline-none md:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
-                    </path>
-                </svg>
-            </button>
-
-            <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[150px] md:w-[120px]" src="{% static 'hrlogowhite.jpg' %}" alt="Hood Ranked Logo">
-                <!-- <p class="">hoodranked</p> -->
+    <div class="relative z-10 text-center px-margin-mobile">
+        <h1 class="font-display text-display-2xl text-stark-white hidden md:block animate-fade-up">
+            RANKED ABOVE <br> THE REST
+        </h1>
+        <h1 class="font-display text-headline-lg-mobile text-stark-white md:hidden mb-4">
+            RANKED ABOVE THE REST
+        </h1>
+        <p class="font-body text-body-lg text-gray-500 max-w-xl mx-auto mb-10 tracking-widest uppercase">
+            Authentic. Urban. Prestigious.
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="{% url 'store' %}"
+                class="font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest px-12 py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+                Shop Now
             </a>
-
-            <a href="{% url 'cart' %}" class="py-2 flex items-center">
-                <i class="fas fa-shopping-bag mr-2"></i>
-                (<span class="cart-count">0</span>)
+            <a href="{% url 'lookbook' %}"
+                class="font-body font-bold border border-stark-white text-stark-white text-button uppercase tracking-widest px-12 py-5 hover:bg-stark-white hover:text-pitch-black transition-all-custom active:scale-95">
+                View Lookbook
             </a>
-        </nav>
-    </header>
-
-    <div class="mobile-menu-container md:hidden">
-        <div id="mobile-menu"
-            class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
-            <div class="container mx-auto px-6 py-4 flex justify-end">
-                <button id="menu-close" class="text-white focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
-                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
-            </div>
         </div>
     </div>
 
-    <section class="relative bg-black h-screen md:h-[720px] flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0">
-            <img class="w-full h-full object-cover" src="{% static 'hero.jpeg' %}" alt="">
-            <!-- <video autoplay muted loop playsinline class="w-full h-full object-cover">
-                <source src="{% static 'newhero.mp4' %}" type="video/mp4">
-            </video> -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+        <span class="font-mono text-label-caps text-outline">SCROLL</span>
+        <div class="w-[1px] h-12 bg-muted-steel relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1/2 bg-stark-white animate-bounce-slow"></div>
         </div>
+    </div>
+</section>
 
-        <!-- <div class="container font-dela mx-auto px-6 text-center relative z-10 mb-8 font-Bebas">
-        <a href="{% url 'store' %}">
-            <button class="px-8 py-4 md:py-4 bg-transparent border-2 border-white text-white uppercase md:text-lg hover:bg-white hover:text-black duration-300 rounded-md">Shop</button>
-        </a>
-    </div> -->
-    </section>
-
-    <section id="women-slider" class="glide relative bg-black h-[540px] overflow-hidden">
-        <div class="glide__track h-full" data-glide-el="track">
-            <ul class="glide__slides h-full">
-    
-                <!-- Slide 1 -->
-                <li class="glide__slide relative flex items-center justify-center h-full">
-                    <div class="absolute inset-0">
-                        <img class="w-full h-full object-cover" src="{% static 'hrwomenpink.jpeg' %}" alt="Women collection 1">
-                    </div>
-                    <div class="container space-y-4 mx-auto px-6 text-center relative z-10 font-Bebas">
-                        <p class="text-xl font-Montserrat text-black">Coming soon...</p>
-                        <h1 class="text-4xl font-Fjalla text-black">Shop our Women's collection</h1>
-                    </div>
-                </li>
-    
-                <!-- Slide 1 -->
-                <li class="glide__slide relative flex items-center justify-center h-full">
-                    <div class="absolute inset-0">
-                        <img class="w-full h-full object-cover" src="{% static 'hrwomenblue.jpeg' %}" alt="Women collection 1">
-                    </div>
-                    <div class="container space-y-4 mx-auto px-6 text-center relative z-10 font-Bebas">
-                        <p class="text-xl font-Montserrat text-black">Coming soon...</p>
-                        <h1 class="text-4xl font-Fjalla text-black">Shop our Women's collection</h1>
-                    </div>
-                </li>
-    
-                <!-- Slide 1 -->
-                <li class="glide__slide relative flex items-center justify-center h-full">
-                    <div class="absolute inset-0">
-                        <img class="w-full h-full object-cover" src="{% static 'hrwomenblack.jpeg' %}" alt="Women collection 1">
-                    </div>
-                    <div class="container space-y-4 mx-auto px-6 text-center relative z-10 font-Bebas">
-                        <p class="text-xl font-Montserrat text-black">Coming soon...</p>
-                        <h1 class="text-4xl font-Fjalla text-black">Shop our Women's collection</h1>
-                    </div>
-                </li>
-    
-            </ul>
-        </div>
-    </section>
-
-    <a href="{% url 'store' %}" class="relative bg-black h-[820px] flex items-start justify-center overflow-hidden pt-12">
-        <div class="absolute inset-0">
-            <img class="w-full h-full object-cover" src="{% static 'hrthird.jpeg' %}" alt="">
-        </div>
-        <div class="container mx-auto px-6 text-center relative z-10 font-Bebas">
-            <h1 class="text-4xl font-Fjalla">Shop this look</h1>
-        </div>
-    </a>
-
-
-    <footer class="py-12 border-t border-gray-800">
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
         <div>
-            <div class="flex flex-col items-center space-y-4">
-                <div class="flex space-x-8">
-                    <a href="https://www.instagram.com/hoodranked_/"
-                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i
-                            class="fa-brands fa-snapchat"></i></a>
-                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
-                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
-                </div>
-                <p>© <span id="year"></span>, HoodRanked</p>
-            </div>
+            <span class="font-mono text-label-caps text-outline block mb-2">UPCOMING ARRIVALS</span>
+            <h2 class="font-display text-headline-lg text-stark-white">WOMEN'S COLLECTION</h2>
         </div>
-    </footer>
+        <a href="{% url 'store' %}"
+            class="font-body font-bold text-button uppercase tracking-widest text-stark-white border-b border-stark-white pb-2 hover:text-outline hover:border-outline transition-colors">
+            Explore All
+        </a>
+    </div>
 
-    <div class="hr-widget" id="musicWidget">
-        <div class="hr-widget-inner">
-            <div class="hr-widget-pill" id="musicPill">
-                <div class="pill-icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
-                    </svg>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+        <a href=""
+            class="product-card group block border-l border-muted-steel pl-4 md:pl-0 md:border-0">
+            <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray mb-6">
+                <img src="{% static 'hrwomenblack.jpeg' %}" alt="Hoodranked Black Women Top Drop"
+                    class="product-card__img w-full h-full object-cover">
+                <div class="absolute top-4 left-4">
+                    <span
+                        class="bg-pitch-black border border-stark-white text-stark-white font-mono text-[10px] px-3 py-1 uppercase">Limited
+                        Edition</span>
                 </div>
-                <div style="flex:1;min-width:0;">
-                    <div class="pill-label">
-                        <span class="pill-track-name" id="pillTrackName">HOOD RADIO</span>
-                        <span class="playing-bars" id="playingBars">
-                            <span></span><span></span><span></span>
-                        </span>
+            </div>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-body text-body-md text-stark-white mb-1 group-hover:underline underline-offset-4">Coming soon...</h3>
+                </div>
+                <span class="font-mono text-label-caps text-stark-white">₦##,###.##</span>
+            </div>
+        </a>
+
+        <a href=""
+            class="product-card group block border-l border-muted-steel pl-4 md:pl-0 md:border-0">
+            <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray mb-6">
+                <img src="{% static 'hrwomenblue.jpeg' %}" alt="Hoodranked Blue Women Top Drop"
+                    class="product-card__img w-full h-full object-cover">
+                <div class="absolute top-4 left-4">
+                    <span
+                        class="bg-pitch-black border border-stark-white text-stark-white font-mono text-[10px] px-3 py-1 uppercase">Limited
+                        Edition</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-body text-body-md text-stark-white mb-1 group-hover:underline underline-offset-4">Coming soon...</h3>
+                </div>
+                <span class="font-mono text-label-caps text-stark-white">₦##,###.##</span>
+            </div>
+        </a>
+
+        <a href=""
+            class="product-card group block border-l border-muted-steel pl-4 md:pl-0 md:border-0">
+            <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray mb-6">
+                <img src="{% static 'hrwomenpink.jpeg' %}" alt="Hoodranked Pink Women Top Drop"
+                    class="product-card__img w-full h-full object-cover">
+                <div class="absolute top-4 left-4">
+                    <span
+                        class="bg-pitch-black border border-stark-white text-stark-white font-mono text-[10px] px-3 py-1 uppercase">Limited
+                        Edition</span>
+                </div>
+            </div>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-body text-body-md text-stark-white mb-1 group-hover:underline underline-offset-4">Coming soon...</h3>
+                </div>
+                <span class="font-mono text-label-caps text-stark-white">₦##,###.##</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+{# ---------- Brand spotlight ---------- #}
+<section class="relative py-section-gap bg-surface-gray">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="flex flex-col md:flex-row items-center gap-16">
+
+            <div class="w-full md:w-1/2 order-2 md:order-1">
+                <div class="border-l-2 border-stark-white pl-4 md:pl-12">
+                    <span class="font-mono text-label-caps text-outline block mb-4">THE ETHOS</span>
+                    <h2 class="font-display text-headline-lg text-stark-white mb-8 leading-tight">
+                        AUTHENTICITY<br> IS THE HIGHEST<br> RANK
+                    </h2>
+                    <p class="font-body text-body-lg text-on-surface-variant mb-10 max-w-md leading-relaxed">
+                        HOODRANKED isn't just a label; it's a testament to the journey. Born in the streets, elevated by
+                        ambition. We define the intersection of urban grit and luxury precision.
+                    </p>
+                    <a href="{% url 'index' %}"
+                        class="inline-block font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest px-10 py-4 hover:bg-outline transition-colors">
+                        The Story
+                    </a>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 order-1 md:order-2">
+                <div class="relative border border-muted-steel p-4">
+                    <img src="{% static 'hrthird.jpeg' %}" alt="HOODRANKED lifestyle"
+                        class="w-full grayscale hover:grayscale-0 transition-all duration-700">
+                    <div
+                        class="absolute -bottom-8 -right-8 w-48 h-48 border-r border-b border-stark-white hidden md:block">
                     </div>
                 </div>
-                <svg class="pill-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2.5">
-                    <polyline points="18 15 12 9 6 15" />
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# ---------- Marquee ---------- #}
+<section class="py-section-gap overflow-hidden" aria-hidden="true">
+    <div class="flex whitespace-nowrap overflow-hidden">
+        <div class="flex animate-marquee items-center">
+            {% for i in "1234" %}
+            <span
+                class="font-display text-[160px] leading-none {% if forloop.counter|divisibleby:2 %}text-stark-white{% else %}text-outline-stroke{% endif %} mx-12">HOODRANKED</span>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ---------- Floating widgets ---------- #}
+<div class="hr-widget" id="musicWidget">
+    <div class="hr-widget-inner">
+        <div class="hr-widget-pill" id="musicPill">
+            <div class="pill-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
                 </svg>
             </div>
+            <div style="flex:1;min-width:0;">
+                <div class="pill-label">
+                    <span class="pill-track-name" id="pillTrackName">HOOD RADIO</span>
+                    <span class="playing-bars" id="playingBars"><span></span><span></span><span></span></span>
+                </div>
+            </div>
+            <svg class="pill-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <polyline points="18 15 12 9 6 15" />
+            </svg>
+        </div>
 
-            <div class="hr-widget-body" id="musicBody">
-                <div class="hr-widget-body-inner">
-                    <div style="display:flex;align-items:center;gap:12px;margin-top:14px;">
-                        <div class="vinyl" id="vinyl"></div>
-                        <div class="track-meta">
-                            <div class="track-title" id="trackName">HOOD ANTHEM</div>
-                            <div class="track-artist" id="artistName">Hood Ranked Radio</div>
-                        </div>
+        <div class="hr-widget-body" id="musicBody">
+            <div class="hr-widget-body-inner">
+                <div style="display:flex;align-items:center;gap:12px;margin-top:14px;">
+                    <div class="vinyl" id="vinyl"></div>
+                    <div class="track-meta">
+                        <div class="track-title" id="trackName">HOOD ANTHEM</div>
+                        <div class="track-artist" id="artistName">Hood Ranked Radio</div>
                     </div>
-                    <div class="progress-area" id="progressWrap">
-                        <div class="progress-track">
-                            <div class="progress-fill" id="progressFill" style="width:0%"></div>
-                        </div>
-                        <div class="time-row">
-                            <span id="currentTime">0:00</span>
-                            <span id="totalTime">0:00</span>
-                        </div>
+                </div>
+
+                <div class="progress-area" id="progressWrap">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill" style="width:0%"></div>
                     </div>
-                    <div class="player-controls">
-                        <button class="p-btn" id="shuffleBtn" title="Shuffle">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="16 3 21 3 21 8" />
-                                <line x1="4" y1="20" x2="21" y2="3" />
-                                <polyline points="21 16 21 21 16 21" />
-                                <line x1="4" y1="4" x2="9" y2="9" />
-                            </svg>
-                        </button>
-                        <button class="p-btn" id="prevBtn">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M19 20L9 12l10-8v16zM5 4h2v16H5z" />
-                            </svg>
-                        </button>
-                        <button class="p-btn p-play" id="playBtn">
-                            <svg id="playIcon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8 5v14l11-7z" />
-                            </svg>
-                        </button>
-                        <button class="p-btn" id="nextBtn">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M5 4l10 8-10 8V4zm14 0h2v16h-2z" />
-                            </svg>
-                        </button>
-                        <button class="p-btn" id="repeatBtn">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="17 1 21 5 17 9" />
-                                <path d="M3 11V9a4 4 0 014-4h14" />
-                                <polyline points="7 23 3 19 7 15" />
-                                <path d="M21 13v2a4 4 0 01-4 4H3" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="vol-row">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M11 5L6 9H2v6h4l5 4V5z" />
+                    <div class="time-row"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
+                </div>
+
+                <div class="player-controls">
+                    <button class="p-btn" id="shuffleBtn" title="Shuffle" type="button">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="16 3 21 3 21 8" />
+                            <line x1="4" y1="20" x2="21" y2="3" />
+                            <polyline points="21 16 21 21 16 21" />
+                            <line x1="4" y1="4" x2="9" y2="9" />
                         </svg>
-                        <input type="range" id="volumeSlider" min="0" max="100" value="70">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M11 5L6 9H2v6h4l5 4V5zm9.07 1.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
+                    </button>
+                    <button class="p-btn" id="prevBtn" type="button">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 20L9 12l10-8v16zM5 4h2v16H5z" />
                         </svg>
-                    </div>
+                    </button>
+                    <button class="p-btn p-play" id="playBtn" type="button">
+                        <svg id="playIcon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                    </button>
+                    <button class="p-btn" id="nextBtn" type="button">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5 4l10 8-10 8V4zm14 0h2v16h-2z" />
+                        </svg>
+                    </button>
+                    <button class="p-btn" id="repeatBtn" type="button">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="17 1 21 5 17 9" />
+                            <path d="M3 11V9a4 4 0 014-4h14" />
+                            <polyline points="7 23 3 19 7 15" />
+                            <path d="M21 13v2a4 4 0 01-4 4H3" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="vol-row">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11 5L6 9H2v6h4l5 4V5z" />
+                    </svg>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11 5L6 9H2v6h4l5 4V5zm9.07 1.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
+                    </svg>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <audio id="audioEl" preload="auto"></audio>
+<audio id="audioEl" preload="none"></audio>
 
-    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            new Glide('#women-slider', {
-                type: 'carousel',      // Makes it loop infinitely
-                autoplay: 5000,        // Slide transitions every 5 seconds
-                hoverpause: false,     // Keeps sliding even if user hovers mouse
-                perView: 1             // Show one slide at a time
-            }).mount();
-        });
-    </script>
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear()
+{% endblock %}
 
-        document.addEventListener('DOMContentLoaded', function () {
-            new Glide('.glide', {
-                type: 'carousel',
-                startAt: 0,
-                perView: 1,
-                autoplay: 2500,
-                hoverpause: true,
-                animationDuration: 800,
-                gap: 0
-            }).mount();
-        });
-
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuLinks = document.querySelectorAll('.menu-link');
-
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
-        });
-
-        menuClose.addEventListener('click', () => {
-            closeMenu();
-        });
-
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                closeMenu();
-            });
-        });
-
-        mobileMenu.addEventListener('click', (e) => {
-            if (e.target === mobileMenu) {
-                closeMenu();
-            }
-        });
-
-        function closeMenu() {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-        }
-
-        function getCart() {
-            const cart = localStorage.getItem('hoodranked_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelectorAll('.cart-count').forEach(el => {
-                el.textContent = count;
-            });
-        }
-        document.addEventListener('DOMContentLoaded', updateCartCount);
-
-        const ordersClosedModal = document.getElementById('ordersClosedModal');
-        const closeOrdersModalBtn = document.getElementById('closeOrdersModal');
-
-        if (ordersClosedModal && closeOrdersModalBtn) {
-            const dismissOrdersModal = () => {
-                ordersClosedModal.classList.add('hidden');
-            };
-
-            closeOrdersModalBtn.addEventListener('click', dismissOrdersModal);
-            ordersClosedModal.addEventListener('click', (event) => {
-                if (event.target === ordersClosedModal) {
-                    dismissOrdersModal();
-                }
-            });
-        }
-    </script>
-    <script>
-        // ── Music widget toggle
-        const musicPillEl = document.getElementById('musicPill');
-        const musicWidget = document.getElementById('musicWidget');
-        const musicBody = document.getElementById('musicBody');
-
-        musicPillEl.addEventListener('click', () => {
-            const opening = !musicWidget.classList.contains('expanded');
-            musicWidget.classList.toggle('expanded', opening);
-            if (opening) {
-                requestAnimationFrame(() => {
-                    musicBody.style.maxHeight = musicBody.querySelector('.hr-widget-body-inner').scrollHeight + 32 + 'px';
-                });
-            } else {
-                musicBody.style.maxHeight = '0';
-            }
-        });
-
-        // ── Player
-        const tracks = [
-            { title: "BEAUTY AND A BEAT", artist: "Justin Bieber (feat. Nicki Minaj)", src: "{% static 'beauty-and-a-beat.mp3' %}" },
-        ];
-
-        const audioEl = document.getElementById('audioEl');
-        const vinyl = document.getElementById('vinyl');
-        const playBtn = document.getElementById('playBtn');
-        const playIcon = document.getElementById('playIcon');
-        const trackNameEl = document.getElementById('trackName');
-        const artistNameEl = document.getElementById('artistName');
-        const progressFill = document.getElementById('progressFill');
-        const currentTimeEl = document.getElementById('currentTime');
-        const totalTimeEl = document.getElementById('totalTime');
-        const pillTrackName = document.getElementById('pillTrackName');
-        const volSlider = document.getElementById('volumeSlider');
-
-        let currentTrack = 0, isPlaying = false, repeat = false, shuffle = false;
-
-        function fmt(s) { return `${Math.floor(s / 60)}:${(s % 60 | 0).toString().padStart(2, '0')}`; }
-
-        function setPlaying(state) {
-            isPlaying = state;
-            vinyl.classList.toggle('spinning', state);
-            playIcon.innerHTML = state
-                ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
-                : '<path d="M8 5v14l11-7z"/>';
-            musicPillEl.classList.toggle('is-playing', state);
-        }
-
-        function loadTrack(idx, autoPlay = false) {
-            const t = tracks[idx];
-            trackNameEl.textContent = t.title;
-            artistNameEl.textContent = t.artist;
-            pillTrackName.textContent = t.title;
-            progressFill.style.width = '0%';
-            currentTimeEl.textContent = '0:00';
-            audioEl.src = t.src;
-            audioEl.load();
-            if (autoPlay) audioEl.play().then(() => setPlaying(true)).catch(() => { });
-        }
-
-        audioEl.addEventListener('loadedmetadata', () => { totalTimeEl.textContent = fmt(Math.floor(audioEl.duration)); });
-        audioEl.addEventListener('timeupdate', () => {
-            if (!audioEl.duration) return;
-            progressFill.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
-            currentTimeEl.textContent = fmt(Math.floor(audioEl.currentTime));
-        });
-        audioEl.addEventListener('ended', () => {
-            if (repeat) { audioEl.currentTime = 0; audioEl.play(); }
-            else { currentTrack = (currentTrack + 1) % tracks.length; loadTrack(currentTrack, true); }
-        });
-        audioEl.addEventListener('play', () => setPlaying(true));
-        audioEl.addEventListener('pause', () => setPlaying(false));
-
-        volSlider.addEventListener('input', () => { audioEl.volume = volSlider.value / 100; });
-        audioEl.volume = 0.7;
-
-        playBtn.addEventListener('click', () => {
-            isPlaying ? audioEl.pause() : audioEl.play().catch(() => { });
-        });
-
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            currentTrack = shuffle ? Math.floor(Math.random() * tracks.length) : (currentTrack + 1) % tracks.length;
-            loadTrack(currentTrack, true);
-        });
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            if (audioEl.currentTime > 3) { audioEl.currentTime = 0; return; }
-            currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
-            loadTrack(currentTrack, true);
-        });
-        document.getElementById('shuffleBtn').addEventListener('click', function () { shuffle = !shuffle; this.classList.toggle('p-active', shuffle); });
-        document.getElementById('repeatBtn').addEventListener('click', function () { repeat = !repeat; audioEl.loop = repeat; this.classList.toggle('p-active', repeat); });
-        document.getElementById('progressWrap').addEventListener('click', function (e) {
-            const pct = (e.clientX - this.getBoundingClientRect().left) / this.offsetWidth;
-            if (audioEl.duration) audioEl.currentTime = pct * audioEl.duration;
-            progressFill.style.width = (pct * 100) + '%';
-        });
-
-        // Auto-play on page load (requires user interaction first on most browsers;
-        // this fires on the first click/touch anywhere on the page)
-        loadTrack(0);
-        document.addEventListener('click', function startOnInteraction() {
-            if (!isPlaying) audioEl.play().then(() => setPlaying(true)).catch(() => { });
-            document.removeEventListener('click', startOnInteraction);
-        }, { once: true });
-    </script>
-</body>
-
-</html>
+{% block extra_scripts %}
+<script>
+    window.HOODRANKED_TRACK_SRCS = [
+        "{% static 'beauty-and-a-beat.mp3' %}",
+    ];
+</script>
+<script src="{% static 'js/store-filters.js' %}"></script>
+<script src="{% static 'js/floating-widgets.js' %}"></script>
+{% endblock %}

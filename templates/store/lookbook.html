@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lookbook | HOODRANKED{% endblock %}
+
+{% block content %}
+
+{# ---------- Lookbook hero ---------- #}
+<section class="px-margin-mobile md:px-margin-desktop pt-20 pb-16 max-w-container-max mx-auto">
+    <span class="font-mono text-label-caps text-outline block mb-4">{{ looks|length|stringformat:"02d" }} LOOKS{% if season %} — {{ season }}{% endif %}</span>
+    <h1 class="font-display text-headline-lg-mobile md:text-display-2xl text-stark-white leading-none">
+        LOOKBOOK
+    </h1>
+</section>
+
+{% if looks %}
+{% for look in looks %}
+<section class="border-t border-muted-steel {% if forloop.last %}border-b{% endif %}">
+    <div
+        class="flex flex-col {% if forloop.counter|divisibleby:2 %}md:flex-row-reverse{% else %}md:flex-row{% endif %}">
+
+        {# Image #}
+        <a href="{{ look.get_absolute_url }}"
+            class="group relative block w-full md:w-3/5 aspect-[4/5] md:aspect-auto overflow-hidden bg-surface-gray">
+            <img src="{{ look.image.url }}" alt="{{ look.title }}"
+                class="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out">
+
+            {# Credits overlay - revealed on hover, hidden if there's nothing to show #}
+            {% if look.model_name or look.photographer_credit %}
+            <div class="absolute inset-x-0 bottom-0 p-6 md:p-8 bg-gradient-to-t from-pitch-black/80 to-transparent
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                {% if look.model_name %}
+                <p class="font-mono text-label-caps text-stark-white">MODEL — {{ look.model_name }}</p>
+                {% endif %}
+                {% if look.photographer_credit %}
+                <p class="font-mono text-label-caps text-outline">PHOTO — {{ look.photographer_credit }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </a>
+
+        {# Text panel #}
+        <div class="w-full md:w-2/5 flex items-center px-margin-mobile md:px-16 py-16 md:py-0">
+            <div>
+                <span class="font-mono text-label-caps text-outline block mb-6">
+                    LOOK {{ look.look_number|stringformat:"02d" }} / {{ looks|length|stringformat:"02d" }}
+                </span>
+                <h2 class="font-display text-headline-md md:text-headline-lg text-stark-white mb-6 leading-tight">
+                    {{ look.title|upper }}
+                </h2>
+                {% if look.caption %}
+                <p class="font-body text-body-lg text-on-surface-variant max-w-sm leading-relaxed mb-8">
+                    {{ look.caption }}
+                </p>
+                {% endif %}
+                {% if look.season %}
+                <span
+                    class="inline-block font-mono text-[10px] uppercase tracking-widest border border-muted-steel text-outline px-3 py-1">
+                    {{ look.season }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endfor %}
+{% else %}
+<section class="px-margin-mobile md:px-margin-desktop py-32 max-w-container-max mx-auto text-center">
+    <p class="font-body text-body-md text-outline">No looks published yet.</p>
+</section>
+{% endif %}
+
+{# ---------- CTA back to shop ---------- #}
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto text-center">
+    <h2 class="font-display text-headline-md text-stark-white mb-8">SEEN SOMETHING YOU LIKE?</h2>
+    <a href="{% url 'store' %}"
+        class="inline-block font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest px-12 py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+        Shop The Collection
+    </a>
+</section>
+
+{% endblock %}

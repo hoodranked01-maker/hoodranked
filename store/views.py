@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 import requests
-from .models import Order, OrderItem, Product, Variant, Collection
+from .models import Order, OrderItem, Product, Variant, Collection, Look
 from django.contrib.auth.decorators import user_passes_test
 import json
 from decimal import Decimal
@@ -309,3 +309,23 @@ def update_order_status(request, order_id):
             messages.success(request, f'Order {order.order_id} marked as {new_status}.')
     
     return redirect('admin_orders')
+
+def lookbook(request):
+    looks = Look.objects.filter(is_published=True)
+    return render(request, "store/lookbook.html", {"looks": looks})
+ 
+ 
+def lookbook_detail(request, slug):
+    look = get_object_or_404(Look, slug=slug, is_published=True)
+    next_look = (
+        Look.objects.filter(is_published=True, look_number__gt=look.look_number)
+        .order_by("look_number")
+        .first()
+    )
+    prev_look = (
+        Look.objects.filter(is_published=True, look_number__lt=look.look_number)
+        .order_by("-look_number")
+        .first()
+    )
+    context = {"look": look, "next_look": next_look, "prev_look": prev_look}
+    return render(request, "store/lookbook_detail.html", context)

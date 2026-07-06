@@ -1,0 +1,9 @@
+<div class="overflow-hidden bg-pitch-black border-b border-muted-steel py-2">
+    <div class="flex whitespace-nowrap animate-marquee">
+        {% for i in "12345678" %}
+        <span class="mx-12 font-mono text-[10px] uppercase tracking-widest text-outline">
+            {{ announcement_text|default:"📦 Delivery takes 1–2 weeks" }}
+        </span>
+        {% endfor %}
+    </div>
+</div>
