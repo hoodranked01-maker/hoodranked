@@ -107,7 +107,7 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'store' %}" class="font-medium">SHOP</a>
+                <a href="{% url 'products:store' %}" class="font-medium">SHOP</a>
                 <a href="/contact.html" class="font-medium text-black border-b-2 border-black pb-0.5">CONTACT</a>
             </div>
 
@@ -121,7 +121,7 @@
                 <img class="w-[150px] md:w-[120px]" src="{% static 'hrlogowhite.jpg' %}" alt="Hood Ranked Logo">
             </a>
 
-            <a href="{% url 'cart' %}" class="py-2 flex items-center">
+            <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
                 <i class="fas fa-shopping-bag mr-2"></i>
                 (<span class="cart-count">0</span>)
             </a>
@@ -140,7 +140,7 @@
             </div>
             <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl text-white">
                 <a href="/" class="menu-link block py-2">HOME</a>
-                <a href="{% url 'store' %}" class="menu-link block py-2">SHOP</a>
+                <a href="{% url 'products:store' %}" class="menu-link block py-2">SHOP</a>
                 <a href="/contact.html" class="menu-link block py-2">CONTACT</a>
             </div>
         </div>

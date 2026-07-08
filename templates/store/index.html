@@ -1,5 +1,6 @@
 {% load static %}
 {% load humanize %}
+{% load waffle_tags %}
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -509,8 +510,8 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'store' %}" class="font-medium">SHOP</a>
-                <a href="{% url 'contact' %}ct' %}" class="font-medium">CONTACT</a>
+                <a href="{% url 'products:store' %}" class="font-medium">SHOP</a>
+                <a href="{% url 'store:contact' %}" class="font-medium">CONTACT</a>
             </div>
             <button id="menu-toggle" class="focus:outline-none md:hidden">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -524,7 +525,7 @@
                 <!-- <p class="">hoodranked</p> -->
             </a>
 
-            <a href="{% url 'cart' %}" class="py-2 flex items-center">
+            <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
                 <i class="fas fa-shopping-bag mr-2"></i>
                 (<span class="cart-count">0</span>)
             </a>
@@ -544,9 +545,9 @@
             </div>
 
             <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
                 <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
             </div>
         </div>
     </div>
@@ -560,7 +561,7 @@
         </div>
 
         <!-- <div class="container font-dela mx-auto px-6 text-center relative z-10 mb-8 font-Bebas">
-        <a href="{% url 'store' %}">
+        <a href="{% url 'products:store' %}">
             <button class="px-8 py-4 md:py-4 bg-transparent border-2 border-white text-white uppercase md:text-lg hover:bg-white hover:text-black duration-300 rounded-md">Shop</button>
         </a>
     </div> -->
@@ -607,7 +608,7 @@
         </div>
     </section>
 
-    <a href="{% url 'store' %}" class="relative bg-black h-[820px] flex items-start justify-center overflow-hidden pt-12">
+    <a href="{% url 'products:store' %}" class="relative bg-black h-[820px] flex items-start justify-center overflow-hidden pt-12">
         <div class="absolute inset-0">
             <img class="w-full h-full object-cover" src="{% static 'hrthird.jpeg' %}" alt="">
         </div>
@@ -633,6 +634,7 @@
         </div>
     </footer>
 
+    {% flag 'music_widget' %}
     <div class="hr-widget" id="musicWidget">
         <div class="hr-widget-inner">
             <div class="hr-widget-pill" id="musicPill">
@@ -724,95 +726,6 @@
 
     <audio id="audioEl" preload="auto"></audio>
 
-    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            new Glide('#women-slider', {
-                type: 'carousel',      // Makes it loop infinitely
-                autoplay: 5000,        // Slide transitions every 5 seconds
-                hoverpause: false,     // Keeps sliding even if user hovers mouse
-                perView: 1             // Show one slide at a time
-            }).mount();
-        });
-    </script>
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear()
-
-        document.addEventListener('DOMContentLoaded', function () {
-            new Glide('.glide', {
-                type: 'carousel',
-                startAt: 0,
-                perView: 1,
-                autoplay: 2500,
-                hoverpause: true,
-                animationDuration: 800,
-                gap: 0
-            }).mount();
-        });
-
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuLinks = document.querySelectorAll('.menu-link');
-
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
-        });
-
-        menuClose.addEventListener('click', () => {
-            closeMenu();
-        });
-
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                closeMenu();
-            });
-        });
-
-        mobileMenu.addEventListener('click', (e) => {
-            if (e.target === mobileMenu) {
-                closeMenu();
-            }
-        });
-
-        function closeMenu() {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-        }
-
-        function getCart() {
-            const cart = localStorage.getItem('hoodranked_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelectorAll('.cart-count').forEach(el => {
-                el.textContent = count;
-            });
-        }
-        document.addEventListener('DOMContentLoaded', updateCartCount);
-
-        const ordersClosedModal = document.getElementById('ordersClosedModal');
-        const closeOrdersModalBtn = document.getElementById('closeOrdersModal');
-
-        if (ordersClosedModal && closeOrdersModalBtn) {
-            const dismissOrdersModal = () => {
-                ordersClosedModal.classList.add('hidden');
-            };
-
-            closeOrdersModalBtn.addEventListener('click', dismissOrdersModal);
-            ordersClosedModal.addEventListener('click', (event) => {
-                if (event.target === ordersClosedModal) {
-                    dismissOrdersModal();
-                }
-            });
-        }
-    </script>
     <script>
         // ── Music widget toggle
         const musicPillEl = document.getElementById('musicPill');
@@ -918,6 +831,98 @@
             document.removeEventListener('click', startOnInteraction);
         }, { once: true });
     </script>
+    {% endflag %}
+
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Glide('#women-slider', {
+                type: 'carousel',      // Makes it loop infinitely
+                autoplay: 5000,        // Slide transitions every 5 seconds
+                hoverpause: false,     // Keeps sliding even if user hovers mouse
+                perView: 1             // Show one slide at a time
+            }).mount();
+        });
+    </script>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear()
+
+        document.addEventListener('DOMContentLoaded', function () {
+            new Glide('.glide', {
+                type: 'carousel',
+                startAt: 0,
+                perView: 1,
+                autoplay: 2500,
+                hoverpause: true,
+                animationDuration: 800,
+                gap: 0
+            }).mount();
+        });
+
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            document.body.style.overflow = 'hidden';
+        });
+
+        menuClose.addEventListener('click', () => {
+            closeMenu();
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                closeMenu();
+            });
+        });
+
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                closeMenu();
+            }
+        });
+
+        function closeMenu() {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        }
+
+        function getCart() {
+            const cart = localStorage.getItem('hoodranked_cart');
+            return cart ? JSON.parse(cart) : [];
+        }
+
+        function updateCartCount() {
+            const cart = getCart();
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = count;
+            });
+        }
+        document.addEventListener('DOMContentLoaded', updateCartCount);
+
+        const ordersClosedModal = document.getElementById('ordersClosedModal');
+        const closeOrdersModalBtn = document.getElementById('closeOrdersModal');
+
+        if (ordersClosedModal && closeOrdersModalBtn) {
+            const dismissOrdersModal = () => {
+                ordersClosedModal.classList.add('hidden');
+            };
+
+            closeOrdersModalBtn.addEventListener('click', dismissOrdersModal);
+            ordersClosedModal.addEventListener('click', (event) => {
+                if (event.target === ordersClosedModal) {
+                    dismissOrdersModal();
+                }
+            });
+        }
+    </script>
+    
 </body>
 
 </html>
