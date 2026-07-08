@@ -1,0 +1,104 @@
+{% load static %}
+{% load waffle_tags %}
+{% flag 'music_widget' %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/store-widgets.css' %}">
+{% endblock %}
+
+<div class="hr-widget" id="musicWidget">
+    <div class="hr-widget-inner">
+        <div class="hr-widget-pill" id="musicPill">
+            <div class="pill-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z" />
+                </svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div class="pill-label">
+                    <span class="pill-track-name" id="pillTrackName">HOOD RADIO</span>
+                    <span class="playing-bars" id="playingBars"><span></span><span></span><span></span></span>
+                </div>
+            </div>
+            <svg class="pill-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <polyline points="18 15 12 9 6 15" />
+            </svg>
+        </div>
+
+        <div class="hr-widget-body" id="musicBody">
+            <div class="hr-widget-body-inner">
+                <div style="display:flex;align-items:center;gap:12px;margin-top:14px;">
+                    <div class="vinyl" id="vinyl"></div>
+                    <div class="track-meta">
+                        <div class="track-title" id="trackName">HOOD ANTHEM</div>
+                        <div class="track-artist" id="artistName">Hood Ranked Radio</div>
+                    </div>
+                </div>
+
+                <div class="progress-area" id="progressWrap">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                    </div>
+                    <div class="time-row"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
+                </div>
+
+                <div class="player-controls">
+                    <button class="p-btn" id="shuffleBtn" title="Shuffle" type="button">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="16 3 21 3 21 8" />
+                            <line x1="4" y1="20" x2="21" y2="3" />
+                            <polyline points="21 16 21 21 16 21" />
+                            <line x1="4" y1="4" x2="9" y2="9" />
+                        </svg>
+                    </button>
+                    <button class="p-btn" id="prevBtn" type="button">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 20L9 12l10-8v16zM5 4h2v16H5z" />
+                        </svg>
+                    </button>
+                    <button class="p-btn p-play" id="playBtn" type="button">
+                        <svg id="playIcon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                    </button>
+                    <button class="p-btn" id="nextBtn" type="button">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5 4l10 8-10 8V4zm14 0h2v16h-2z" />
+                        </svg>
+                    </button>
+                    <button class="p-btn" id="repeatBtn" type="button">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="17 1 21 5 17 9" />
+                            <path d="M3 11V9a4 4 0 014-4h14" />
+                            <polyline points="7 23 3 19 7 15" />
+                            <path d="M21 13v2a4 4 0 01-4 4H3" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="vol-row">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11 5L6 9H2v6h4l5 4V5z" />
+                    </svg>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11 5L6 9H2v6h4l5 4V5zm9.07 1.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<audio id="audioEl" preload="none"></audio>
+
+<script>
+    window.HOODRANKED_TRACK_SRCS = [
+        "{% static 'beauty-and-a-beat.mp3' %}",
+    ];
+</script>
+<script src="{% static 'js/store-filters.js' %}"></script>
+<script src="{% static 'js/floating-widgets.js' %}"></script>
+{% endflag %}
