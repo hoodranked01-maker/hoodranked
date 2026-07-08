@@ -1,4 +1,4 @@
-<!-- templates{% url 'store' %}/checkout_success.html -->
+<!-- templates{% url 'products:store' %}/checkout_success.html -->
 {% load static humanize %}
 
 <!DOCTYPE html>
@@ -90,8 +90,8 @@
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="hidden md:flex space-x-8">
                 <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'store' %}" class="font-medium">SHOP</a>
-                <a href="{% url 'contact' %}ct' %}" class="font-medium">CONTACT</a>
+                <a href="{% url 'products:store' %}" class="font-medium">SHOP</a>
+                <a href="{% url 'store:contact' %}" class="font-medium">CONTACT</a>
             </div>
             <button id="menu-toggle" class="focus:outline-none md:hidden">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,12 +100,11 @@
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[140px] md:w-[120px] h-[140px] md:h-[120px] -my-12 md:mr-32" src="{% static 'hoodranked.png' %}"
-                    alt="Hood Ranked Logo">
+                <img class="w-[150px] md:w-[120px]" src="{% static 'hrlogowhite.jpg' %}" alt="Hood Ranked Logo">
                 <!-- <p class="">hoodranked</p> -->
             </a>
 
-            <a href="{% url 'cart' %}" class="py-2 flex items-center">
+            <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
                 <i class="fas fa-shopping-bag mr-2"></i>
                 (<span class="cart-count">0</span>)
             </a>
@@ -125,9 +124,9 @@
             </div>
 
             <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
+                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
                 <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
-                <a href="{% url 'store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
+                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
             </div>
         </div>
     </div>
@@ -192,7 +191,7 @@
                 </div>
             </div>
 
-            <a href="{% url 'store' %}" class="inline-block bg-black text-sm md:text-base text-white px-12 py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded">
+            <a href="{% url 'products:store' %}" class="inline-block bg-black text-sm md:text-base text-white px-12 py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded">
                 Continue Shopping
             </a>
         </div>
