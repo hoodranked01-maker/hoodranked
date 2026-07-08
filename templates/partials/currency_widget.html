@@ -1,0 +1,63 @@
+<div class="hr-widget" id="currencyWidget">
+    <div class="hr-widget-inner">
+        <div class="hr-widget-pill" id="currencyPill">
+            <div class="pill-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                </svg>
+            </div>
+            <div style="flex:1;">
+                <div class="pill-label" id="pillCurLabel">CURRENCY</div>
+            </div>
+            <div class="cur-status" style="margin-right:6px;">
+                <div class="status-dot" id="statusDot"></div>
+            </div>
+            <svg class="pill-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5">
+                <polyline points="18 15 12 9 6 15" />
+            </svg>
+        </div>
+
+        <div class="hr-widget-body" id="currencyBody">
+            <div class="hr-widget-body-inner">
+                <div
+                    style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;margin-bottom:2px;">
+                    <span
+                        style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8e9192;text-transform:uppercase;letter-spacing:1px;">Convert
+                        prices</span>
+                    <div class="cur-status">
+                        <div class="status-dot" id="statusDot2"></div>
+                        <span id="statusText"
+                            style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#8e9192;">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="cur-price-box">
+                    <div class="cur-ngn-label">Naira price</div>
+                    <div class="cur-ngn-val">₦<span id="sampleNgn">—</span></div>
+                    <div class="cur-converted" id="convertedVal"><span class="shimmer"></span></div>
+                    <div class="cur-rate" id="rateInfo"></div>
+                </div>
+
+                <div class="cur-tabs" id="curTabs">
+                    <div class="cur-tab active" data-code="NGN" data-symbol="₦"><span class="t-flag">🇳🇬</span><span
+                            class="t-code">NGN</span></div>
+                    <div class="cur-tab" data-code="USD" data-symbol="$"><span class="t-flag">🇺🇸</span><span
+                            class="t-code">USD</span></div>
+                    <div class="cur-tab" data-code="GBP" data-symbol="£"><span class="t-flag">🇬🇧</span><span
+                            class="t-code">GBP</span></div>
+                    <div class="cur-tab" data-code="CAD" data-symbol="C$"><span class="t-flag">🇨🇦</span><span
+                            class="t-code">CAD</span></div>
+                    <div class="cur-tab" data-code="EUR" data-symbol="€"><span class="t-flag">🇪🇺</span><span
+                            class="t-code">EUR</span></div>
+                </div>
+
+                <div
+                    style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#444748;text-align:center;margin-top:10px;letter-spacing:1px;text-transform:uppercase;">
+                    Rates · open.er-api.com
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

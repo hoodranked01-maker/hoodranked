@@ -3,30 +3,40 @@
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin • Orders | Hood Ranked</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap"
+        rel="stylesheet" />
 
     <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .font-bebas {
+            font-family: 'Bebas Neue', sans-serif;
+        }
 
         .accordion-header {
             transition: all 0.3s ease;
         }
+
         .accordion-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .accordion-item.open .accordion-content {
             max-height: 1400px;
         }
+
         .status-badge {
             font-size: 0.75rem;
             padding: 2px 10px;
@@ -48,6 +58,7 @@
         }
     </script>
 </head>
+
 <body class="bg-zinc-950 text-white min-h-screen">
 
     <!-- Top Nav -->
@@ -55,9 +66,10 @@
         <div class="max-w-screen-2xl mx-auto px-6 md:px-8 py-5 flex items-center justify-between">
             <div class="flex items-center gap-6">
                 <a href="/admin/" class="font-bebas text-3xl tracking-wider">HOOD RANKED</a>
-                <span class="text-xs uppercase tracking-[2px] bg-zinc-900 px-3 py-1 rounded-full text-amber-400 hidden sm:inline">ADMIN</span>
+                <span
+                    class="text-xs uppercase tracking-[2px] bg-zinc-900 px-3 py-1 rounded-full text-amber-400 hidden sm:inline">ADMIN</span>
             </div>
-            
+
             <div class="flex items-center gap-5 text-sm">
                 <a href="{% url 'admin_orders' %}" class="font-medium text-white border-b border-white pb-1">ORDERS</a>
                 <a href="#" class="flex items-center gap-2 hover:text-amber-400 transition">
@@ -70,31 +82,36 @@
     </nav>
 
     <div class="max-w-screen-2xl mx-auto px-6 md:px-8 py-8 md:py-10">
-        
+
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
                 <h1 class="font-bebas text-5xl md:text-6xl tracking-tighter">ORDERS</h1>
-                <p class="text-zinc-400">Total: <span class="text-white font-medium">{{ orders.paginator.count }}</span></p>
+                <p class="text-zinc-400">Total: <span class="text-white font-medium">{{ orders.paginator.count }}</span>
+                </p>
             </div>
-            
+
             <!-- Search & Filter -->
             <form method="get" class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <input type="text" name="search" value="{{ search_query|default:'' }}"
-                    placeholder="Search order ID, customer..." 
+                    placeholder="Search order ID, customer..."
                     class="bg-zinc-900 border border-zinc-700 rounded-xl px-5 py-3 w-full md:w-80 focus:outline-none focus:border-white transition">
 
-                <select name="status" class="bg-zinc-900 border border-zinc-700 rounded-xl px-5 py-3 focus:outline-none">
+                <select name="status"
+                    class="bg-zinc-900 border border-zinc-700 rounded-xl px-5 py-3 focus:outline-none">
                     <option value="">All Status</option>
                     <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
-                    <option value="processing" {% if request.GET.status == 'processing' %}selected{% endif %}>Processing</option>
+                    <option value="processing" {% if request.GET.status == 'processing' %}selected{% endif %}>Processing
+                    </option>
                     <option value="shipped" {% if request.GET.status == 'shipped' %}selected{% endif %}>Shipped</option>
-                    <option value="delivered" {% if request.GET.status == 'delivered' %}selected{% endif %}>Delivered</option>
-                    <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    <option value="delivered" {% if request.GET.status == 'delivered' %}selected{% endif %}>Delivered
+                    </option>
+                    <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled
+                    </option>
                 </select>
 
                 <button type="submit"
-                        class="bg-white text-black px-8 py-3 rounded-xl font-medium hover:bg-amber-400 transition whitespace-nowrap">
+                    class="bg-white text-black px-8 py-3 rounded-xl font-medium hover:bg-amber-400 transition whitespace-nowrap">
                     Search
                 </button>
             </form>
@@ -103,10 +120,12 @@
         <!-- Orders List -->
         <div class="space-y-4">
             {% for order in orders %}
-            <div class="accordion-item bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden" data-order-id="{{ order.order_id }}">
-                
+            <div class="accordion-item bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden"
+                data-order-id="{{ order.order_id }}">
+
                 <!-- Header -->
-                <div class="accordion-header px-5 md:px-8 py-5 md:py-6 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-zinc-800/50 gap-4">
+                <div
+                    class="accordion-header px-5 md:px-8 py-5 md:py-6 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-zinc-800/50 gap-4">
                     <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 flex-1">
                         <div>
                             <span class="font-mono text-lg md:text-xl font-bold text-amber-400">{{ order.order_id }}</span>
@@ -123,7 +142,7 @@
                     <!-- Order Meta -->
                     <div class="mt-10 pt-6 border-t border-zinc-700">
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6">
-                            
+
                             <!-- Order Status -->
                             <div>
                                 <span class="text-zinc-500 block mb-1">Order Status</span>
@@ -152,27 +171,26 @@
                             <!-- Action Button -->
                             <div class="md:ml-auto md:col-span-1 col-span-full">
                                 {% if order.status != 'delivered' and order.status != 'cancelled' %}
-                                <form method="post" action="{% url 'update_order_status' order.id %}" class="inline-block">
+                                <form method="post" action="{% url 'update_order_status' order.id %}"
+                                    class="inline-block">
                                     {% csrf_token %}
-                                    
+
                                     {% if order.status == 'shipped' %}
-                                        <!-- Show "Mark as Delivered" if already shipped -->
-                                        <input type="hidden" name="status" value="delivered">
-                                        <button type="submit"
-                                                onclick="return confirm('Mark this order as Delivered?')"
-                                                class="bg-green-600 hover:bg-green-500 transition text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2">
-                                            <i class="fas fa-check-circle"></i>
-                                            Mark as Delivered
-                                        </button>
+                                    <!-- Show "Mark as Delivered" if already shipped -->
+                                    <input type="hidden" name="status" value="delivered">
+                                    <button type="submit" onclick="return confirm('Mark this order as Delivered?')"
+                                        class="bg-green-600 hover:bg-green-500 transition text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2">
+                                        <i class="fas fa-check-circle"></i>
+                                        Mark as Delivered
+                                    </button>
                                     {% else %}
-                                        <!-- Show "Mark as Shipped" otherwise -->
-                                        <input type="hidden" name="status" value="shipped">
-                                        <button type="submit"
-                                                onclick="return confirm('Mark this order as Shipped?')"
-                                                class="bg-blue-600 hover:bg-blue-500 transition text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2">
-                                            <i class="fas fa-truck"></i>
-                                            Mark as Shipped
-                                        </button>
+                                    <!-- Show "Mark as Shipped" otherwise -->
+                                    <input type="hidden" name="status" value="shipped">
+                                    <button type="submit" onclick="return confirm('Mark this order as Shipped?')"
+                                        class="bg-blue-600 hover:bg-blue-500 transition text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2">
+                                        <i class="fas fa-truck"></i>
+                                        Mark as Shipped
+                                    </button>
                                     {% endif %}
                                 </form>
                                 {% endif %}
@@ -212,11 +230,10 @@
                                 {% for item in order.items.all %}
                                 <div class="flex gap-4 bg-zinc-950 p-4 rounded-xl">
                                     <img class="w-16 h-16 bg-zinc-800 rounded-lg flex-shrink-0 object-cover"
-                                         src="{{ item.product.get_primary_image }}" 
-                                         alt="{{ item.product.name }}">
+                                        src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}">
                                     <div class="flex-1 min-w-0">
                                         <p class="font-medium truncate">{{ item.product.name }}</p>
-                                        <p class="text-sm text-zinc-400">Size: {{ item.size|default:"N/A" }} × {{ item.quantity }}</p>
+                                        <p class="text-sm text-zinc-400">Size: {{ item.variant.size }} × {{ item.quantity }}</p>
                                     </div>
                                     <div class="text-right font-medium whitespace-nowrap">
                                         ₦{{ item.price|floatformat:0 }}
@@ -233,7 +250,8 @@
                     <div class="mt-10 pt-6 border-t border-zinc-700 grid grid-cols-2 md:flex md:gap-10 text-sm">
                         <div>
                             <span class="text-zinc-500">Payment:</span><br>
-                            <span class="font-medium capitalize {% if order.payment_status == 'paid' %}text-green-400{% else %}text-amber-400{% endif %}">
+                            <span
+                                class="font-medium capitalize {% if order.payment_status == 'paid' %}text-green-400{% else %}text-amber-400{% endif %}">
                                 {{ order.get_payment_status_display }}
                             </span>
                         </div>
@@ -256,17 +274,17 @@
             {% if orders.has_other_pages %}
             <nav class="flex gap-2 flex-wrap justify-center">
                 {% if orders.has_previous %}
-                    <a href="?page={{ orders.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" 
-                       class="px-6 py-3 border border-zinc-700 hover:border-white rounded-xl transition">Previous</a>
+                <a href="?page={{ orders.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+                    class="px-6 py-3 border border-zinc-700 hover:border-white rounded-xl transition">Previous</a>
                 {% endif %}
-                
+
                 <span class="px-6 py-3 bg-zinc-900 rounded-xl">
                     Page {{ orders.number }} of {{ orders.paginator.num_pages }}
                 </span>
-                
+
                 {% if orders.has_next %}
-                    <a href="?page={{ orders.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" 
-                       class="px-6 py-3 border border-zinc-700 hover:border-white rounded-xl transition">Next</a>
+                <a href="?page={{ orders.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}"
+                    class="px-6 py-3 border border-zinc-700 hover:border-white rounded-xl transition">Next</a>
                 {% endif %}
             </nav>
             {% endif %}
@@ -285,4 +303,5 @@
         });
     </script>
 </body>
+
 </html>

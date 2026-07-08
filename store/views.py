@@ -1,5 +1,6 @@
 import os
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Look
 from products.models import Product
 
 def index(request):
@@ -20,3 +21,22 @@ def checkout(request):
     
 def thank_you(request):
     return render(request, 'store/thanks.html')
+
+def lookbook(request):
+    looks = Look.objects.filter(is_published=True)
+    return render(request, "store/lookbook.html", {"looks": looks})
+ 
+def lookbook_detail(request, slug):
+    look = get_object_or_404(Look, slug=slug, is_published=True)
+    next_look = (
+        Look.objects.filter(is_published=True, look_number__gt=look.look_number)
+        .order_by("look_number")
+        .first()
+    )
+    prev_look = (
+        Look.objects.filter(is_published=True, look_number__lt=look.look_number)
+        .order_by("-look_number")
+        .first()
+    )
+    context = {"look": look, "next_look": next_look, "prev_look": prev_look}
+    return render(request, "store/lookbook_detail.html", context)
