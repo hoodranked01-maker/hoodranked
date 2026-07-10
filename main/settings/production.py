@@ -1,4 +1,7 @@
 from .base import *
+from dotenv import load_dotenv
+
+load_dotenv()
 
 DEBUG = False
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')

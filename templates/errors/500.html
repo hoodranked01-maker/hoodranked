@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="relative min-h-screen flex items-center justify-center bg-pitch-black overflow-hidden">
+    <div class="absolute inset-0 z-0 opacity-30">
+        <img src="{% static 'hero.jpeg' %}" alt="" class="w-full h-full object-cover">
+    </div>
+
+    <div class="relative z-10 text-center p-6 max-w-2xl mx-auto">
+        <div class="mb-8">
+            <span class="font-mono text-label-caps tracking-[4px] text-outline">ERROR 500</span>
+        </div>
+
+        <h1 class="font-display text-display-2xl md:text-display-3xl text-stark-white mb-6 leading-none">
+            INTERNAL SERVER ERROR
+        </h1>
+
+        <p class="font-body text-body-lg text-on-surface-variant mb-12 max-w-md mx-auto">
+            An internal server error has occurred. Please try again later.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'products:store' %}"
+                class="font-body font-bold bg-stark-white text-pitch-black px-10 py-5 text-button uppercase tracking-widest hover:bg-outline transition-all">
+                Browse Shop
+            </a>
+            <a href="/"
+                class="font-body font-bold border border-stark-white text-stark-white px-10 py-5 text-button uppercase tracking-widest hover:bg-stark-white hover:text-pitch-black transition-all">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
