@@ -22,8 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.hoodranked.updateCartCount = updateCartCount;
  
   if (!header) return;
-  
-  const header = document.querySelector("[data-site-header]");
+
   const drawer = document.querySelector("[data-mobile-menu]");
   const backdrop = document.querySelector("[data-mobile-menu-backdrop]");
   const toggles = document.querySelectorAll("[data-mobile-menu-toggle]");

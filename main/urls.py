@@ -12,6 +12,8 @@ urlpatterns = [
     path('', include('products.urls')),
     path('', include('orders.urls')),
 ]
+handler400 = 'store.views.bad_request'
+handler403 = 'store.views.permission_denied'
 handler404 = 'store.views.page_not_found'
 handler500 = 'store.views.internal_server_error'
 
