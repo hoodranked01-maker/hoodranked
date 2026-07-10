@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = os.getenv('DEBUG')
+DEBUG = False
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 ALLOWED_HOSTS = ['hoodranked.store', 'www.hoodranked.store', '*.ngrok-free.dev']
