@@ -12,6 +12,9 @@ urlpatterns = [
     path('', include('products.urls')),
     path('', include('orders.urls')),
 ]
+handler404 = 'store.views.page_not_found'
+handler500 = 'store.views.internal_server_error'
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
