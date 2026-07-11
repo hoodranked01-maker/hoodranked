@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Shipping &amp; Returns | HOODRANKED{% endblock %}
+{% block meta_description %}Delivery times, tracking, and how to return or exchange a HOODRANKED order.{% endblock %}
+
+{% block content %}
+
+{% include "partials/legal_header.html" with legal_title="SHIPPING & RETURNS" legal_updated="July 2026" %}
+
+<section class="px-margin-mobile md:px-margin-desktop py-section-gap max-w-3xl mx-auto space-y-14">
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">PROCESSING TIMES</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            Orders are processed within 1–3 business days of payment confirmation. During major drops, processing can
+            take
+            slightly longer — we'll flag this on the product page if it applies.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">DELIVERY ESTIMATES</h2>
+        <div class="grid sm:grid-cols-2 gap-6">
+            <div class="bg-surface-gray border border-muted-steel p-6">
+                <p class="font-mono text-label-caps text-outline mb-2">WITHIN NIGERIA</p>
+                <p class="font-display text-headline-md text-stark-white mb-2">3–7 DAYS</p>
+                <p class="font-body text-body-md text-on-surface-variant">Lagos deliveries are usually fastest; other
+                    states may take a little longer.</p>
+            </div>
+            <div class="bg-surface-gray border border-muted-steel p-6">
+                <p class="font-mono text-label-caps text-outline mb-2">INTERNATIONAL</p>
+                <p class="font-display text-headline-md text-stark-white mb-2">1–2 WEEKS</p>
+                <p class="font-body text-body-md text-on-surface-variant">Customs processing in your country can
+                    occasionally add extra time.</p>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">SHIPPING COSTS</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            Shipping costs are calculated at checkout based on your location and order weight. Any promotional
+            free-shipping
+            thresholds will be shown in your cart before you pay.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">ORDER TRACKING</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            You'll get a tracking link by email once your order ships. If it hasn't arrived after the estimate above,
+            reach
+            out and we'll chase it with the courier on your behalf.
+        </p>
+    </div>
+
+    <div class="pt-10 border-t border-muted-steel">
+        <h2 class="font-display text-headline-md text-stark-white mb-6">RETURNS &amp; EXCHANGES</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed mb-6">
+            Not feeling the fit? You can request a return or exchange within <span class="font-bold text-stark-white">7
+                days</span>
+            of delivery, as long as the item is:
+        </p>
+        <ul class="space-y-3 mb-6">
+            <li class="font-body text-body-md text-on-surface-variant leading-relaxed flex gap-3">
+                <span class="text-stark-white">—</span> Unworn, unwashed, and in its original condition
+            </li>
+            <li class="font-body text-body-md text-on-surface-variant leading-relaxed flex gap-3">
+                <span class="text-stark-white">—</span> Still carrying its original tags
+            </li>
+            <li class="font-body text-body-md text-on-surface-variant leading-relaxed flex gap-3">
+                <span class="text-stark-white">—</span> Accompanied by your order number or receipt
+            </li>
+        </ul>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            <span class="font-bold text-stark-white">Limited edition and final sale items are not eligible for
+                return</span>
+            unless they arrive faulty or damaged — this will be clearly marked on the product page.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">HOW TO START A RETURN</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            Email <a href="mailto:hoodranked2@gmail.com"
+                class="text-stark-white hover:underline underline-offset-4">hoodranked2@gmail.com</a>
+            with your order number and the reason for the return, and we'll send you instructions on where to send it
+            back.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">REFUNDS</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            Once we receive and inspect your return, we'll process your refund to your original payment method within
+            5–10 business days. Original shipping costs aren't refundable unless the item arrived faulty.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">DAMAGED OR INCORRECT ITEMS</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            If something arrives damaged or isn't what you ordered, email us with a photo within 48 hours of delivery
+            and
+            we'll sort a replacement or full refund at no extra cost to you.
+        </p>
+    </div>
+
+    <div class="pt-10 border-t border-muted-steel">
+        <h2 class="font-display text-headline-md text-stark-white mb-4">CONTACT US</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            Any other questions about your order? Email
+            <a href="mailto:hoodranked2@gmail.com"
+                class="text-stark-white hover:underline underline-offset-4">hoodranked2@gmail.com</a>
+            or visit our <a href="{% url 'contact' %}"
+                class="text-stark-white hover:underline underline-offset-4">Contact page</a>.
+        </p>
+    </div>
+
+</section>
+
+{% endblock %}

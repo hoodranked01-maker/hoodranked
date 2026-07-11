@@ -1,9 +1,18 @@
 from django.db import models
+from django.conf import settings
 from products.models import Product, Variant
 import random
 import string
 
 class Order(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='orders'
+    )
+    
     order_id = models.CharField(max_length=50, unique=True, editable=True, null=True, blank=True)
     reference = models.CharField(max_length=100, unique=True, editable=True, null=True, blank=True)
 

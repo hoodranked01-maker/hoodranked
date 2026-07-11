@@ -10,7 +10,7 @@
     <title>{{ product.name }} – Hood Ranked</title>
     <meta name="description" content="{{ product.description|truncatewords:30 }}" />
     
-    <link rel="icon" href="{% static 'hrlogowhite.jpg' %}" type="image/png" />
+    <link rel="icon" href="{% static 'hrlogowhite.png' %}" type="image/png" />
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
@@ -301,7 +301,7 @@
                 </svg>
             </button>
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[240px] md:w-[120px] -my-3" src="{% static 'hrlogowhite.jpg' %}" alt="Hood Ranked Logo">
+                <img class="w-[240px] md:w-[120px] -my-3" src="{% static 'hrlogowhite.png' %}" alt="Hood Ranked Logo">
             </a>
             <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
                 <i class="fas fa-shopping-bag mr-2"></i>

@@ -35,9 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Smooth Header Shrink/Blur Scroll Effect
   const handleScroll = () => {
     if (window.scrollY > 30) {
-      header.classList.add("bg-pitch-black/90", "backdrop-blur-md", "py-1");
+      header.classList.add("bg-stark-white/90", "backdrop-blur-md", "py-1");
     } else {
-      header.classList.remove("bg-pitch-black/90", "backdrop-blur-md", "py-1");
+      header.classList.remove("bg-stark-white/90", "backdrop-blur-md", "py-1");
     }
   };
   window.addEventListener("scroll", handleScroll, { passive: true });

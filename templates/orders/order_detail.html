@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Order {{ order.order_id }} | HOODRANKED{% endblock %}
+
+{% block content %}
+
+<section
+    class="px-margin-mobile md:px-margin-desktop pt-20 pb-12 max-w-container-max mx-auto border-b border-muted-steel">
+    <a href="{% url 'orders:order_history' %}"
+        class="font-mono text-label-caps text-outline hover:text-stark-white transition-colors inline-flex items-center gap-2 mb-8">
+        <span class="material-symbols-outlined text-base">arrow_back</span> ORDER HISTORY
+    </a>
+    <span class="font-mono text-label-caps text-outline block mb-4">ORDER {{ order.order_id }}</span>
+    <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none mb-4">
+        PLACED {{ order.created_at|date:"d M Y" }}
+    </h1>
+    <p class="font-mono text-label-caps text-outline">REF — {{ order.reference }}</p>
+</section>
+
+<section class="px-margin-mobile md:px-margin-desktop py-16 max-w-container-max mx-auto">
+    <div class="grid md:grid-cols-3 gap-16">
+
+        {# ---------- Main column ---------- #}
+        <div class="md:col-span-2 space-y-16">
+
+            {# Status timeline #}
+            <div>
+                <h2 class="font-display text-headline-md text-stark-white mb-8">STATUS</h2>
+
+                {% if order.status == 'cancelled' or order.status == 'failed' %}
+                <div class="border border-error px-6 py-5 flex items-center gap-4">
+                    <span class="material-symbols-outlined text-error">error</span>
+                    <p class="font-body font-bold text-body-md text-error uppercase tracking-wide">
+                        {{ order.get_status_display }}
+                    </p>
+                </div>
+                {% else %}
+                <div class="flex items-start">
+                    {% for step_label, step_key in order_status_steps %}
+                    <div class="flex-1 flex flex-col items-center text-center relative">
+                        {% if not forloop.first %}
+                        <div
+                            class="absolute top-3 h-px w-full right-1/2
+                              {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
+                        </div>
+                        {% endif %}
+                        <div
+                            class="w-6 h-6 rounded-full flex items-center justify-center z-10
+                            {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-surface-gray border border-muted-steel{% endif %}">
+                            {% if forloop.counter0 <= order_status_index %} <span
+                                class="material-symbols-outlined text-pitch-black text-sm">check</span>
+                                {% endif %}
+                        </div>
+                        <p
+                            class="font-mono text-[10px] uppercase tracking-widest mt-3
+                          {% if forloop.counter0 <= order_status_index %}text-stark-white{% else %}text-outline{% endif %}">
+                            {{ step_label }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            {# Line items #}
+            <div>
+                <h2 class="font-display text-headline-md text-stark-white mb-8">ITEMS</h2>
+
+                {% if order_items %}
+                <div class="flex flex-col divide-y divide-muted-steel border-t border-b border-muted-steel">
+                    {% for item in order_items %}
+                    <div class="flex items-center gap-6 py-6">
+                        {% if item.product.get_primary_image %}
+                        <img src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}"
+                            class="w-20 h-24 object-cover bg-surface-gray flex-shrink-0">
+                        {% endif %}
+                        <div class="flex-1 min-w-0">
+                            <p class="font-body font-bold text-body-md text-stark-white truncate">{{ item.product.name }}</p>
+                            <p class="font-mono text-label-caps text-outline mt-1">{{ item.variant.size }} × {{ item.quantity }}</p>
+                        </div>
+                        <p class="font-mono text-label-caps text-stark-white flex-shrink-0">
+                            ₦{{ item.price|intcomma }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="font-body text-body-md text-outline">Item details aren't available for this order.</p>
+                {% endif %}
+            </div>
+
+            {# Shipping address #}
+            <div>
+                <h2 class="font-display text-headline-md text-stark-white mb-8">SHIPPING TO</h2>
+                <div class="bg-surface-gray border border-muted-steel p-8 space-y-2">
+                    <p class="font-body font-bold text-body-md text-stark-white">{{ order.name }}</p>
+                    <p class="font-body text-body-md text-on-surface-variant">{{ order.address }}</p>
+                    <p class="font-body text-body-md text-on-surface-variant">
+                        {{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}{% if order.postal_code %} {{ order.postal_code }}{% endif %}
+                    </p>
+                    <div class="pt-4 mt-4 border-t border-muted-steel flex flex-col sm:flex-row sm:gap-8 gap-1">
+                        <p class="font-mono text-label-caps text-outline">{{ order.email }}</p>
+                        <p class="font-mono text-label-caps text-outline">{{ order.phone }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {# ---------- Summary column ---------- #}
+        <div>
+            <div class="bg-surface-gray border border-muted-steel p-8 sticky top-24">
+                <h2 class="font-display text-headline-md text-stark-white mb-8">SUMMARY</h2>
+
+                <div class="space-y-4 mb-8">
+                    <div class="flex justify-between">
+                        <span class="font-mono text-label-caps text-outline">Payment</span>
+                        <span
+                            class="font-mono text-label-caps
+                        {% if order.payment_status == 'paid' %}text-stark-white{% elif order.payment_status == 'failed' %}text-error{% else %}text-outline{% endif %}">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-mono text-label-caps text-outline">Service Fee</span>
+                        <span class="font-mono text-label-caps text-stark-white">₦{{ order.service_fee|intcomma }}</span>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-muted-steel flex justify-between items-baseline mb-10">
+                    <span class="font-body font-bold text-body-md text-stark-white uppercase tracking-wide">Total</span>
+                    <span class="font-display text-headline-md text-stark-white">₦{{ order.total_price|default:0|intcomma }}</span>
+                </div>
+
+                <a href="{% url 'store:contact' %}"
+                    class="block text-center font-body font-bold border border-stark-white text-stark-white text-button uppercase tracking-widest px-8 py-4 hover:bg-stark-white hover:text-pitch-black transition-all-custom active:scale-95">
+                    Need Help?
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

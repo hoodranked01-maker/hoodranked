@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/orders/', admin_orders, name='admin_orders'),
     path('admin/orders/<int:order_id>/update-status/', update_order_status, name='update_order_status'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('', include('store.urls')),
     path('', include('products.urls')),
     path('', include('orders.urls')),

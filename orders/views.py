@@ -11,6 +11,7 @@ from django.db.models import Q
 import requests
 import logging
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,10 @@ def process_checkout(request):
         items_total = sum(item['price'] * item['quantity'] for item in cart_items)
         total = items_total + service_fee
 
+        user = request.user if request.user.is_authenticated else None
+
         order = Order.objects.create(
+            user=user,
             name=data.get('full_name'),
             email=data.get('email'),
             phone=data.get('phone'),
@@ -61,7 +65,7 @@ def process_checkout(request):
         payload = {
             "email": order.email,
             "amount": int(total * 100),
-            "split_code": "SPL_nhsUhQOZ0k", 
+            # "split_code": "SPL_nhsUhQOZ0k", 
             "reference": order.reference,
             "callback_url": request.build_absolute_uri(f"/payment/success/"),
             "metadata": {
@@ -197,3 +201,86 @@ def update_order_status(request, order_id):
             messages.success(request, f'Order {order.order_id} marked as {new_status}.')
     
     return redirect('admin_orders')
+
+ORDER_STATUS_STEPS = [
+    ("Pending", "pending"),
+    ("Processing", "processing"),
+    ("Shipped", "shipped"),
+    ("Delivered", "delivered"),
+]
+_STATUS_KEYS = [key for _, key in ORDER_STATUS_STEPS]
+ 
+ 
+@login_required
+def order_history(request):
+    orders_qs = Order.objects.filter(user=request.user)
+ 
+    paginator = Paginator(orders_qs, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+ 
+    context = {
+        "orders": page_obj,
+        "page_obj": page_obj,
+        "is_paginated": page_obj.has_other_pages(),
+    }
+    return render(request, "orders/order_history.html", context)
+ 
+ 
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id, user=request.user)
+ 
+    # Line items: this assumes an OrderItem-style model related to Order via
+    # `order.items`. Swap `order.items.all()` for whatever your actual related
+    # name is — if there's no such model yet, this just renders the
+    # "item details aren't available" fallback in the template.
+    order_items = order.items.all() if hasattr(order, "items") else None
+ 
+    order_status_index = (
+        _STATUS_KEYS.index(order.status) if order.status in _STATUS_KEYS else -1
+    )
+ 
+    context = {
+        "order": order,
+        "order_items": order_items,
+        "order_status_steps": ORDER_STATUS_STEPS,
+        "order_status_index": order_status_index,
+    }
+    return render(request, "orders/order_detail.html", context)
+
+def track_order(request):
+    """
+    Guest-accessible order lookup — no login required. Looks up by order_id
+    + email together so a leaked/guessed order_id alone can't expose someone
+    else's shipping address.
+    """
+    order = None
+    error = None
+    submitted_order_id = request.GET.get("order_id", "").strip()
+    submitted_email = request.GET.get("email", "").strip()
+ 
+    if submitted_order_id and submitted_email:
+        try:
+            order = Order.objects.get(
+                order_id__iexact=submitted_order_id,
+                email__iexact=submitted_email,
+            )
+        except Order.DoesNotExist:
+            error = "We couldn't find an order matching that ID and email. Double-check both and try again."
+ 
+    context = {
+        "order": order,
+        "error": error,
+        "submitted_order_id": submitted_order_id,
+        "submitted_email": submitted_email,
+    }
+ 
+    if order:
+        order_status_index = (
+            _STATUS_KEYS.index(order.status) if order.status in _STATUS_KEYS else -1
+        )
+        context["order_status_steps"] = ORDER_STATUS_STEPS
+        context["order_status_index"] = order_status_index
+ 
+    return render(request, "orders/track_order.html", context)

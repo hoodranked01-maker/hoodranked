@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Order History | HOODRANKED{% endblock %}
+{% block meta_description %}View your past HOODRANKED orders and track their status.{% endblock %}
+
+{% block content %}
+
+<section
+    class="px-margin-mobile md:px-margin-desktop pt-20 pb-12 max-w-container-max mx-auto border-b border-muted-steel">
+    <span class="font-mono text-label-caps text-outline block mb-4">YOUR ACCOUNT</span>
+    <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none">
+        ORDER HISTORY
+    </h1>
+</section>
+
+<section class="px-margin-mobile md:px-margin-desktop py-16 max-w-container-max mx-auto">
+
+    {% if orders %}
+    <div class="flex flex-col divide-y divide-muted-steel border-t border-b border-muted-steel">
+        {% for order in orders %}
+        <a href="{% url 'orders:order_detail' order.order_id %}"
+            class="group flex flex-col md:flex-row md:items-center justify-between gap-4 py-8 hover:bg-surface-gray transition-colors px-2 -mx-2">
+
+            {# Order id + date #}
+            <div class="flex-1 min-w-0">
+                <p class="font-mono text-label-caps text-outline mb-1">{{ order.created_at|date:"d M Y" }}</p>
+                <p class="font-display text-headline-md text-stark-white tracking-wide truncate">
+                    {{ order.order_id }}
+                </p>
+            </div>
+
+            {# Status badges #}
+            <div class="flex items-center gap-3 flex-shrink-0">
+                {% if order.status == 'delivered' %}
+                <span
+                    class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-stark-white text-stark-white">Delivered</span>
+                {% elif order.status == 'shipped' %}
+                <span
+                    class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-outline text-outline">Shipped</span>
+                {% elif order.status == 'processing' %}
+                <span
+                    class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-outline text-outline">Processing</span>
+                {% elif order.status == 'cancelled' or order.status == 'failed' %}
+                <span
+                    class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-error text-error">{{ order.get_status_display }}</span>
+                {% else %}
+                <span
+                    class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-muted-steel text-outline">Pending</span>
+                {% endif %}
+
+                {% if order.payment_status != 'paid' %}
+                <span class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 bg-surface-gray text-outline">
+                    {{ order.get_payment_status_display }}
+                </span>
+                {% endif %}
+            </div>
+
+            {# Total #}
+            <div class="flex-shrink-0 text-right md:w-40">
+                <p class="font-mono text-label-caps text-outline mb-1">Total</p>
+                <p class="font-body font-bold text-body-md text-stark-white">
+                    ₦{{ order.total_price|default:0|intcomma }}
+                </p>
+            </div>
+
+            <span
+                class="material-symbols-outlined text-outline group-hover:text-stark-white group-hover:translate-x-1 transition-all hidden md:block">
+                arrow_forward
+            </span>
+        </a>
+        {% endfor %}
+    </div>
+
+    {# Pagination #}
+    {% if is_paginated %}
+    <div class="flex justify-center items-center gap-6 mt-16">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+            class="font-mono text-label-caps text-stark-white hover:text-outline transition-colors">&larr; PREV</a>
+        {% endif %}
+        <span class="font-mono text-label-caps text-outline">
+            PAGE {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"
+            class="font-mono text-label-caps text-stark-white hover:text-outline transition-colors">NEXT &rarr;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-24">
+        <span class="material-symbols-outlined text-6xl text-outline mb-6 block">inventory_2</span>
+        <p class="font-display text-headline-md text-stark-white mb-4">NO ORDERS YET</p>
+        <p class="font-body text-body-md text-outline mb-10">Once you place an order, it'll show up here.</p>
+        <a href="{% url 'products:store' %}"
+            class="inline-block font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest px-12 py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+            Start Shopping
+        </a>
+    </div>
+    {% endif %}
+
+</section>
+
+{% endblock %}
