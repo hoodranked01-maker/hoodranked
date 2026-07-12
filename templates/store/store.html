@@ -94,9 +94,13 @@ hits different.{% endblock %}
         </div>
     </div>
 
-    {# Product grid #}
+    <!-- Single unified grid wrapper matching your exact responsive column counts -->
+    <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+        <!-- 1. JavaScript will instantly inject skeletons here on load -->
+    </div>
+    
     {% if products %}
-    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+    <div id="real-products" class="hidden">
         {% for product in products %}
         {% if product.is_sold_out %}
         <div class="product-card group relative bg-surface-gray overflow-hidden cursor-not-allowed opacity-60">
@@ -114,10 +118,8 @@ hits different.{% endblock %}
                     {% endif %}
                 </div>
                 <div class="py-4 px-4">
-                    <h3 class="font-body text-body-md text-stark-white mb-1 group-hover:underline underline-offset-4">
-                        {{product.name }}</h3>
-                    <p class="font-mono text-label-caps text-outline" data-ngn-price="{{ product.price }}">
-                        ₦{{product.price|intcomma }}</p>
+                    <h3 class="font-body text-body-md text-stark-white mb-1 group-hover:underline underline-offset-4">{{ product.name }}</h3>
+                    <p class="font-mono text-label-caps text-outline" data-ngn-price="{{ product.price }}">₦{{ product.price|intcomma }}</p>
                 </div>
                 {% if product.is_sold_out %}
         </div>{% else %}</a>{% endif %}
@@ -128,6 +130,7 @@ hits different.{% endblock %}
         <p class="font-body text-body-md text-outline">No available products right now — check back soon.</p>
     </div>
     {% endif %}
+
 
 </section>
 

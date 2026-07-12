@@ -63,7 +63,7 @@
             {# Status timeline #}
             <div>
                 <h3 class="font-display text-headline-md text-stark-white mb-8">STATUS</h3>
-
+            
                 {% if order.status == 'cancelled' or order.status == 'failed' %}
                 <div class="border border-error px-6 py-5 flex items-center gap-4">
                     <span class="material-symbols-outlined text-error">error</span>
@@ -72,32 +72,46 @@
                     </p>
                 </div>
                 {% else %}
-                <div class="flex items-start">
+                <!-- Responsive Container: Stacked on mobile, row on desktop -->
+                <div class="flex flex-col md:flex-row items-stretch md:items-start gap-6 md:gap-0">
                     {% for step_label, step_key in order_status_steps %}
-                    <div class="flex-1 flex flex-col items-center text-center relative">
+                    <!-- Responsive Step: Left-aligned on mobile, centered on desktop -->
+                    <div
+                        class="flex-1 flex flex-row md:flex-col items-center md:items-center text-left md:text-center relative gap-4 md:gap-0">
+            
+                        <!-- Connecting Line -->
                         {% if not forloop.first %}
-                        <div
-                            class="absolute top-3 h-px w-full right-1/2
-                              {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
+                        <!-- Vertical line for mobile -->
+                        <div class="absolute left-3 bottom-1/2 w-px h-full -translate-y-1/2 md:hidden 
+                          {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
+                        </div>
+                        <!-- Horizontal line for desktop -->
+                        <div class="absolute top-3 h-px w-full right-1/2 hidden md:block 
+                          {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
                         </div>
                         {% endif %}
+            
+                        <!-- Step Indicator Circle -->
                         <div
-                            class="w-6 h-6 rounded-full flex items-center justify-center z-10
-                            {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-surface-gray border border-muted-steel{% endif %}">
+                            class="w-6 h-6 rounded-full flex items-center justify-center z-10 shrink-0
+                        {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-surface-gray border border-muted-steel{% endif %}">
                             {% if forloop.counter0 <= order_status_index %} <span
                                 class="material-symbols-outlined text-pitch-black text-sm">check</span>
                                 {% endif %}
                         </div>
-                        <p
-                            class="font-mono text-[10px] uppercase tracking-widest mt-3
-                          {% if forloop.counter0 <= order_status_index %}text-stark-white{% else %}text-outline{% endif %}">
+            
+                        <!-- Step Label Text -->
+                        <p class="font-mono text-[10px] uppercase tracking-widest md:mt-3 
+                        {% if forloop.counter0 <= order_status_index %}text-stark-white{% else %}text-outline{% endif %}">
                             {{ step_label }}
                         </p>
+            
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
             </div>
+
 
             <div>
                 <h2 class="font-display text-headline-md text-stark-white mb-8">ITEMS</h2>
@@ -111,7 +125,7 @@
                             class="w-20 h-24 object-cover bg-surface-gray flex-shrink-0">
                         {% endif %}
                         <div class="flex-1 min-w-0">
-                            <p class="font-body font-bold text-body-md text-stark-white truncate">{{ item.product.name }}</p>
+                            <p class="font-body font-bold text-body-md text-stark-white max-w-[180px]">{{ item.product.name }}</p>
                             <p class="font-mono text-label-caps text-outline mt-1">Size: {{ item.variant.size }} × {{ item.quantity }}</p>
                         </div>
                         <p class="font-mono text-label-caps text-stark-white flex-shrink-0">

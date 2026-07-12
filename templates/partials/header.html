@@ -93,14 +93,14 @@
         <a href="{% url 'products:store' %}" data-mobile-link
             class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'store' %}text-pitch-black{% else %}text-outline{% endif %}">Shop</a>
         <a href="{% url 'store:lookbook' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'lookbook' %}text-stark-white{% else %}text-outline{% endif %}">Lookbook</a>
+            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'lookbook' %}text-pitch-black{% else %}text-outline{% endif %}">Lookbook</a>
         <!-- Added missing Contact link to mobile drawer view -->
         <a href="{% url 'store:contact' %}" data-mobile-link
-        class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'contact' %}text-stark-white{% else %}text-outline{% endif %}">Contact</a>
+        class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'contact' %}text-pitch-black{% else %}text-outline{% endif %}">Contact</a>
         <a href="{% url 'users:profile' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'profile' %}text-stark-white{% else %}text-outline{% endif %}">Account</a>
+            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'profile' %}text-pitch-black{% else %}text-outline{% endif %}">Account</a>
         <a href="{% url 'orders:track_order' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'track_order' %}text-stark-white{% else %}text-outline{% endif %}">Track an order</a>
+            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'track_order' %}text-pitch-black{% else %}text-outline{% endif %}">Track an order</a>
     </div>
 
     {# Footer Tagline #}
