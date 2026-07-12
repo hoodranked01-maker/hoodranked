@@ -1,976 +1,328 @@
+{% extends "base.html" %}
 {% load static %}
 {% load humanize %}
 
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+{% block title %}{{ product.name }} | HOODRANKED{% endblock %}
+{% block meta_description %}{{ product.description|truncatewords:30 }}{% endblock %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ product.name }} – Hood Ranked</title>
-    <meta name="description" content="{{ product.description|truncatewords:30 }}" />
-    
-    <link rel="icon" href="{% static 'hrlogowhite.png' %}" type="image/png" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: { 
-                    fontFamily: { 
-                        bebas: ['Bebas Neue', 'sans-serif'],
-                        Poppins: ['Poppins', 'sans-serif'],
-                    } 
-                } 
-            }
-        }
-    </script>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/store-widgets.css' %}">
+<style>
+    .main-image {
+        transition: transform 0.6s ease;
+    }
 
-    <style>
-        /* ── Page styles ── */
-        .thumbnail:hover { border-color: black; }
-        .main-image { transition: transform 0.6s ease; }
-        .main-image:hover { transform: scale(1.03); }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
+    .main-image:hover {
+        transform: scale(1.03);
+    }
 
+    .thumbnail {
+        transition: border-color 0.2s ease;
+    }
+
+    .thumbnail.active,
+    .thumbnail:hover {
+        border-color: #ffffff;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    #cart-toast {
+        position: fixed;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: #ffffff;
+        color: #000000;
+        padding: 14px 28px;
+        z-index: 70;
+        opacity: 0;
+        transition: all 0.4s ease;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+
+    #cart-toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 639px) {
         #cart-toast {
-            position: fixed;
-            bottom: 90px; /* sits above widgets */
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: black;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 8px;
-            z-index: 10000;
-            opacity: 0;
-            transition: all 0.4s ease;
-            font-weight: 500;
-            font-size: 14px;
-            white-space: nowrap;
-            pointer-events: none;
+            bottom: 80px;
         }
-        #cart-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+    }
+</style>
+{% endblock %}
 
-        /* ══════════════════════════════════
-           SHARED WIDGET BASE
-        ══════════════════════════════════ */
-        .hr-widget {
-            position: fixed;
-            bottom: 20px;
-            z-index: 9999;
-            font-family: 'Poppins', sans-serif;
-        }
-        .hr-widget-inner {
-            background: #111;
-            color: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
-            overflow: hidden;
-            width: 272px;
-        }
+{% block content %}
 
-        .hr-widget-pill {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-            min-height: 52px;
-        }
-        .hr-widget-pill:hover { background: rgba(255,255,255,0.05); }
-        .pill-icon {
-            width: 32px; height: 32px;
-            background: #fff; color: #000;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
-        .pill-label {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 14px; letter-spacing: 1.5px;
-            flex: 1; overflow: hidden;
-            white-space: nowrap; text-overflow: ellipsis;
-        }
-        .pill-chevron { color: #555; transition: transform 0.3s; flex-shrink: 0; }
-        .hr-widget.expanded .pill-chevron { transform: rotate(180deg); }
+<main class="px-margin-mobile md:px-margin-desktop py-12 md:py-16 max-w-container-max mx-auto">
 
-        .hr-widget-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .hr-widget-body-inner {
-            padding: 0 16px 16px;
-            border-top: 1px solid #1e1e1e;
-        }
+    <nav class="font-mono text-label-caps text-outline mb-10">
+        <a href="{% url 'store:index' %}" class="hover:text-stark-white transition-colors">Home</a> /
+        <a href="{% url 'products:store' %}" class="hover:text-stark-white transition-colors">Shop</a> /
+        <span class="text-stark-white">{{ product.name }}</span>
+    </nav>
 
-        /* ── Music player ── */
-        #musicWidget { left: 20px; }
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
 
-        .vinyl {
-            width: 68px; height: 68px; border-radius: 50%;
-            background: radial-gradient(circle at center, #444 0%, #111 28%, #222 42%, #111 48%, #1a1a1a 65%, #0a0a0a 100%);
-            border: 1.5px solid #333; position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.6); flex-shrink: 0;
-        }
-        .vinyl::after {
-            content: ''; position: absolute;
-            top: 50%; left: 50%; transform: translate(-50%,-50%);
-            width: 11px; height: 11px;
-            background: #fff; border-radius: 50%; border: 2px solid #111;
-        }
-        .vinyl.spinning { animation: vinylSpin 3s linear infinite; }
-        @keyframes vinylSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-
-        .track-meta { flex: 1; min-width: 0; }
-        .track-title {
-            font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.5px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .track-artist { font-size: 10px; color: #666; margin-top: 1px; }
-
-        .progress-area { margin: 12px 0 4px; cursor: pointer; }
-        .progress-track { height: 2px; background: #2a2a2a; border-radius: 4px; }
-        .progress-fill {
-            height: 100%; background: #fff; border-radius: 4px;
-            transition: width 0.5s linear; position: relative;
-        }
-        .progress-fill::after {
-            content: ''; position: absolute; right: -4px; top: -4px;
-            width: 8px; height: 8px; background: #fff; border-radius: 50%;
-            opacity: 0; transition: opacity 0.2s;
-        }
-        .progress-area:hover .progress-fill::after { opacity: 1; }
-        .time-row { display: flex; justify-content: space-between; font-size: 9px; color: #444; margin-top: 3px; }
-
-        .player-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
-        .p-btn {
-            background: none; border: none; color: #666; cursor: pointer;
-            width: 30px; height: 30px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            transition: color 0.2s, background 0.2s;
-        }
-        .p-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
-        .p-btn.p-play { width: 38px; height: 38px; background: #fff; color: #000; }
-        .p-btn.p-play:hover { background: #e0e0e0; }
-        .p-btn.p-active { color: #fff; }
-
-        .vol-row {
-            display: flex; align-items: center; gap: 8px;
-            margin-top: 10px; padding-top: 10px; border-top: 1px solid #1e1e1e;
-        }
-        .vol-row svg { color: #444; flex-shrink: 0; }
-        input[type=range] {
-            -webkit-appearance: none; flex: 1; height: 2px;
-            border-radius: 4px; background: #2a2a2a; cursor: pointer; outline: none;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 10px; height: 10px;
-            background: #fff; border-radius: 50%;
-        }
-
-        .playing-bars { display: none; align-items: flex-end; gap: 2px; height: 14px; }
-        .playing-bars span {
-            display: block; width: 3px; background: #fff; border-radius: 2px;
-            animation: barAnim 0.8s ease infinite alternate;
-        }
-        .playing-bars span:nth-child(2) { animation-delay: 0.2s; }
-        .playing-bars span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes barAnim { from{height:3px} to{height:13px} }
-        .is-playing .playing-bars { display: flex; }
-        .is-playing .pill-track-name { display: none; }
-
-        /* ── Currency widget ── */
-        #currencyWidget { right: 20px; }
-
-        .cur-price-box { background: #1a1a1a; border-radius: 10px; padding: 12px; margin: 10px 0; }
-        .cur-ngn-label { font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
-        .cur-ngn-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
-        .cur-converted { font-family: 'Bebas Neue', sans-serif; font-size: 17px; color: #aaa; margin-top: 3px; min-height: 22px; }
-        .cur-rate { font-size: 9px; color: #333; margin-top: 3px; }
-
-        .cur-tabs { display: flex; gap: 4px; }
-        .cur-tab {
-            flex: 1; border: 1px solid #222; border-radius: 8px;
-            padding: 6px 2px; text-align: center; cursor: pointer;
-            transition: all 0.2s; background: #1a1a1a;
-        }
-        .cur-tab:hover { border-color: #444; }
-        .cur-tab.active { background: #fff; color: #000; border-color: #fff; }
-        .cur-tab .t-flag { font-size: 13px; display: block; }
-        .cur-tab .t-code {
-            font-family: 'Bebas Neue', sans-serif; font-size: 10px;
-            letter-spacing: 0.5px; display: block; margin-top: 1px;
-        }
-        .cur-tab.active .t-code { color: #000; }
-
-        .cur-status { display: flex; align-items: center; gap: 4px; }
-        .status-dot { width: 5px; height: 5px; border-radius: 50%; background: #444; flex-shrink: 0; }
-        .status-dot.live { background: #4ade80; animation: statusPulse 2s infinite; }
-        @keyframes statusPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-        .shimmer {
-            display: inline-block; width: 60px; height: 10px;
-            background: linear-gradient(90deg, #222 25%, #2e2e2e 50%, #222 75%);
-            background-size: 200% 100%; animation: shimmerAnim 1.2s infinite;
-            border-radius: 4px; vertical-align: middle;
-        }
-        @keyframes shimmerAnim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-        /* ══════════════════════════════════
-           MOBILE — icon-only pills, no overlap
-        ══════════════════════════════════ */
-        @media (max-width: 639px) {
-            .hr-widget { bottom: 16px; }
-            .hr-widget-inner {
-                width: 52px;
-                border-radius: 26px;
-                transition: width 0.35s cubic-bezier(0.16,1,0.3,1),
-                            border-radius 0.35s ease;
-            }
-            .hr-widget.expanded .hr-widget-inner {
-                width: calc(100vw - 40px);
-                max-width: 300px;
-                border-radius: 16px;
-            }
-            #musicWidget    { left: 16px; right: auto; }
-            #currencyWidget { right: 16px; left: auto; }
-            #currencyWidget.expanded .hr-widget-inner {
-                margin-left: auto;
-                margin-right: 0;
-            }
-            /* Hide text in collapsed mobile state */
-            .hr-widget:not(.expanded) .pill-label,
-            .hr-widget:not(.expanded) .pill-chevron,
-            .hr-widget:not(.expanded) .cur-status { display: none; }
-            .hr-widget:not(.expanded) .hr-widget-pill { justify-content: center; padding: 10px; gap: 0; }
-            /* Restore when expanded */
-            .hr-widget.expanded .pill-label  { display: flex; }
-            .hr-widget.expanded .pill-chevron { display: flex; }
-            .hr-widget.expanded .cur-status  { display: flex; }
-
-            /* Toast above widgets on mobile */
-            #cart-toast { bottom: 80px; }
-        }
-    @keyframes marquee {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-    </style>
-</head>
-
-<body class="bg-white text-black font-Poppins antialiased">
-
-    <!-- ════════ HEADER ════════ -->
-    <div class="overflow-hidden bg-black text-white py-2 border-b border-gray-800">
-        <div class="flex whitespace-nowrap" style="animation: marquee 20s linear infinite;">
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-        </div>
-    </div>
-    <header class="sticky top-0 z-50 bg-white text-black backdrop-blur-sm border-b border-gray-800">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="hidden md:flex space-x-8">
-                <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'products:store' %}" class="font-medium">SHOP</a>
-                <a href="{% url 'store:contact' %}" class="font-medium">CONTACT</a>
+        {# ---------- Images ---------- #}
+        <div class="space-y-6">
+            <div class="overflow-hidden border border-muted-steel bg-surface-gray">
+                <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
+                    class="w-full h-[480px] object-cover main-image" id="mainImage">
             </div>
-            <button id="menu-toggle" class="md:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
-            <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[240px] md:w-[120px] -my-3" src="{% static 'hrlogowhite.png' %}" alt="Hood Ranked Logo">
-            </a>
-            <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
-                <i class="fas fa-shopping-bag mr-2"></i>
-                (<span class="cart-count">0</span>)
-            </a>
-        </nav>
-    </header>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-container md:hidden">
-        <div id="mobile-menu"
-            class="fixed inset-0 z-50 bg-white transform translate-x-full transition-transform duration-300 overflow-y-auto">
-            <div class="container mx-auto px-6 py-4 flex justify-end">
-                <button id="menu-close" class="text-black focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+            {% if product.images.exists %}
+            <div class="grid grid-cols-4 gap-4">
+                {% for image in product.images.all %}
+                <button type="button"
+                    class="thumbnail border border-muted-steel overflow-hidden focus:outline-none {% if forloop.first %}active{% endif %}"
+                    data-full="{{ image.image.url }}">
+                    <img src="{{ image.image.url }}" alt="{{ product.name }} - view {{ forloop.counter }}"
+                        class="w-full h-20 md:h-24 object-cover">
                 </button>
+                {% endfor %}
             </div>
-            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-black transition-colors">SHOP</a>
-                <a href="#story"            class="menu-link block py-2 text-black transition-colors">STORY</a>
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-black transition-colors">DROPS</a>
-            </div>
+            {% endif %}
         </div>
-    </div>
 
-    <!-- ════════ MAIN ════════ -->
-    <main class="container mx-auto px-6 py-12 md:py-16">
-
-        <nav class="text-sm text-gray-600 mb-8">
-            <a href="/" class="hover:underline">Home</a> /
-            <a href="{% url 'products:store' %}" class="hover:underline">Shop</a> /
-            <span class="text-black font-medium">{{ product.name }}</span>
-        </nav>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
-
-            <!-- Product Images -->
-            <div class="space-y-6">
-                <div class="overflow-hidden rounded-lg border border-black bg-gray-900">
-                    <img src="{{ product.get_primary_image }}"
-                        alt="{{ product.name }}"
-                        class="w-full h-[480px] object-cover main-image"
-                        id="mainImage">
+        {# ---------- Info ---------- #}
+        <div class="space-y-10">
+            <div>
+                <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none mb-4">
+                    {{ product.name }}</h1>
+                <div class="flex flex-col md:flex-row md:items-center gap-6">
+                    <p class="font-display text-headline-md text-stark-white" id="productPriceDisplay"
+                        data-ngn-price="{{ product.price }}">
+                        ₦{{ product.price|intcomma }}
+                    </p>
+                    {% if product.collection %}
+                    <span
+                        class="inline-block bg-surface-gray border border-muted-steel text-outline px-4 py-1 font-mono text-[10px] uppercase tracking-widest w-fit">
+                        {{ product.collection.name }}
+                    </span>
+                    {% endif %}
                 </div>
-                {% if product.images.exists %}
-                <div class="grid grid-cols-4 gap-4">
-                    {% for image in product.images.all %}
+            </div>
+
+            {# Size selection #}
+            <div>
+                <label class="block font-mono text-label-caps text-outline mb-4">Size</label>
+                <div class="flex flex-wrap gap-3" id="size-buttons">
+                    {% for variant in product.variants.all %}
                     <button type="button"
-                            class="border border-black thumbnail focus:border-2 rounded overflow-hidden focus:outline-none focus:border-black transition"
-                            data-full="{{ image.image.url }}">
-                        <img src="{{ image.image.url }}"
-                            alt="{{ product.name }} - view {{ forloop.counter }}"
-                            class="w-full h-20 md:h-24 object-cover">
+                        class="size-btn px-6 py-3 border border-muted-steel font-body font-bold text-body-md text-stark-white hover:bg-stark-white hover:text-pitch-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-stark-white"
+                        data-variant-id="{{ variant.id }}" data-size="{{ variant.size }}"
+                        data-add-price="{{ variant.additional_price|default:0 }}" data-stock="{{ variant.stock }}" {% if variant.stock == 0 %}disabled{% endif %}>
+                        {{ variant.size }}{% if variant.additional_price > 0 %} +₦{{ variant.additional_price|intcomma }}{% endif %}
                     </button>
+                    {% empty %}
+                    <p class="font-body text-body-md text-outline">Sizes coming soon</p>
                     {% endfor %}
                 </div>
-                {% endif %}
             </div>
 
-            <!-- Product Info -->
-            <div class="space-y-8">
-                <div>
-                    <h1 class="font-bebas text-5xl md:text-6xl tracking-tighter mb-3">{{ product.name }}</h1>
-                    <div class="flex flex-col md:flex-row md:items-center gap-6 mb-6">
-                        <!-- data-ngn-price enables the currency widget to convert this price -->
-                        <p class="text-3xl font-bold"
-                           id="productPriceDisplay"
-                           data-ngn-price="{{ product.price }}">
-                            ₦{{ product.price|intcomma }}
-                        </p>
-                        <span class="inline-block bg-white text-white w-48 md:w-auto px-4 py-1 text-sm uppercase tracking-wider rounded">
-                            {{ product.collection.name }}
-                        </span>
-                    </div>
+            {# Quantity + Add to cart #}
+            <div class="flex flex-col md:flex-row md:items-center gap-6">
+                <div class="flex items-center border border-muted-steel w-40 md:w-auto flex-shrink-0">
+                    <button type="button" id="qty-decrement"
+                        class="px-5 py-3 text-lg text-stark-white hover:bg-surface-gray transition-colors">&minus;</button>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="10"
+                        class="w-20 bg-transparent text-center border-none focus:outline-none text-stark-white font-body font-bold text-lg">
+                    <button type="button" id="qty-increment"
+                        class="px-5 py-3 text-lg text-stark-white hover:bg-surface-gray transition-colors">+</button>
                 </div>
-
-                <!-- Size Selection -->
-                <div>
-                    <label class="block text-sm font-medium uppercase tracking-wider mb-3">Size</label>
-                    <div class="flex flex-wrap gap-3" id="size-buttons">
-                        {% for variant in product.variants.all %}
-                        <button type="button"
-                                class="size-btn px-6 py-3 border border-black text-sm font-medium rounded hover:bg-black hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                data-variant-id="{{ variant.id }}"
-                                data-size="{{ variant.size }}"
-                                data-add-price="{{ variant.additional_price|default:0 }}"
-                                data-stock="{{ variant.stock }}"
-                                {% if variant.stock == 0 %}disabled{% endif %}>
-                            {{ variant.size }}
-                            {% if variant.additional_price > 0 %}+₦{{ variant.additional_price|intcomma }}{% endif %}
-                        </button>
-                        {% empty %}
-                        <p class="text-gray-600">Sizes coming soon</p>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Quantity & Add to Cart -->
-                <div class="space-y-6">
-                    <div class="flex flex-col md:flex-row md:items-center gap-6">
-                        <div class="flex items-center border border-gray-400 rounded overflow-hidden w-40 md:w-auto">
-                            <button type="button" class="px-5 py-3 text-lg hover:bg-gray-200 transition"
-                                    onclick="document.getElementById('quantity').value = Math.max(1, parseInt(document.getElementById('quantity').value) - 1)">−</button>
-                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10"
-                                   class="w-20 bg-transparent text-center border-none focus:outline-none text-lg font-medium">
-                            <button type="button" class="px-5 py-3 text-lg hover:bg-gray-200 transition"
-                                    onclick="document.getElementById('quantity').value = parseInt(document.getElementById('quantity').value) + 1">+</button>
-                        </div>
-                        <button id="add-to-cart-btn"
-                                class="flex-1 bg-black text-white py-4 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled>
-                            Add to Cart
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Description -->
-                <div class="pt-6 border-t border-gray-200">
-                    <h3 class="text-xl font-bold mb-4">Description</h3>
-                    <div class="text-black leading-relaxed space-y-4">
-                        {{ product.description|linebreaks }}
-                    </div>
-                </div>
-
-                <!-- Additional Info -->
-                <div class="pt-6 border-t border-gray-200 text-sm text-black">
-                    <p>• Premium heavyweight fabric</p>
-                    <p>• Limited edition drop</p>
-                    <p>• Made for the streets</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Toast -->
-    <div id="cart-toast">Added to cart!</div>
-
-    <!-- ════════ SIZE GUIDE ════════ -->
-    <div class="container mx-auto px-6 pb-20">
-        <button id="guide-toggle"
-                class="w-full text-left py-5 px-6 border border-gray-200 rounded-lg flex justify-between items-center hover:bg-gray-50 transition">
-            <span class="text-xl font-medium">Size Guide</span>
-            <span class="material-symbols-outlined" id="guide-icon">expand_more</span>
-        </button>
-        <div class="hidden" id="size-guide-content">
-            <section class="border border-t-0 border-gray-200 rounded-b-lg px-6 py-10">
-                <h3 class="text-2xl md:text-3xl font-bebas tracking-tight mb-6 text-center">SIZE GUIDE</h3>
-                <p class="text-center text-gray-500 mb-8 max-w-2xl mx-auto text-sm">
-                    All our pieces are unisex and designed with a relaxed, premium streetwear fit.<br>
-                    We recommend comparing with a favourite item you already own.
-                </p>
-
-                {% if product.category == 'hoodies' %}
-                <h4 class="text-lg font-bold mb-4 text-center">Hoodie Size Guide (Unisex – Relaxed Fit)</h4>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="p-4 border-b font-semibold">Size</th>
-                                <th class="p-4 border-b font-semibold">Chest (cm)</th>
-                                <th class="p-4 border-b font-semibold">Length (cm)</th>
-                                <th class="p-4 border-b font-semibold">Sleeve (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td class="p-4 border-b font-medium">XS</td><td class="p-4 border-b">104–109</td><td class="p-4 border-b">68</td><td class="p-4 border-b">87</td></tr>
-                            <tr class="bg-gray-50"><td class="p-4 border-b font-medium">S</td><td class="p-4 border-b">110–115</td><td class="p-4 border-b">70</td><td class="p-4 border-b">88.5</td></tr>
-                            <tr><td class="p-4 border-b font-medium">M</td><td class="p-4 border-b">116–121</td><td class="p-4 border-b">72</td><td class="p-4 border-b">90</td></tr>
-                            <tr class="bg-gray-50"><td class="p-4 border-b font-medium">L</td><td class="p-4 border-b">122–127</td><td class="p-4 border-b">74</td><td class="p-4 border-b">91.5</td></tr>
-                            <tr><td class="p-4 border-b font-medium">XL</td><td class="p-4 border-b">128–135</td><td class="p-4 border-b">76</td><td class="p-4 border-b">93</td></tr>
-                            <tr class="bg-gray-50"><td class="p-4 border-b font-medium">XXL</td><td class="p-4 border-b">136–143</td><td class="p-4 border-b">78</td><td class="p-4 border-b">94.5</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="text-xs text-gray-400 mt-4 text-center">
-                    Chest: across fullest part · Length: shoulder to hem · Sleeve: center back neck to cuff
-                </p>
-
-                {% elif product.category == 'tees' %}
-                <h4 class="text-lg font-bold mb-4 text-center">T-Shirt Size Guide (Unisex – Classic Fit)</h4>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="p-4 border-b font-semibold">Size</th>
-                                <th class="p-4 border-b font-semibold">Chest (cm)</th>
-                                <th class="p-4 border-b font-semibold">Length (cm)</th>
-                                <th class="p-4 border-b font-semibold">Shoulder (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td class="p-4 border-b font-medium">XS</td><td class="p-4 border-b">48</td><td class="p-4 border-b">68</td><td class="p-4 border-b">44</td></tr>
-                            <tr class="bg-gray-50"><td class="p-4 border-b font-medium">S</td><td class="p-4 border-b">52</td><td class="p-4 border-b">70</td><td class="p-4 border-b">46</td></tr>
-                            <tr><td class="p-4 border-b font-medium">M</td><td class="p-4 border-b">56</td><td class="p-4 border-b">73</td><td class="p-4 border-b">49</td></tr>
-                            <tr class="bg-gray-50"><td class="p-4 border-b font-medium">L</td><td class="p-4 border-b">60</td><td class="p-4 border-b">76</td><td class="p-4 border-b">52</td></tr>
-                            <tr><td class="p-4 border-b font-medium">XL</td><td class="p-4 border-b">64</td><td class="p-4 border-b">79</td><td class="p-4 border-b">55</td></tr>
-                            <tr class="bg-gray-50"><td class="p-4 border-b font-medium">XXL</td><td class="p-4 border-b">68</td><td class="p-4 border-b">82</td><td class="p-4 border-b">58</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p class="text-xs text-gray-400 mt-4 text-center">
-                    Chest: 2.5cm below armpit · Length: shoulder to hem · Relaxed fit – size down for fitted look
-                </p>
-
-                {% else %}
-                <p class="text-center text-gray-500">Size guide coming soon – contact us for fit advice!</p>
-                {% endif %}
-            </section>
-        </div>
-    </div>
-
-    <!-- ════════ FOOTER ════════ -->
-    <footer class="py-12 border-t border-gray-200">
-        <div class="flex flex-col items-center space-y-4">
-            <div class="flex space-x-8">
-                <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr" target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i class="fa-brands fa-snapchat"></i></a>
-                <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank" class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
-            </div>
-            <p>© <span id="year"></span>, HoodRanked</p>
-        </div>
-    </footer>
-
-
-    <!-- ════════════════════════════════════════
-         MUSIC PLAYER WIDGET (bottom-left)
-    ════════════════════════════════════════ -->
-    <div class="hr-widget" id="musicWidget">
-        <div class="hr-widget-inner">
-            <div class="hr-widget-pill" id="musicPill">
-                <div class="pill-icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 3v10.55A4 4 0 1014 17V7h4V3h-6z"/>
-                    </svg>
-                </div>
-                <div style="flex:1;min-width:0;">
-                    <div class="pill-label">
-                        <span class="pill-track-name" id="pillTrackName">HOOD RADIO</span>
-                        <span class="playing-bars" id="playingBars">
-                            <span></span><span></span><span></span>
-                        </span>
-                    </div>
-                </div>
-                <svg class="pill-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="18 15 12 9 6 15"/>
-                </svg>
+                <button id="add-to-cart-btn"
+                    class="flex-1 font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest py-4 hover:bg-on-surface-variant transition-all-custom active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-stark-white"
+                    disabled>
+                    Add to Cart
+                </button>
             </div>
 
-            <div class="hr-widget-body" id="musicBody">
-                <div class="hr-widget-body-inner">
-                    <div style="display:flex;align-items:center;gap:12px;margin-top:14px;">
-                        <div class="vinyl" id="vinyl"></div>
-                        <div class="track-meta">
-                            <div class="track-title" id="trackName">HOOD ANTHEM</div>
-                            <div class="track-artist" id="artistName">Hood Ranked Radio</div>
-                        </div>
-                    </div>
-
-                    <div class="progress-area" id="progressWrap">
-                        <div class="progress-track">
-                            <div class="progress-fill" id="progressFill" style="width:0%"></div>
-                        </div>
-                        <div class="time-row">
-                            <span id="currentTime">0:00</span>
-                            <span id="totalTime">0:00</span>
-                        </div>
-                    </div>
-
-                    <div class="player-controls">
-                        <button class="p-btn" id="shuffleBtn" title="Shuffle">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-                        </button>
-                        <button class="p-btn" id="prevBtn">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 20L9 12l10-8v16zM5 4h2v16H5z"/></svg>
-                        </button>
-                        <button class="p-btn p-play" id="playBtn">
-                            <svg id="playIcon" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                        </button>
-                        <button class="p-btn" id="nextBtn">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M5 4l10 8-10 8V4zm14 0h2v16h-2z"/></svg>
-                        </button>
-                        <button class="p-btn" id="repeatBtn">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
-                        </button>
-                    </div>
-
-                    <div class="vol-row">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5z"/></svg>
-                        <input type="range" id="volumeSlider" min="0" max="100" value="70">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5L6 9H2v6h4l5 4V5zm9.07 1.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
-                    </div>
+            {# Description #}
+            <div class="pt-8 border-t border-muted-steel">
+                <h3 class="font-display text-headline-md text-stark-white mb-4">DESCRIPTION</h3>
+                <div class="font-body text-body-md text-on-surface-variant leading-relaxed space-y-4">
+                    {{ product.description|linebreaks }}
                 </div>
+            </div>
+
+            {# Additional info #}
+            <div class="pt-8 border-t border-muted-steel space-y-2">
+                <p class="font-mono text-label-caps text-outline">— PREMIUM HEAVYWEIGHT FABRIC</p>
+                <p class="font-mono text-label-caps text-outline">— LIMITED EDITION DROP</p>
+                <p class="font-mono text-label-caps text-outline">— MADE FOR THE STREETS</p>
             </div>
         </div>
     </div>
+</main>
 
+<div id="cart-toast">Added to cart!</div>
 
-    <!-- ════════════════════════════════════════
-         CURRENCY WIDGET (bottom-right)
-         On detail page: converts this product's
-         price and updates the on-page display.
-    ════════════════════════════════════════ -->
-    <div class="hr-widget" id="currencyWidget">
-        <div class="hr-widget-inner">
-            <div class="hr-widget-pill" id="currencyPill">
-                <div class="pill-icon">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
-                    </svg>
-                </div>
-                <div style="flex:1;">
-                    <div class="pill-label" id="pillCurLabel">CURRENCY</div>
-                </div>
-                <div class="cur-status" style="margin-right:6px;">
-                    <div class="status-dot" id="statusDot"></div>
-                </div>
-                <svg class="pill-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="18 15 12 9 6 15"/>
-                </svg>
+{# ---------- Size guide ---------- #}
+<div class="px-margin-mobile md:px-margin-desktop pb-20 max-w-container-max mx-auto">
+    <button id="guide-toggle" type="button"
+        class="w-full text-left py-5 px-6 border border-muted-steel flex justify-between items-center hover:bg-surface-gray transition-colors">
+        <span class="font-body font-bold text-body-lg text-stark-white">Size Guide</span>
+        <span class="material-symbols-outlined text-stark-white" id="guide-icon">expand_more</span>
+    </button>
+    <div class="hidden" id="size-guide-content">
+        <section class="border border-t-0 border-muted-steel px-6 py-10">
+            <h3 class="font-display text-headline-md text-stark-white text-center mb-6">SIZE GUIDE</h3>
+            <p class="text-center font-body text-body-md text-on-surface-variant mb-10 max-w-2xl mx-auto">
+                All our pieces are unisex and designed with a relaxed, premium streetwear fit.<br>
+                We recommend comparing with a favourite item you already own.
+            </p>
+
+            {% if product.category == 'hoodies' %}
+            <h4 class="font-body font-bold text-body-lg text-stark-white text-center mb-6">Hoodie Size Guide (Unisex
+                &mdash; Relaxed Fit)</h4>
+            <div class="overflow-x-auto">
+                <table class="w-full font-body text-body-md text-left border-collapse">
+                    <thead>
+                        <tr class="bg-surface-gray">
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Size</th>
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Chest (cm)</th>
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Length (cm)</th>
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Sleeve (cm)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-on-surface-variant">
+                        <tr>
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">XS</td>
+                            <td class="p-4 border-b border-muted-steel">104&ndash;109</td>
+                            <td class="p-4 border-b border-muted-steel">68</td>
+                            <td class="p-4 border-b border-muted-steel">87</td>
+                        </tr>
+                        <tr class="bg-surface-gray">
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">S</td>
+                            <td class="p-4 border-b border-muted-steel">110&ndash;115</td>
+                            <td class="p-4 border-b border-muted-steel">70</td>
+                            <td class="p-4 border-b border-muted-steel">88.5</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">M</td>
+                            <td class="p-4 border-b border-muted-steel">116&ndash;121</td>
+                            <td class="p-4 border-b border-muted-steel">72</td>
+                            <td class="p-4 border-b border-muted-steel">90</td>
+                        </tr>
+                        <tr class="bg-surface-gray">
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">L</td>
+                            <td class="p-4 border-b border-muted-steel">122&ndash;127</td>
+                            <td class="p-4 border-b border-muted-steel">74</td>
+                            <td class="p-4 border-b border-muted-steel">91.5</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">XL</td>
+                            <td class="p-4 border-b border-muted-steel">128&ndash;135</td>
+                            <td class="p-4 border-b border-muted-steel">76</td>
+                            <td class="p-4 border-b border-muted-steel">93</td>
+                        </tr>
+                        <tr class="bg-surface-gray">
+                            <td class="p-4 font-bold text-stark-white">XXL</td>
+                            <td class="p-4">136&ndash;143</td>
+                            <td class="p-4">78</td>
+                            <td class="p-4">94.5</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+            <p class="font-mono text-[10px] text-outline mt-6 text-center">
+                CHEST: ACROSS FULLEST PART &middot; LENGTH: SHOULDER TO HEM &middot; SLEEVE: CENTER BACK NECK TO CUFF
+            </p>
 
-            <div class="hr-widget-body" id="currencyBody">
-                <div class="hr-widget-body-inner">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;margin-bottom:2px;">
-                        <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;">{{ product.name|truncatewords:3 }}</span>
-                        <div class="cur-status">
-                            <div class="status-dot" id="statusDot2"></div>
-                            <span id="statusText" style="font-size:9px;color:#444;">Loading...</span>
-                        </div>
-                    </div>
-
-                    <div class="cur-price-box">
-                        <div class="cur-ngn-label">Naira price</div>
-                        <div class="cur-ngn-val">₦{{ product.price|intcomma }}</div>
-                        <div class="cur-converted" id="convertedVal"><span class="shimmer"></span></div>
-                        <div class="cur-rate" id="rateInfo"></div>
-                    </div>
-
-                    <div class="cur-tabs" id="curTabs">
-                        <div class="cur-tab active" data-code="NGN" data-symbol="₦">
-                            <span class="t-flag">🇳🇬</span><span class="t-code">NGN</span>
-                        </div>
-                        <div class="cur-tab" data-code="USD" data-symbol="$">
-                            <span class="t-flag">🇺🇸</span><span class="t-code">USD</span>
-                        </div>
-                        <div class="cur-tab" data-code="GBP" data-symbol="£">
-                            <span class="t-flag">🇬🇧</span><span class="t-code">GBP</span>
-                        </div>
-                        <div class="cur-tab" data-code="CAD" data-symbol="C$">
-                            <span class="t-flag">🇨🇦</span><span class="t-code">CAD</span>
-                        </div>
-                        <div class="cur-tab" data-code="EUR" data-symbol="€">
-                            <span class="t-flag">🇪🇺</span><span class="t-code">EUR</span>
-                        </div>
-                    </div>
-
-                    <div style="font-size:9px;color:#2a2a2a;text-align:center;margin-top:10px;letter-spacing:1px;text-transform:uppercase;">
-                        Rates · open.er-api.com
-                    </div>
-                </div>
+            {% elif product.category == 'tees' %}
+            <h4 class="font-body font-bold text-body-lg text-stark-white text-center mb-6">T-Shirt Size Guide (Unisex
+                &mdash; Classic Fit)</h4>
+            <div class="overflow-x-auto">
+                <table class="w-full font-body text-body-md text-left border-collapse">
+                    <thead>
+                        <tr class="bg-surface-gray">
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Size</th>
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Chest (cm)</th>
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Length (cm)</th>
+                            <th class="p-4 border-b border-muted-steel font-bold text-stark-white">Shoulder (cm)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-on-surface-variant">
+                        <tr>
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">XS</td>
+                            <td class="p-4 border-b border-muted-steel">48</td>
+                            <td class="p-4 border-b border-muted-steel">68</td>
+                            <td class="p-4 border-b border-muted-steel">44</td>
+                        </tr>
+                        <tr class="bg-surface-gray">
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">S</td>
+                            <td class="p-4 border-b border-muted-steel">52</td>
+                            <td class="p-4 border-b border-muted-steel">70</td>
+                            <td class="p-4 border-b border-muted-steel">46</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">M</td>
+                            <td class="p-4 border-b border-muted-steel">56</td>
+                            <td class="p-4 border-b border-muted-steel">73</td>
+                            <td class="p-4 border-b border-muted-steel">49</td>
+                        </tr>
+                        <tr class="bg-surface-gray">
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">L</td>
+                            <td class="p-4 border-b border-muted-steel">60</td>
+                            <td class="p-4 border-b border-muted-steel">76</td>
+                            <td class="p-4 border-b border-muted-steel">52</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 border-b border-muted-steel font-bold text-stark-white">XL</td>
+                            <td class="p-4 border-b border-muted-steel">64</td>
+                            <td class="p-4 border-b border-muted-steel">79</td>
+                            <td class="p-4 border-b border-muted-steel">55</td>
+                        </tr>
+                        <tr class="bg-surface-gray">
+                            <td class="p-4 font-bold text-stark-white">XXL</td>
+                            <td class="p-4">68</td>
+                            <td class="p-4">82</td>
+                            <td class="p-4">58</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
+            <p class="font-mono text-[10px] text-outline mt-6 text-center">
+                CHEST: 2.5CM BELOW ARMPIT &middot; LENGTH: SHOULDER TO HEM &middot; RELAXED FIT &mdash; SIZE DOWN FOR
+                FITTED LOOK
+            </p>
+
+            {% else %}
+            <p class="text-center font-body text-body-md text-outline">Size guide coming soon &mdash; contact us for fit
+                advice!</p>
+            {% endif %}
+        </section>
     </div>
+</div>
 
-    <audio id="audioEl" preload="none"></audio>
+{% include 'partials/currency_widget.html' %}
+{% endblock %}
 
-
-    <!-- ════════════════════════════════════════
-         SCRIPTS
-    ════════════════════════════════════════ -->
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // ── Size guide toggle
-        document.getElementById('guide-toggle').addEventListener('click', function() {
-            const content = document.getElementById('size-guide-content');
-            const icon    = document.getElementById('guide-icon');
-            content.classList.toggle('hidden');
-            icon.textContent = content.classList.contains('hidden') ? 'expand_more' : 'expand_less';
-        });
-
-        // ── Mobile menu
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose  = document.getElementById('menu-close');
-        const mobileMenu = document.getElementById('mobile-menu');
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
-        });
-        menuClose.addEventListener('click', closeMenu);
-        document.querySelectorAll('.menu-link').forEach(l => l.addEventListener('click', closeMenu));
-        mobileMenu.addEventListener('click', e => { if (e.target === mobileMenu) closeMenu(); });
-        function closeMenu() {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-        }
-
-        // ── Thumbnail gallery
-        document.querySelectorAll('[data-full]').forEach(thumb => {
-            thumb.addEventListener('click', function() {
-                document.getElementById('mainImage').src = this.dataset.full;
-                document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('border-black'));
-                this.classList.add('border-black');
-            });
-        });
-
-        // ── Cart helpers
-        function getCart() { const c = localStorage.getItem('hoodranked_cart'); return c ? JSON.parse(c) : []; }
-        function saveCart(cart) { localStorage.setItem('hoodranked_cart', JSON.stringify(cart)); updateCartCount(); }
-        function updateCartCount() {
-            const count = getCart().reduce((s, i) => s + i.quantity, 0);
-            document.querySelectorAll('.cart-count').forEach(el => el.textContent = count);
-        }
-        function showToast(msg = 'Added to cart!') {
-            const t = document.getElementById('cart-toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2500);
-        }
-
-        // ── Size selection + add to cart
-        const addToCartBtn = document.getElementById('add-to-cart-btn');
-        const qtyInput     = document.getElementById('quantity');
-        let selectedVariant = null;
-
-        document.querySelectorAll('.size-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('bg-black', 'text-white'));
-                this.classList.add('bg-black', 'text-white');
-                selectedVariant = {
-                    id:       this.dataset.variantId,
-                    size:     this.dataset.size,
-                    addPrice: parseFloat(this.dataset.addPrice || 0),
-                    stock:    parseInt(this.dataset.stock)
-                };
-                addToCartBtn.disabled = false;
-            });
-        });
-
-        addToCartBtn.addEventListener('click', () => {
-            if (!selectedVariant) { showToast('Please select a size first'); return; }
-            const quantity   = parseInt(qtyInput.value) || 1;
-            const basePrice  = {{ product.price }};
-            const finalPrice = basePrice + selectedVariant.addPrice;
-            let cart = getCart();
-            const idx = cart.findIndex(i => i.variant_id === selectedVariant.id);
-            if (idx !== -1) {
-                const newQty = cart[idx].quantity + quantity;
-                if (newQty > selectedVariant.stock) { showToast(`Only ${selectedVariant.stock} left!`); return; }
-                cart[idx].quantity = newQty;
-                showToast(`Cart updated (${newQty})`);
-            } else {
-                if (quantity > selectedVariant.stock) { showToast(`Only ${selectedVariant.stock} left!`); return; }
-                cart.push({
-                    variant_id: selectedVariant.id,
-                    product_id: "{{ product.id }}",
-                    name:       "{{ product.name|escapejs }}",
-                    size:       selectedVariant.size,
-                    price:      finalPrice,
-                    quantity:   quantity,
-                    image:      "{{ product.get_primary_image|escapejs }}",
-                    slug:       "{{ product.slug }}"
-                });
-                showToast();
-            }
-            saveCart(cart);
-        });
-
-        document.addEventListener('DOMContentLoaded', updateCartCount);
-    </script>
-
-    <script>
-    // ════════════════════════════════════════
-    //  WIDGET TOGGLE — one open at a time
-    // ════════════════════════════════════════
-    function initWidget(pillId, widgetId, bodyId, otherWidgetId, otherBodyId) {
-        const pill        = document.getElementById(pillId);
-        const widget      = document.getElementById(widgetId);
-        const body        = document.getElementById(bodyId);
-        const otherWidget = document.getElementById(otherWidgetId);
-        const otherBody   = document.getElementById(otherBodyId);
-
-        pill.addEventListener('click', () => {
-            const opening = !widget.classList.contains('expanded');
-            // Close sibling widget first
-            if (opening && otherWidget.classList.contains('expanded')) {
-                otherWidget.classList.remove('expanded');
-                otherBody.style.maxHeight = '0';
-            }
-            widget.classList.toggle('expanded', opening);
-            if (opening) {
-                requestAnimationFrame(() => {
-                    body.style.maxHeight = body.querySelector('.hr-widget-body-inner').scrollHeight + 32 + 'px';
-                });
-            } else {
-                body.style.maxHeight = '0';
-            }
-        });
-    }
-    initWidget('musicPill',    'musicWidget',    'musicBody',    'currencyWidget', 'currencyBody');
-    initWidget('currencyPill', 'currencyWidget', 'currencyBody', 'musicWidget',    'musicBody');
-
-
-    // ════════════════════════════════════════
-    //  MUSIC PLAYER
-    
-    // ════════════════════════════════════════
-    const tracks = [
-        { title: "SLEEPLESS", artist: "Flume (feat. Jezzabell Doran)", src: "{% static 'sleepless.mp3' %}" },
-        { title: "OBA", artist: "Asake", src: "{% static 'oba.mp3' %}" },
-    ];
-
-    const audioEl       = document.getElementById('audioEl');
-    const vinyl         = document.getElementById('vinyl');
-    const playBtn       = document.getElementById('playBtn');
-    const playIcon      = document.getElementById('playIcon');
-    const trackNameEl   = document.getElementById('trackName');
-    const artistNameEl  = document.getElementById('artistName');
-    const progressFill  = document.getElementById('progressFill');
-    const currentTimeEl = document.getElementById('currentTime');
-    const totalTimeEl   = document.getElementById('totalTime');
-    const pillTrackName = document.getElementById('pillTrackName');
-    const musicPillEl   = document.getElementById('musicPill');
-    const volSlider     = document.getElementById('volumeSlider');
-
-    let currentTrack = 0, isPlaying = false, repeat = false, shuffle = false;
-
-    function fmt(s) { return `${Math.floor(s/60)}:${(s%60|0).toString().padStart(2,'0')}`; }
-
-    function loadTrack(idx, autoPlay = false) {
-        const t = tracks[idx];
-        trackNameEl.textContent   = t.title;
-        artistNameEl.textContent  = t.artist;
-        pillTrackName.textContent = t.title;
-        progressFill.style.width  = '0%';
-        currentTimeEl.textContent = '0:00';
-        if (t.src) { audioEl.src = t.src; audioEl.load(); }
-        else { totalTimeEl.textContent = fmt(t.duration); }
-        if (autoPlay && t.src) audioEl.play().then(() => setPlaying(true)).catch(() => {});
-    }
-
-    function setPlaying(state) {
-        isPlaying = state;
-        vinyl.classList.toggle('spinning', state);
-        playIcon.innerHTML = state
-            ? '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'
-            : '<path d="M8 5v14l11-7z"/>';
-        musicPillEl.classList.toggle('is-playing', state);
-    }
-
-    audioEl.addEventListener('loadedmetadata', () => { totalTimeEl.textContent = fmt(Math.floor(audioEl.duration)); });
-    audioEl.addEventListener('timeupdate', () => {
-        if (!audioEl.duration) return;
-        progressFill.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
-        currentTimeEl.textContent = fmt(Math.floor(audioEl.currentTime));
-    });
-    audioEl.addEventListener('ended',  () => { repeat ? (audioEl.currentTime = 0, audioEl.play()) : skipNext(); });
-    audioEl.addEventListener('play',   () => setPlaying(true));
-    audioEl.addEventListener('pause',  () => setPlaying(false));
-
-    volSlider.addEventListener('input', () => { audioEl.volume = volSlider.value / 100; });
-    audioEl.volume = 0.7;
-
-    playBtn.addEventListener('click', () => {
-        if (!tracks[currentTrack].src) { setPlaying(!isPlaying); return; }
-        isPlaying ? audioEl.pause() : audioEl.play().catch(() => {});
-    });
-
-    function skipNext() {
-        currentTrack = shuffle ? Math.floor(Math.random() * tracks.length) : (currentTrack + 1) % tracks.length;
-        loadTrack(currentTrack, true);
-    }
-    function skipPrev() {
-        if (audioEl.src && audioEl.currentTime > 3) { audioEl.currentTime = 0; return; }
-        currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
-        loadTrack(currentTrack, true);
-    }
-
-    document.getElementById('nextBtn').addEventListener('click', skipNext);
-    document.getElementById('prevBtn').addEventListener('click', skipPrev);
-    document.getElementById('shuffleBtn').addEventListener('click', function() { shuffle = !shuffle; this.classList.toggle('p-active', shuffle); });
-    document.getElementById('repeatBtn').addEventListener('click', function() {
-        repeat = !repeat; audioEl.loop = repeat; this.classList.toggle('p-active', repeat);
-    });
-    document.getElementById('progressWrap').addEventListener('click', function(e) {
-        const pct = (e.clientX - this.getBoundingClientRect().left) / this.offsetWidth;
-        if (audioEl.duration) audioEl.currentTime = pct * audioEl.duration;
-        progressFill.style.width = (pct * 100) + '%';
-    });
-
-    // Auto-play on page load (requires user interaction first on most browsers;
-    // this fires on the first click/touch anywhere on the page)
-    loadTrack(0);
-    document.addEventListener('click', function startOnInteraction() {
-        if (!isPlaying) audioEl.play().then(() => setPlaying(true)).catch(() => {});
-        document.removeEventListener('click', startOnInteraction);
-    }, { once: true });
-
-
-    // ════════════════════════════════════════
-    //  CURRENCY CONVERTER
-    //  Converts this product's specific price.
-    //  Also updates the large price on the page.
-    // ════════════════════════════════════════
-    const PRODUCT_NGN = {{ product.price }};
-    let exchangeRates = {};
-    let activeCur = 'NGN';
-
-    function convertAndShow() {
-        const convertedEl  = document.getElementById('convertedVal');
-        const rateEl       = document.getElementById('rateInfo');
-        const priceDisplay = document.getElementById('productPriceDisplay');
-
-        if (activeCur === 'NGN') {
-            convertedEl.textContent = '₦' + PRODUCT_NGN.toLocaleString('en-NG');
-            rateEl.textContent = 'Nigerian Naira — base currency';
-            if (priceDisplay) priceDisplay.textContent = '₦' + PRODUCT_NGN.toLocaleString('en-NG');
-            document.getElementById('pillCurLabel').textContent = 'CURRENCY';
-            return;
-        }
-        if (!exchangeRates[activeCur]) { convertedEl.innerHTML = '<span class="shimmer"></span>'; return; }
-
-        const tab    = document.querySelector(`.cur-tab[data-code="${activeCur}"]`);
-        const symbol = tab.dataset.symbol;
-        const rate   = exchangeRates[activeCur];
-        const pretty = symbol + (PRODUCT_NGN * rate).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        convertedEl.textContent = pretty;
-        if (priceDisplay) priceDisplay.textContent = pretty;
-        rateEl.textContent = `1 ${activeCur} ≈ ₦${(1/rate).toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
-        document.getElementById('pillCurLabel').textContent = activeCur;
-    }
-
-    async function fetchRates() {
-        const dots = [document.getElementById('statusDot'), document.getElementById('statusDot2')];
-        const txt  = document.getElementById('statusText');
-        try {
-            const data = await (await fetch('https://open.er-api.com/v6/latest/NGN')).json();
-            if (data.result === 'success') {
-                exchangeRates = data.rates;
-                dots.forEach(d => d.classList.add('live'));
-                txt.textContent = 'Live rates';
-            } else throw 0;
-        } catch {
-            exchangeRates = { NGN:1, USD:0.00063, GBP:0.0005, CAD:0.00086, EUR:0.00058 };
-            dots.forEach(d => d.style.background = '#f59e0b');
-            txt.textContent = 'Cached rates';
-        }
-        convertAndShow();
-    }
-
-    document.getElementById('curTabs').addEventListener('click', e => {
-        const tab = e.target.closest('.cur-tab');
-        if (!tab) return;
-        document.querySelectorAll('.cur-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        activeCur = tab.dataset.code;
-        document.getElementById('convertedVal').innerHTML = '<span class="shimmer"></span>';
-        setTimeout(convertAndShow, 200);
-    });
-
-    fetchRates();
-    </script>
-
-</body>
-</html>
+{% block extra_scripts %}
+<script>
+    window.HOODRANKED_PRODUCT = {
+        id: "{{ product.id }}",
+        name: "{{ product.name|escapejs }}",
+        slug: "{{ product.slug }}",
+        basePrice: {{ product.price }},
+    image: "{{ product.get_primary_image|escapejs }}"
+  };
+</script>
+<script src="{% static 'js/product-detail.js' %}"></script>
+{% endblock %}

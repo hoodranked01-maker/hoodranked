@@ -92,13 +92,18 @@
     </div>
 </div>
 
-<audio id="audioEl" preload="none"></audio>
+<audio id="audioEl" preload="auto"></audio>
 
 <script>
-    window.HOODRANKED_TRACK_SRCS = [
-        "{% static 'beauty-and-a-beat.mp3' %}",
+    window.HOODRANKED_TRACKS = [
+        {
+            title: "BEAUTY AND A BEAT",
+            artist: "Justin Bieber (feat. Nicki Minaj)",
+            src: "{% static 'audio/beauty-and-a-beat.mp3' %}"
+        }
     ];
 </script>
 <script src="{% static 'js/store-filters.js' %}"></script>
 <script src="{% static 'js/floating-widgets.js' %}"></script>
 {% endflag %}
+

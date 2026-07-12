@@ -1,353 +1,163 @@
+{% extends "base.html" %}
 {% load static %}
-{% load humanize %}
 
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+{% block title %}Checkout | HOODRANKED{% endblock %}
+{% block meta_description %}Secure checkout for your HOODRANKED order.{% endblock %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkout – Hood Ranked</title>
-    <meta name="description" content="Secure checkout for your Hood Ranked premium streetwear." />
-    
-    <link rel="icon" href="{% static 'hrlogowhite.png' %}" type="image/png" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-    
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: { 
-                    fontFamily: { 
-                        bebas: ['Bebas Neue', 'sans-serif'],
-                        Poppins: ['Poppins', 'sans-serif'],
-                    } 
-                } 
-            }
-        }
-    </script>
-</head>
+{% block extra_head %}
+<style>
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="tel"],
+    form textarea {
+        width: 100%;
+        background: #1b1b1b;
+        border: 1px solid #1F2937;
+        color: #ffffff;
+        padding: 1rem 1.25rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+    }
 
-<body class="bg-white text-black font-Poppins antialiased">
-    <div class="overflow-hidden bg-black text-white py-2 border-b border-gray-800">
-        <div class="flex whitespace-nowrap" style="animation: marquee 20s linear infinite;">
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-        </div>
+    form textarea {
+        resize: vertical;
+    }
+
+    form input[type="text"]:focus,
+    form input[type="email"]:focus,
+    form input[type="tel"]:focus,
+    form textarea:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #ffffff;
+    }
+
+    form input::placeholder,
+    form textarea::placeholder {
+        color: #444748;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section
+    class="px-margin-mobile md:px-margin-desktop pt-20 pb-12 max-w-container-max mx-auto border-b border-muted-steel">
+    <span class="font-mono text-label-caps text-outline block mb-4">SECURE CHECKOUT</span>
+    <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none">
+        CHECKOUT
+    </h1>
+</section>
+
+<main class="px-margin-mobile md:px-margin-desktop py-16 max-w-container-max mx-auto">
+
+    {% if request.user.is_authenticated %}
+    <div class="border border-muted-steel px-6 py-4 mb-12 flex items-center gap-3">
+        <span class="material-symbols-outlined text-outline">badge</span>
+        <p class="font-body text-body-md text-on-surface-variant">
+            Details filled in from your profile — feel free to edit anything below for this order.
+        </p>
     </div>
-    <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white backdrop-blur-sm border-b border-gray-800">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="hidden md:flex space-x-8">
-                <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'products:store' %}" class="font-medium">SHOP</a>
-                <a href="{% url 'store:contact' %}" class="font-medium">CONTACT</a>
-            </div>
+    {% endif %}
 
-            <button id="menu-toggle" class="md:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
+    <form id="checkout-form" class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        {% csrf_token %}
 
-            <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[240px] md:w-[120px] -my-3" src="{% static 'hrlogowhite.png' %}" alt="Hood Ranked Logo">
-                <!-- <p class="">hoodranked</p> -->
-            </a>
+        {# ---------- Left column: forms ---------- #}
+        <div class="lg:col-span-3 space-y-14">
 
-            <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
-                <i class="fas fa-shopping-bag mr-2"></i> 
-                (<span class="cart-count">0</span>)
-            </a>
-        </nav>
-    </header>
+            <section>
+                <h2 class="font-display text-headline-md text-stark-white mb-8">CONTACT INFORMATION</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label for="full_name" class="block font-mono text-label-caps text-outline mb-3">Full Name
+                            *</label>
+                        <input type="text" id="full_name" name="full_name" required placeholder="John Doe"
+                            value="{% if request.user.is_authenticated %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}">
+                    </div>
+                    <div>
+                        <label for="email" class="block font-mono text-label-caps text-outline mb-3">Email Address
+                            *</label>
+                        <input type="email" id="email" name="email" required placeholder="you@mail.com"
+                            value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}">
+                    </div>
+                    <div>
+                        <label for="phone" class="block font-mono text-label-caps text-outline mb-3">Phone Number
+                            *</label>
+                        <input type="tel" id="phone" name="phone" required placeholder="08012345678"
+                            value="{% if request.user.is_authenticated %}{{ request.user.phone|default:'' }}{% endif %}">
+                    </div>
+                </div>
+            </section>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu-container md:hidden">
-        <div id="mobile-menu" class="fixed inset-0 z-50 bg-white transform translate-x-full transition-transform duration-300 overflow-y-auto">
-            <!-- Your mobile menu content -->
-            <div class="container mx-auto px-6 py-4 flex justify-end">
-                <button id="menu-close" class="text-black focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+            <section>
+                <h2 class="font-display text-headline-md text-stark-white mb-8">SHIPPING ADDRESS</h2>
+                <div class="space-y-6">
+                    <div>
+                        <label for="address" class="block font-mono text-label-caps text-outline mb-3">Address *</label>
+                        <input type="text" id="address" name="address" required placeholder="Street address"
+                            value="{% if request.user.is_authenticated %}{{ request.user.address|default:'' }}{% endif %}">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="city" class="block font-mono text-label-caps text-outline mb-3">City *</label>
+                            <input type="text" id="city" name="city" required placeholder="Ibadan"
+                                value="{% if request.user.is_authenticated %}{{ request.user.city|default:'' }}{% endif %}">
+                        </div>
+                        <div>
+                            <label for="state" class="block font-mono text-label-caps text-outline mb-3">State *</label>
+                            <input type="text" id="state" name="state" required placeholder="Oyo"
+                                value="{% if request.user.is_authenticated %}{{ request.user.state|default:'' }}{% endif %}">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="notes" class="block font-mono text-label-caps text-outline mb-3">Additional Notes
+                            (optional)</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Apartment, suite, etc."></textarea>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        {# ---------- Right column: order summary ---------- #}
+        <div class="lg:col-span-2">
+            <div class="bg-surface-gray border border-muted-steel p-6 md:p-8 sticky top-24">
+                <h2 class="font-display text-headline-md text-stark-white mb-8">ORDER SUMMARY</h2>
+
+                <div id="order-items" class="space-y-6 mb-8"></div>
+
+                <div class="space-y-4 border-t border-muted-steel pt-6">
+                    <div class="flex justify-between font-body text-body-md text-on-surface-variant">
+                        <span>Subtotal</span>
+                        <span id="order-subtotal" class="text-stark-white">₦0</span>
+                    </div>
+                    <div class="flex justify-between font-body text-body-md text-on-surface-variant">
+                        <span>Service Fee</span>
+                        <span id="service-fee" class="text-stark-white">Calculated</span>
+                    </div>
+                    <div class="flex justify-between items-baseline pt-4 border-t border-muted-steel">
+                        <span
+                            class="font-body font-bold text-body-md text-stark-white uppercase tracking-wide">Total</span>
+                        <span id="order-total" class="font-display text-headline-md text-stark-white">₦0</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="place-order-btn"
+                    class="w-full mt-10 font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-stark-white"
+                    disabled>
+                    Place Order
                 </button>
             </div>
-            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-black transition-colors">SHOP</a>
-                <a href="#story" class="menu-link block py-2 text-black transition-colors">STORY</a>
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-black transition-colors">DROPS</a>
-            </div>
         </div>
-    </div>
 
-    <main class="container mx-auto px-6 py-12 md:py-16">
-        <h1 class="font-bebas text-5xl md:text-7xl text-center mb-12 tracking-tighter">
-            CHECKOUT
-        </h1>
+    </form>
+</main>
 
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
-            <!-- Left Column - Forms -->
-            <div class="lg:col-span-3 space-y-12">
-                <!-- Contact Information -->
-                <section>
-                    <h2 class="text-2xl font-bold mb-6">Contact Information</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Full Name *</label>
-                            <input type="text" required placeholder="John Doe"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black text-black">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Email Address *</label>
-                            <input type="email" required placeholder="you@mail.com"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black text-black">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Phone Number *</label>
-                            <input type="tel" required placeholder="08012345678"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black text-black">
-                        </div>
-                    </div>
-                </section>
+{% endblock %}
 
-                <!-- Shipping Address -->
-                <section>
-                    <h2 class="text-2xl font-bold mb-6">Shipping Address</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Address *</label>
-                            <input type="text" required placeholder="Street address"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black text-black">
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium uppercase tracking-wider mb-2">City *</label>
-                                <input type="text" required placeholder="Ibadan"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black text-black">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium uppercase tracking-wider mb-2">State *</label>
-                                <input type="text" required placeholder="Oyo"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black text-black">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium uppercase tracking-wider mb-2">Additional Notes (optional)</label>
-                            <textarea rows="3" placeholder="Apartment, suite, etc."
-                                      class="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-black text-black"></textarea>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <div class="lg:col-span-2 text-black">
-                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 sticky top-24">
-                    <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
-
-                    <div id="order-items" class="space-y-6 mb-8"></div>
-
-                    <div class="space-y-4 border-t border-gray-300 pt-6">
-                        <div class="flex justify-between text-lg">
-                            <span>Subtotal</span>
-                            <span id="order-subtotal">₦0</span>
-                        </div>
-                        <div class="flex justify-between text-lg">
-                            <span>Service Fee</span>
-                            <span id="service-fee">Calculated</span>
-                        </div>
-                        <div class="flex justify-between text-xl font-bold pt-4 border-t border-gray-300">
-                            <span>Total</span>
-                            <span id="order-total">₦0</span>
-                        </div>
-                    </div>
-
-                    <button id="place-order-btn"
-                            class="w-full mt-8 bg-black text-white py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled>
-                        Place Order
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="py-12 border-t border-gray-800">
-        <div>
-            <div class="flex flex-col items-center space-y-4">
-                <div class="flex space-x-8">
-                    <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
-                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i
-                            class="fa-brands fa-snapchat"></i></a>
-                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
-                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
-                </div>
-                <p>© <span id="year"></span>, HoodRanked</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear()
-        
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        menuToggle?.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
-        });
-
-        menuClose?.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-        });
-
-        // Cart Functions
-        function getCart() {
-            const cart = localStorage.getItem('hoodranked_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelectorAll('.cart-count').forEach(el => el.textContent = count);
-        }
-
-        function renderOrderSummary() {
-            const cart = getCart();
-            const container = document.getElementById('order-items');
-            container.innerHTML = '';
-
-            if (cart.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-600 py-8">Your cart is empty</p>';
-                document.getElementById('place-order-btn').disabled = true;
-                return;
-            }
-
-            document.getElementById('place-order-btn').disabled = false;
-
-            let subtotal = 0;
-
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-
-                container.innerHTML += `
-                    <div class="flex gap-4 pb-6 border-b border-gray-200 last:border-b-0 last:pb-0">
-                        <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover object-top rounded">
-                        <div class="flex-1">
-                            <h4 class="font-medium">${item.name}</h4>
-                            <p class="text-sm text-gray-600">Size: ${item.size} × ${item.quantity}</p>
-                            <p class="text-sm font-medium mt-1">₦${itemTotal.toLocaleString()}</p>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const service_fee = 2000;
-            document.getElementById('order-subtotal').textContent = `₦${subtotal.toLocaleString()}`;
-            document.getElementById('service-fee').textContent = `₦${service_fee.toLocaleString()}`;
-            let order_total = subtotal + service_fee
-            document.getElementById('order-total').textContent = `₦${order_total.toLocaleString()}`;
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            renderOrderSummary();
-            updateCartCount();
-        });
-
-        document.getElementById('place-order-btn')?.addEventListener('click', async (e) => {
-            e.preventDefault();
-
-            const btn = e.target;
-            btn.disabled = true;
-            btn.textContent = 'Processing...';
-
-            // 1. Collect form data
-            const formData = {
-                full_name: document.querySelectorAll('input[type="text"]')[0].value,
-                email: document.querySelector('input[type="email"]').value,
-                phone: document.querySelector('input[type="tel"]').value,
-                address: document.querySelectorAll('input[type="text"]')[1].value,
-                city: document.querySelectorAll('input[type="text"]')[2].value,
-                state: document.querySelectorAll('input[type="text"]')[3].value,
-                additional_notes: document.querySelector('textarea').value,
-                service_fee: 2000,
-                cart_items: getCart()
-            };
-
-            // Basic validation
-            if (!formData.email || !formData.phone || !formData.address || !formData.cart_items.length) {
-                alert('Please fill all required fields and ensure cart is not empty');
-                btn.disabled = false;
-                btn.textContent = 'Place Order';
-                return;
-            }
-
-            try {
-                const response = await fetch('/checkout/process/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')  // very important!
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Something went wrong');
-                }
-
-                // 2. Redirect to payment gateway
-                if (data.authorization_url) {
-                    window.location.href = data.authorization_url;
-                } else {
-                    alert('Payment initialization failed. Please try again.');
-                }
-
-            } catch (error) {
-                alert(error.message);
-                console.error(error);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Place Order';
-            }
-        });
-
-        // Helper: get CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
-</body>
-</html>
+{% block extra_scripts %}
+<script>
+    window.HOODRANKED_CHECKOUT_ENDPOINT = "{% url 'orders:process_checkout' %}";
+</script>
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}

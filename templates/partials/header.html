@@ -32,11 +32,11 @@
             {# Right Nav Block (Hidden on mobile) #}
             <nav class="hidden md:flex items-center gap-8">
                 <a href="{% url 'orders:track_order' %}"
-                    class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'orders:track_order' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">
+                    class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'track_order' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">
                     Track an order
                 </a>
-                <a href="{% url 'account_login' %}"
-                    class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'account_login' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">Account</a>
+                <a href="{% url 'users:profile' %}"
+                    class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'profile' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">Account</a>
             </nav>
 
             {# Icons & Triggers #}
@@ -97,10 +97,10 @@
         <!-- Added missing Contact link to mobile drawer view -->
         <a href="{% url 'store:contact' %}" data-mobile-link
         class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'contact' %}text-stark-white{% else %}text-outline{% endif %}">Contact</a>
-        <a href="{% url 'account_login' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'account_login' %}text-stark-white{% else %}text-outline{% endif %}">Account</a>
+        <a href="{% url 'users:profile' %}" data-mobile-link
+            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'profile' %}text-stark-white{% else %}text-outline{% endif %}">Account</a>
         <a href="{% url 'orders:track_order' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'orders:track_order' %}text-stark-white{% else %}text-outline{% endif %}">Track an order</a>
+            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'track_order' %}text-stark-white{% else %}text-outline{% endif %}">Track an order</a>
     </div>
 
     {# Footer Tagline #}
