@@ -2,6 +2,7 @@
 {% load static %}
 {% load humanize %}
 
+
 {% block title %}{{ product.name }} | HOODRANKED{% endblock %}
 {% block meta_description %}{{ product.description|truncatewords:30 }}{% endblock %}
 
@@ -84,7 +85,7 @@
         <div class="space-y-6">
             <div class="overflow-hidden border border-muted-steel bg-surface-gray">
                 <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
-                    class="w-full h-[480px] object-cover main-image" id="mainImage">
+                    class="w-full h-[480px] object-cover main-image" id="mainImage" loading="lazy">
             </div>
             {% if product.images.exists %}
             <div class="grid grid-cols-4 gap-4">
@@ -93,7 +94,7 @@
                     class="thumbnail border border-muted-steel overflow-hidden focus:outline-none {% if forloop.first %}active{% endif %}"
                     data-full="{{ image.image.url }}">
                     <img src="{{ image.image.url }}" alt="{{ product.name }} - view {{ forloop.counter }}"
-                        class="w-full h-20 md:h-24 object-cover">
+                        class="w-full h-20 md:h-24 object-cover" loading="lazy">
                 </button>
                 {% endfor %}
             </div>

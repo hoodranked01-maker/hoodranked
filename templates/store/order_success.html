@@ -100,7 +100,7 @@
             </button>
 
             <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[150px] md:w-[120px]" src="{% static 'hrlogowhite.png' %}" alt="Hood Ranked Logo">
+                <img class="w-[150px] md:w-[120px]" src="{% static 'hrlogowhite.png' %}" alt="Hood Ranked Logo" loading="lazy">
                 <!-- <p class="">hoodranked</p> -->
             </a>
 
@@ -154,7 +154,7 @@
                         <!-- Product Image (fallback if no image) -->
                         <div class="w-24 h-24 bg-gray-200 rounded flex-shrink-0 flex items-center justify-center">
                             {% if item.product and item.product.get_primary_image %}
-                            <img src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}" class="w-full h-full object-cover object-top rounded">
+                            <img src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}" class="w-full h-full object-cover object-top rounded" loading="lazy">
                             {% else %}
                             <span class="text-gray-500 text-sm">No image</span>
                             {% endif %}

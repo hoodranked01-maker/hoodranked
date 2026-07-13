@@ -23,7 +23,7 @@
         {# Centered Logo Block #}
         <div class="flex justify-start md:justify-center items-center">
             <a href="{% url 'store:index' %}" class="flex-shrink-0">
-                <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-8 md:h-10 my-4 object-contain">
+                <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-8 md:h-10 my-4 object-contain" loading="lazy">
             </a>
         </div>
 
@@ -76,7 +76,7 @@
     <div class="flex justify-between items-center px-margin-mobile py-unit border-b border-muted-steel h-[74px]">
         {# Drawer Logo #}
         <a href="{% url 'store:index' %}" class="flex-shrink-0">
-            <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-4 object-contain">
+            <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-4 object-contain" loading="lazy">
         </a>
 
         <!-- Drawer Close Button -->

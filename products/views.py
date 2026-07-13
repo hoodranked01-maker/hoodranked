@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from .models import Product, Collection
 from decimal import Decimal
 from django.db.models import Q
+from django.views.decorators.cache import cache_page
 
+@cache_page(60 * 15)
 def store(request):
     products_list = Product.objects.all()
 

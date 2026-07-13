@@ -74,7 +74,7 @@
                     <div class="flex items-center gap-6 py-6">
                         {% if item.product.get_primary_image %}
                         <img src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}"
-                            class="w-20 h-24 object-cover bg-surface-gray flex-shrink-0">
+                            class="w-20 h-24 object-cover bg-surface-gray flex-shrink-0" loading="lazy">
                         {% endif %}
                         <div class="flex-1 min-w-0">
                             <p class="font-body font-bold text-body-md text-stark-white truncate">{{ item.product.name }}</p>

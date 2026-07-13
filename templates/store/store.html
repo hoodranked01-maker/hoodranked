@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
+{% load waffle_tags %}
+
 
 {% block title %}Store | HOODRANKED — Premium Streetwear Drops{% endblock %}
 {% block meta_description %}Shop the latest HOODRANKED drops — premium hoodies, tees, limited editions. Streetwear that
@@ -8,6 +10,7 @@ hits different.{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/store-widgets.css' %}">
+
 {% endblock %}
 
 {% block content %}
@@ -100,7 +103,12 @@ hits different.{% endblock %}
     </div>
     
     {% if products %}
+    {% flag 'enable_skeleton_load' %}
+    <script src="{% static 'js/skeleton.js' %}"></script>
     <div id="real-products" class="hidden">
+    {% else %}
+    <div id="real-products" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+    {% endflag %}
         {% for product in products %}
         {% if product.is_sold_out %}
         <div class="product-card group relative bg-surface-gray overflow-hidden cursor-not-allowed opacity-60">
@@ -110,7 +118,7 @@ hits different.{% endblock %}
                 {% endif %}
                 <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray">
                     <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
-                        class="product-card__img w-full h-full object-cover object-top">
+                        class="product-card__img w-full h-full object-cover object-top" loading="lazy">
                     {% if product.is_sold_out %}
                     <div class="absolute top-4 left-4 bg-pitch-black border border-stark-white px-3 py-1">
                         <span class="font-mono text-[10px] text-stark-white uppercase tracking-widest">Sold Out</span>

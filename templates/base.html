@@ -1,6 +1,7 @@
 {% load static %}
 {% load humanize %}
 {% load waffle_tags %}
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 
@@ -24,9 +25,7 @@
     <script src="{% static 'js/tailwind-config.js' %}"></script>
 
     <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -42,7 +41,6 @@
     {% include "partials/music_widget.html" %}
 
     <script src="{% static 'js/main.js' %}"></script>
-    {% block extra_scripts %}{% endblock %}
 </body>
 
 </html>
