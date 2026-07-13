@@ -3,6 +3,9 @@ from .views import index, cart, checkout, shipping, terms, thank_you, contact, l
 
 app_name = 'store'
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 urlpatterns = [
     path('', index, name='index'),
     path('contact/', contact, name='contact'),
@@ -14,4 +17,5 @@ urlpatterns = [
     path('shipping/', shipping, name='shipping'),
     path("lookbook/", lookbook, name="lookbook"),
     path("lookbook/<slug:slug>/", lookbook_detail, name="lookbook_detail"),
+    path('sentry-debug/', trigger_error),
 ]
