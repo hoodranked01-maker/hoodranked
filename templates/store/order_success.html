@@ -212,7 +212,25 @@
             </div>
         </div>
     </footer>
-
+    <script>
+        // Purchase Event for GA4
+        gtag('event', 'purchase', {
+            transaction_id: "{{ order.order_id }}",
+            value: {{ order.total_price | floatformat: 2| unlocalize }},
+            currency: "NGN",
+            items: [
+            {% for item in order_items %}
+        {
+            item_id: "{{ item.product.id|default:'' }}",
+                item_name: "{{ item.product.name|default:'Unknown Product' }}",
+                    item_variant: "{{ item.variant.size|default:'' }}",
+                        price: { { item.price | floatformat: 2 | unlocalize } },
+            quantity: { { item.quantity } }
+        } {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+        ]
+      });
+    </script>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear()
         
@@ -259,5 +277,6 @@
         console.log('Cart cleared after successful payment');
         {% endif %}
     </script>
+    
 </body>
 </html>

@@ -2,6 +2,20 @@
 document.addEventListener("DOMContentLoaded", () => {
   const product = window.HOODRANKED_PRODUCT || {};
 
+  if (product.id) {
+        trackEvent('view_item', {
+            currency: 'NGN',
+            value: product.basePrice,
+            items: [{
+                item_id: product.id,
+                item_name: product.name,
+                item_category: product.category || 'other',
+                price: product.basePrice,
+                quantity: 1
+            }]
+        });
+    }
+
   // --- Size guide accordion ---
   const guideToggle = document.getElementById("guide-toggle");
   const guideContent = document.getElementById("size-guide-content");
@@ -70,9 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   addToCartBtn?.addEventListener("click", () => {
     if (!selectedVariant) {
-      showToast("Please select a size first");
-      return;
+        showToast("Please select a size first");
+        return;
     }
+
     const quantity = parseInt(qtyInput.value, 10) || 1;
     const finalPrice = product.basePrice + selectedVariant.addPrice;
 
@@ -80,31 +95,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const idx = cart.findIndex((i) => i.variant_id === selectedVariant.id);
 
     if (idx !== -1) {
-      const newQty = cart[idx].quantity + quantity;
-      if (newQty > selectedVariant.stock) {
-        showToast(`Only ${selectedVariant.stock} left!`);
-        return;
-      }
-      cart[idx].quantity = newQty;
-      showToast(`Cart updated (${newQty})`);
+        const newQty = cart[idx].quantity + quantity;
+        if (newQty > selectedVariant.stock) {
+            showToast(`Only ${selectedVariant.stock} left!`);
+            return;
+        }
+        cart[idx].quantity = newQty;
+        showToast(`Cart updated (${newQty})`);
     } else {
-      if (quantity > selectedVariant.stock) {
-        showToast(`Only ${selectedVariant.stock} left!`);
-        return;
-      }
-      cart.push({
-        variant_id: selectedVariant.id,
-        product_id: product.id,
-        name: product.name,
-        size: selectedVariant.size,
-        price: finalPrice,
-        quantity: quantity,
-        image: product.image,
-        slug: product.slug,
-      });
-      showToast();
+        if (quantity > selectedVariant.stock) {
+            showToast(`Only ${selectedVariant.stock} left!`);
+            return;
+        }
+        cart.push({
+            variant_id: selectedVariant.id,
+            product_id: product.id,
+            name: product.name,
+            size: selectedVariant.size,
+            price: finalPrice,
+            quantity: quantity,
+            image: product.image,
+            slug: product.slug,
+        });
+        showToast();
     }
 
     saveCart(cart);
-  });
+
+    // === GA4 Event Tracking ===
+    trackEvent('add_to_cart', {
+        currency: 'NGN',
+        value: finalPrice * quantity,
+        items: [{
+            item_id: product.id,
+            item_name: product.name,
+            item_variant: selectedVariant.size,
+            price: finalPrice,
+            quantity: quantity
+        }]
+    });
+});
 });
