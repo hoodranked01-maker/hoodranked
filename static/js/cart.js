@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
 
         <div class="md:col-span-2 px-5 py-3 md:p-0 font-body text-body-md text-on-surface-variant md:text-center">
-          <span class="font-mono text-label-caps text-outline md:hidden inline-block mr-2">Price:</span>₦${item.price.toLocaleString()}
+          <span class="font-mono text-label-caps text-outline md:hidden inline-block mr-2">Price:</span>₦${item.price}
         </div>
 
         <div class="md:col-span-2 px-5 py-5 md:p-0 flex items-center justify-between md:justify-center gap-6">
