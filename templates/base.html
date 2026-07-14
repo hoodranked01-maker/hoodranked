@@ -23,13 +23,6 @@
 
         gtag('config', 'G-K4Z4JFNZHS');
     </script>
-    <script>
-        function trackEvent(eventName, params = {}) {
-            if (typeof gtag !== 'undefined') {
-                gtag('event', eventName, params);
-            }
-        }
-    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700&family=JetBrains+Mono:wght@500&display=swap"
@@ -58,6 +51,7 @@
     {% include "partials/music_widget.html" %}
 
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/analytics.js' %}"></script>
     {% block extra_scripts %}{% endblock %}
 </body>
 
