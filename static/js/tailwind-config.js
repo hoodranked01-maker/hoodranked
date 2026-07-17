@@ -11,6 +11,7 @@ tailwind.config = {
         "muted-steel": "#1F2937",
         "surface-gray": "#111111",
         "on-surface-variant": "#c4c7c8",
+        blood: "#7A0F0F",
       },
       borderRadius: {
         DEFAULT: "0px",
@@ -27,7 +28,7 @@ tailwind.config = {
         "section-gap": "128px",
       },
       fontFamily: {
-        display: ["Bebas Neue", "sans-serif"],
+        display: ["Orbitron", "sans-serif"],
         body: ["Montserrat", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
@@ -41,8 +42,8 @@ tailwind.config = {
           { lineHeight: "64px", letterSpacing: "0.05em", fontWeight: "400" },
         ],
         "headline-lg-mobile": [
-          "48px",
-          { lineHeight: "48px", fontWeight: "400" },
+          "40px",
+          { lineHeight: "40px", fontWeight: "400" },
         ],
         "headline-md": [
           "32px",

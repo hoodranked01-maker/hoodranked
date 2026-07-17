@@ -26,3 +26,20 @@ DATABASES = {
 
 # Email - Console backend for development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Static and media (development/local)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# Use WhiteNoise in development to serve static files locally
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media/'
+
+# Local file storage for uploaded media
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'

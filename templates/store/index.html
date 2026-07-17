@@ -4,6 +4,7 @@
 
 {# ---------- Hero ---------- #}
 <section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+    <div class="dark-overlay"></div>
     <div class="absolute inset-0 z-0">
         <div class="hidden md:block w-full h-full bg-cover bg-center md:bg-[center_top_-50px] brightness-75"
             style="background-image: url('{% static 'herodesktop.png' %}');"></div>
@@ -12,18 +13,18 @@
     </div>
 
     <div class="relative z-10 text-center px-margin-mobile">
-        <h1 class="font-display text-display-2xl text-stark-white hidden md:block animate-fade-up">
-            RANKED ABOVE <br> THE REST
+        <h1 class="font-display text-headline-lg text-stark-white max-w-2xl hidden md:block animate-fade-up">
+            RANKED ABOVE THE REST
         </h1>
         <h1 class="font-display text-headline-lg-mobile text-stark-white md:hidden mb-4">
             RANKED ABOVE THE REST
         </h1>
-        <p class="font-body text-body-lg text-white max-w-xl mx-auto mb-10 tracking-widest uppercase">
+        <p class="font-body text-body-lg text-gray-300 max-w-xl mx-auto mb-10 tracking-widest uppercase">
             Authentic. Urban. Prestigious.
         </p>
         <div class="flex flex-col md:flex-row gap-4 justify-center">
             <a href="{% url 'products:store' %}"
-                class="font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest px-12 py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+                class="font-body font-bold bg-blood text-stark-white text-button uppercase tracking-widest px-12 py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
                 Shop Now
             </a>
             <a href="{% url 'store:lookbook' %}"
@@ -45,7 +46,7 @@
     <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
         <div>
             <span class="font-mono text-label-caps text-outline block mb-2">UPCOMING ARRIVALS</span>
-            <h2 class="font-display text-headline-lg text-pitch-black">WOMEN'S COLLECTION</h2>
+            <h2 class="font-display text-headline-lg-mobile lg:text-headline-lg text-pitch-black">WOMEN'S COLLECTION</h2>
         </div>
         <a href="{% url 'products:store' %}"
             class="font-body font-bold text-button uppercase tracking-widest text-pitch-black border-b border-pitch-black pb-2 hover:text-outline hover:border-outline transition-colors">
@@ -55,7 +56,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
         <a href="" class="product-card group block border-l border-muted-steel pl-4 md:pl-0 md:border-0">
-            <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray mb-6">
+            <div class="relative overflow-hidden bg-surface-gray mb-6">
                 <img src="{% static 'hrwomenblack.jpeg' %}" alt="Hoodranked Black Women Top Drop"
                     class="product-card__img w-full h-full object-cover" loading="lazy">
                 <div class="absolute top-4 left-4">
@@ -74,7 +75,7 @@
         </a>
 
         <a href="" class="product-card group block border-l border-muted-steel pl-4 md:pl-0 md:border-0">
-            <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray mb-6">
+            <div class="relative overflow-hidden bg-surface-gray mb-6">
                 <img src="{% static 'hrwomenblue.jpeg' %}" alt="Hoodranked Blue Women Top Drop"
                     class="product-card__img w-full h-full object-cover" loading="lazy">
                 <div class="absolute top-4 left-4">
@@ -93,7 +94,7 @@
         </a>
 
         <a href="" class="product-card group block border-l border-muted-steel pl-4 md:pl-0 md:border-0">
-            <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray mb-6">
+            <div class="relative overflow-hidden bg-surface-gray mb-6">
                 <img src="{% static 'hrwomenpink.jpeg' %}" alt="Hoodranked Pink Women Top Drop"
                     class="product-card__img w-full h-full object-cover" loading="lazy">
                 <div class="absolute top-4 left-4">
@@ -121,7 +122,7 @@
             <div class="w-full md:w-1/2 order-2 md:order-1">
                 <div class="border-l-2 border-stark-white pl-4 md:pl-12">
                     <span class="font-mono text-label-caps text-outline block mb-4">THE ETHOS</span>
-                    <h2 class="font-display text-headline-lg text-stark-white mb-8 leading-tight">
+                    <h2 class="font-display text-headline-md lg:text-headline-lg text-stark-white mb-8 leading-tight">
                         AUTHENTICITY<br> IS THE HIGHEST<br> RANK
                     </h2>
                     <p class="font-body text-body-lg text-on-surface-variant mb-10 max-w-md leading-relaxed">

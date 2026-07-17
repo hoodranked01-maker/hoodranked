@@ -65,6 +65,14 @@ body {
     background: #1f2937;
 }
 
+.dark-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+    z-index: 1;
+}
+
 /* Product card image zoom + dim on hover, no JS required */
 .product-card .product-card__img {
     transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;

@@ -65,7 +65,7 @@ def process_checkout(request):
         payload = {
             "email": order.email,
             "amount": int(total * 100),
-            "split_code": "SPL_nhsUhQOZ0k", 
+            # "split_code": "SPL_nhsUhQOZ0k", 
             "reference": order.reference,
             "callback_url": request.build_absolute_uri(f"/payment/success/"),
             "metadata": {

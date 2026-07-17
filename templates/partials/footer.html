@@ -1,47 +1,38 @@
 {% load static %}
-<footer class="bg-pitch-black border-t border-muted-steel">
-    <div
-        class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-section-gap max-w-container-max mx-auto gap-12">
+<footer class="bg-pitch-black border-t border-blood/30">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-24 text-center">
 
-        <div class="flex flex-col items-center md:items-start text-center md:text-left">
-            <span class="font-display text-headline-md text-stark-white mb-4">HOODRANKED</span>
-            <p class="font-mono text-label-caps text-outline max-w-xs">
-                CRAFTED FOR THOSE WHO COMMAND RESPECT WITHOUT UTTERING A WORD.
-            </p>
+        <span class="font-display font-bold text-xs tracking-[0.3em] uppercase text-blood block mb-6">
+            Contact Us
+        </span>
+        <a href="mailto:info@hoodranked.store"
+            class="font-display font-black text-2xl md:text-4xl tracking-wide uppercase text-blood hover:text-stark-white transition-colors block mb-20 break-all">
+            INFO@HOODRANKED.STORE
+        </a>
+
+        <div class="pt-12 border-t border-blood/20 max-w-xs mx-auto">
+            <span class="font-mono text-[10px] tracking-[0.2em] uppercase text-blood/60 block mb-5">
+                Terms and Policies
+            </span>
+            <nav class="flex flex-col gap-3">
+                <a href="{% url 'store:contact' %}"
+                    class="font-mono text-[11px] tracking-widest uppercase text-outline hover:text-stark-white transition-colors">Contact
+                    Information</a>
+                <a href="{% url 'store:privacy' %}"
+                    class="font-mono text-[11px] tracking-widest uppercase text-outline hover:text-stark-white transition-colors">Privacy
+                    Policy</a>
+                <a href="{% url 'store:terms' %}"
+                    class="font-mono text-[11px] tracking-widest uppercase text-outline hover:text-stark-white transition-colors">Terms
+                    of Service</a>
+                <a href="{% url 'orders:track_order' %}"
+                    class="font-mono text-[11px] tracking-widest uppercase text-outline hover:text-stark-white transition-colors">Track
+                    Order</a>
+            </nav>
         </div>
 
-        <nav class="flex flex-wrap justify-center gap-8 md:gap-12">
-            <a href="{% url 'store:index' %}"
-                class="font-mono text-label-caps text-outline hover:text-stark-white underline decoration-1 underline-offset-4 transition-colors">Privacy
-                Policy</a>
-            <a href="{% url 'store:index' %}"
-                class="font-mono text-label-caps text-outline hover:text-stark-white underline decoration-1 underline-offset-4 transition-colors">Terms
-                of Service</a>
-            <a href="{% url 'store:index' %}"
-                class="font-mono text-label-caps text-outline hover:text-stark-white underline decoration-1 underline-offset-4 transition-colors">Shipping
-                &amp; Returns</a>
-        </nav>
-
-        <div class="flex items-center gap-6">
-            <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr" target="_blank"
-                rel="noopener noreferrer" aria-label="Instagram"
-                class="text-outline hover:text-stark-white transition-colors text-xl">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-            <a href="https://t.snapchat.com/zZGXw5Ys" target="_blank" rel="noopener noreferrer" aria-label="Snapchat"
-                class="text-outline hover:text-stark-white transition-colors text-xl">
-                <i class="fa-brands fa-snapchat"></i>
-            </a>
-            <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
-                rel="noopener noreferrer" aria-label="TikTok"
-                class="text-outline hover:text-stark-white transition-colors text-xl">
-                <i class="fa-brands fa-tiktok"></i>
-            </a>
-        </div>
     </div>
 
-    <div class="border-t border-muted-steel/50 py-8 text-center">
-        <p class="font-mono text-[10px] tracking-widest text-outline">&copy; {% now "Y" %} HOODRANKED. ALL RIGHTS
-            RESERVED.</p>
+    <div class="border-t border-blood/20 py-6 text-center">
+        <p class="font-mono text-[9px] tracking-widest text-outline/60">&copy; {% now "Y" %} HOODRANKED</p>
     </div>
 </footer>

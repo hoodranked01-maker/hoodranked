@@ -1,111 +1,78 @@
 {% load static %}
-
-<!-- 1. HEADER (STAYS CLEAN AND INDEPENDENT) -->
-<header data-site-header
-    class="bg-stark-white sticky top-0 z-40 border-b border-muted-steel w-full transition-all duration-300">
-    <!-- Changed from flex to md:grid md:grid-cols-3 for perfect centering alignment -->
+<header data-site-header class="sticky top-0 z-50 bg-blood w-full">
     <div
-        class="flex items-center justify-between md:grid md:grid-cols-3 items-center w-full px-margin-mobile md:px-margin-desktop py-unit max-w-container-max mx-auto">
+        class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-5 max-w-container-max mx-auto relative">
 
-        {# Left Navigation Block #}
-        <nav class="hidden md:flex items-center gap-8 justify-start">
-            <a href="{% url 'store:index' %}"
-                class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'index' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">Home</a>
+        {# Desktop nav #}
+        <nav class="hidden md:flex items-center gap-8">
             <a href="{% url 'products:store' %}"
-                class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'store' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">Shop</a>
+                class="font-display font-bold text-[13px] tracking-widest uppercase text-stark-white/80 hover:text-stark-white transition-colors">
+                Shop
+            </a>
             <a href="{% url 'store:contact' %}"
-                class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90
-                                            {% if request.resolver_match.url_name == 'contact' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">
-                Contact
+                class="font-display font-bold text-[13px] tracking-widest uppercase text-stark-white/80 hover:text-stark-white transition-colors">
+                Info
             </a>
         </nav>
 
-        {# Centered Logo Block #}
-        <div class="flex justify-start md:justify-center items-center">
-            <a href="{% url 'store:index' %}" class="flex-shrink-0">
-                <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-8 md:h-10 my-4 object-contain" loading="lazy">
-            </a>
-        </div>
-
-        {# Right Navigation & Utility Block #}
-        <div class="flex items-center justify-end gap-8">
-            {# Right Nav Block (Hidden on mobile) #}
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="{% url 'orders:track_order' %}"
-                    class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'track_order' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">
-                    Track an order
-                </a>
-                <a href="{% url 'users:profile' %}"
-                    class="font-body font-bold text-button uppercase tracking-widest pb-1 border-b-2 transition-colors scale-95 active:scale-90 {% if request.resolver_match.url_name == 'profile' %}text-pitch-black border-pitch-black{% else %}text-outline border-transparent hover:text-pitch-black{% endif %}">Account</a>
-            </nav>
-
-            {# Icons & Triggers #}
-            <div class="flex items-center gap-6">
-
-                <a href="{% url 'store:cart' %}" aria-label="Cart"
-                    class="text-pitch-black hover:text-outline transition-colors relative">
-                    <span class="material-symbols-outlined">shopping_bag</span>
-                    <span
-                        class="cart-count absolute -top-1 -right-1 bg-pitch-black text-stark-white text-[10px] font-bold px-1 rounded-full">{{ cart_count|default:"0" }}</span>
-                </a>
-
-                <!-- Main Toggle Button -->
-                <button type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav-drawer"
-                    class="md:hidden text-pitch-black relative w-6 h-6 flex items-center justify-center"
-                    data-mobile-menu-toggle>
-                    <span class="material-symbols-outlined absolute inset-0 transition-all duration-300 transform"
-                        data-menu-icon-open>menu</span>
-                    <span
-                        class="material-symbols-outlined absolute inset-0 transition-all duration-300 transform opacity-0 scale-75"
-                        data-menu-icon-close>close</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- 2. MOBILE DRAWER BACKDROP (OUTSIDE HEADER, HIGHER Z-INDEX) -->
-<div class="fixed inset-0 bg-stark-white/70 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
-    data-mobile-menu-backdrop></div>
-
-<!-- 3. MOBILE NAV DRAWER (OUTSIDE HEADER, MAXIMUM Z-INDEX) -->
-<nav id="mobile-nav-drawer" class="fixed top-0 right-0 h-full w-[78vw] max-w-sm bg-stark-white border-l border-muted-steel z-50
-        flex flex-col translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden"
-    data-mobile-menu>
-
-    <div class="flex justify-between items-center px-margin-mobile py-unit border-b border-muted-steel h-[74px]">
-        {# Drawer Logo #}
-        <a href="{% url 'store:index' %}" class="flex-shrink-0">
-            <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-4 object-contain" loading="lazy">
+        <a href="{% url 'store:index' %}" class="flex-shrink-0 md:absolute md:left-1/2 md:-translate-x-1/2">
+            <span class="font-display font-black text-xl md:text-2xl tracking-wider text-stark-white uppercase">
+                HOODRANKED
+            </span>
         </a>
 
-        <!-- Drawer Close Button -->
-        <button type="button" aria-label="Close menu" class="text-pitch-black flex items-center justify-center w-6 h-6"
-            data-mobile-menu-toggle>
-            <span class="material-symbols-outlined">close</span>
-        </button>
+        {# Right side: currency badge + cart #}
+        <div class="flex items-center gap-5 md:gap-6">
+            <button type="button" aria-label="Currency" class="hidden sm:flex items-center gap-1.5 text-stark-white">
+                <span class="w-4 h-4 rounded-full overflow-hidden flex-shrink-0 border border-stark-white/30"
+                    aria-hidden="true">
+                    <span
+                        class="block w-full h-full bg-[linear-gradient(to_right,#008751_33%,#ffffff_33%,#ffffff_66%,#008751_66%)]"></span>
+                </span>
+                <span class="font-display font-bold text-xs tracking-wider">NGN</span>
+                <span class="material-symbols-outlined text-base leading-none">expand_more</span>
+            </button>
+
+            <a href="{% url 'store:cart' %}" aria-label="Cart"
+                class="text-stark-white hover:text-stark-white/70 transition-colors relative">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span
+                    class="cart-count absolute -top-1.5 -right-1.5 bg-stark-white text-pitch-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{{
+                    cart_count|default:"0" }}</span>
+            </a>
+
+            <button type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav-drawer"
+                class="md:hidden text-stark-white relative w-6 h-6" data-mobile-menu-toggle>
+                <span class="material-symbols-outlined absolute inset-0 transition-all duration-300"
+                    data-menu-icon-open>menu</span>
+                <span class="material-symbols-outlined absolute inset-0 opacity-0 scale-75 transition-all duration-300"
+                    data-menu-icon-close>close</span>
+            </button>
+        </div>
     </div>
 
-    {# Links #}
-    <div class="flex flex-col gap-8 px-margin-mobile pt-12">
-        <a href="{% url 'store:index' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'index' %}text-pitch-black{% else %}text-outline{% endif %}">Home</a>
-        <a href="{% url 'products:store' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'store' %}text-pitch-black{% else %}text-outline{% endif %}">Shop</a>
-        <a href="{% url 'store:lookbook' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'lookbook' %}text-pitch-black{% else %}text-outline{% endif %}">Lookbook</a>
-        <!-- Added missing Contact link to mobile drawer view -->
-        <a href="{% url 'store:contact' %}" data-mobile-link
-        class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'contact' %}text-pitch-black{% else %}text-outline{% endif %}">Contact</a>
-        <a href="{% url 'users:profile' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'profile' %}text-pitch-black{% else %}text-outline{% endif %}">Account</a>
-        <a href="{% url 'orders:track_order' %}" data-mobile-link
-            class="font-body font-bold text-base uppercase {% if request.resolver_match.url_name == 'track_order' %}text-pitch-black{% else %}text-outline{% endif %}">Track an order</a>
-    </div>
+    {# Backdrop #}
+    <div class="fixed inset-0 bg-pitch-black/80 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
+        data-mobile-menu-backdrop></div>
 
-    {# Footer Tagline #}
-    <div class="mt-auto px-margin-mobile pb-10 pt-12 border-t border-muted-steel">
-        <span class="font-mono text-label-caps text-outline text-xs block tracking-wider">CRAFTED FOR THOSE WHO COMMAND
-            RESPECT</span>
-    </div>
-</nav>
+    {# Mobile nav drawer — dark/blood theme #}
+    <nav id="mobile-nav-drawer"
+        class="fixed top-0 right-0 h-full w-[78vw] max-w-sm bg-pitch-black border-l border-blood z-50
+              flex flex-col translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden" data-mobile-menu>
+        <div class="flex justify-between items-center px-margin-mobile py-5 border-b border-blood/40">
+            <span class="font-display font-black text-sm tracking-wider text-stark-white uppercase">HOODRANKED</span>
+            <button type="button" aria-label="Close menu" class="text-stark-white" data-mobile-menu-toggle>
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex flex-col gap-8 px-margin-mobile pt-12">
+            <a href="{% url 'products:store' %}" data-mobile-link
+                class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Shop</a>
+            <a href="{% url 'store:contact' %}" data-mobile-link
+                class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Info</a>
+        </div>
+        <div class="mt-auto px-margin-mobile pb-10 pt-12 border-t border-blood/40">
+            <span class="font-mono text-[10px] tracking-widest text-blood uppercase">NGN &middot; Nigeria</span>
+        </div>
+    </nav>
+</header>
