@@ -71,7 +71,7 @@
 
 {% block content %}
 
-<main class="px-margin-mobile md:px-margin-desktop py-12 md:py-16 max-w-container-max mx-auto">
+<main class="px-margin-mobile md:px-margin-desktop py-24 md:py-28 max-w-container-max mx-auto">
 
     <nav class="font-mono text-label-caps text-outline mb-10">
         <a href="{% url 'store:index' %}" class="hover:text-stark-white transition-colors">Home</a> /
@@ -104,10 +104,10 @@
         {# ---------- Info ---------- #}
         <div class="space-y-10">
             <div>
-                <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none mb-4">
+                <h1 class="font-display text-headline-md md:text-headline-lg-mobile text-stark-white leading-none mb-4">
                     {{ product.name }}</h1>
                 <div class="flex flex-col md:flex-row md:items-center gap-6">
-                    <p class="font-display text-headline-md text-stark-white" id="productPriceDisplay"
+                    <p class="font-display text-[24px] text-stark-white" id="productPriceDisplay"
                         data-ngn-price="{{ product.price }}">
                         ₦{{ product.price|intcomma }}
                     </p>

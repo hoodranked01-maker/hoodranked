@@ -28,7 +28,7 @@
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700&family=JetBrains+Mono:wght@500&display=swap"
         rel="stylesheet">
         <link
-            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:wght@400;700&family=JetBrains+Mono:wght@500&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:wght@400;700&family=JetBrains+Mono:wght@500&display=swap&family=Wallpoet&display=swap"
             rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
             rel="stylesheet">
@@ -45,9 +45,11 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
-
-<body class="bg-pitch-black selection:bg-stark-white selection:text-pitch-black overlay-x-hidden">
-
+{% with request.resolver_match.url_name as url_name %}
+<body class="{% if url_name == 'store' %}has-no-transparent-header{% else %}has-transparent-header{% endif %}">
+{% endwith %}
+<!-- <body class="bg-pitch-black selection:bg-stark-white selection:text-pitch-black {% block body_class %}{% endblock %}"> -->
+    {% block announcement_bar %}{% include "partials/announcement_bar.html" %}{% endblock %}
     {% include "partials/header.html" %}
 
     <main>

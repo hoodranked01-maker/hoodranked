@@ -1,48 +1,46 @@
 {% load static %}
-<header data-site-header class="sticky top-0 z-50 bg-blood w-full">
+<header data-site-header class="sticky top-0 z-50 w-full">
     <div
         class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-5 max-w-container-max mx-auto relative">
 
         {# Desktop nav #}
         <nav class="hidden md:flex items-center gap-8">
             <a href="{% url 'products:store' %}"
-                class="font-display font-bold text-[13px] tracking-widest uppercase text-stark-white/80 hover:text-stark-white transition-colors">
+                class="font-display font-bold text-[13px] tracking-widest uppercase opacity-80 hover:opacity-100 transition-opacity">
                 Shop
             </a>
             <a href="{% url 'store:contact' %}"
-                class="font-display font-bold text-[13px] tracking-widest uppercase text-stark-white/80 hover:text-stark-white transition-colors">
+                class="font-display font-bold text-[13px] tracking-widest uppercase opacity-80 hover:opacity-100 transition-opacity">
                 Info
             </a>
         </nav>
 
         <a href="{% url 'store:index' %}" class="flex-shrink-0 md:absolute md:left-1/2 md:-translate-x-1/2">
-            <span class="font-display font-black text-xl md:text-2xl tracking-wider text-stark-white uppercase">
+            <span class="font-display font-black text-xl md:text-2xl tracking-wider uppercase">
                 HOODRANKED
             </span>
         </a>
 
         {# Right side: currency badge + cart #}
         <div class="flex items-center gap-5 md:gap-6">
-            <button type="button" aria-label="Currency" class="hidden sm:flex items-center gap-1.5 text-stark-white">
-                <span class="w-4 h-4 rounded-full overflow-hidden flex-shrink-0 border border-stark-white/30"
+            <button type="button" aria-label="Currency" class="hidden sm:flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full overflow-hidden flex-shrink-0 border border-current/30"
                     aria-hidden="true">
                     <span
                         class="block w-full h-full bg-[linear-gradient(to_right,#008751_33%,#ffffff_33%,#ffffff_66%,#008751_66%)]"></span>
                 </span>
                 <span class="font-display font-bold text-xs tracking-wider">NGN</span>
-                <span class="material-symbols-outlined text-base leading-none">expand_more</span>
+                <!-- <span class="material-symbols-outlined text-base leading-none">expand_more</span> -->
             </button>
 
-            <a href="{% url 'store:cart' %}" aria-label="Cart"
-                class="text-stark-white hover:text-stark-white/70 transition-colors relative">
+            <a href="{% url 'store:cart' %}" aria-label="Cart" class="hover:opacity-70 transition-opacity relative">
                 <span class="material-symbols-outlined">shopping_bag</span>
                 <span
-                    class="cart-count absolute -top-1.5 -right-1.5 bg-stark-white text-pitch-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{{
-                    cart_count|default:"0" }}</span>
+                    class="cart-count absolute -top-1.5 -right-1.5 bg-stark-white text-pitch-black text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{{ cart_count|default:"0" }}</span>
             </a>
 
             <button type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav-drawer"
-                class="md:hidden text-stark-white relative w-6 h-6" data-mobile-menu-toggle>
+                class="md:hidden relative w-6 h-6" data-mobile-menu-toggle>
                 <span class="material-symbols-outlined absolute inset-0 transition-all duration-300"
                     data-menu-icon-open>menu</span>
                 <span class="material-symbols-outlined absolute inset-0 opacity-0 scale-75 transition-all duration-300"
@@ -55,7 +53,6 @@
     <div class="fixed inset-0 bg-pitch-black/80 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
         data-mobile-menu-backdrop></div>
 
-    {# Mobile nav drawer — dark/blood theme #}
     <nav id="mobile-nav-drawer"
         class="fixed top-0 right-0 h-full w-[78vw] max-w-sm bg-pitch-black border-l border-blood z-50
               flex flex-col translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden" data-mobile-menu>
@@ -68,8 +65,19 @@
         <div class="flex flex-col gap-8 px-margin-mobile pt-12">
             <a href="{% url 'products:store' %}" data-mobile-link
                 class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Shop</a>
+            <a href="{% url 'store:lookbook' %}" data-mobile-link
+                class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Lookbook</a>
             <a href="{% url 'store:contact' %}" data-mobile-link
                 class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Info</a>
+            <a href="{% url 'orders:track_order' %}" data-mobile-link
+                class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Track your Order</a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'users:profile' %}" data-mobile-link
+                class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Profile</a>
+            {% else %}
+            <a href="{% url 'account_login' %}" data-mobile-link
+                class="font-display font-bold text-lg tracking-wider uppercase text-stark-white">Login</a>
+            {% endif %}
         </div>
         <div class="mt-auto px-margin-mobile pb-10 pt-12 border-t border-blood/40">
             <span class="font-mono text-[10px] tracking-widest text-blood uppercase">NGN &middot; Nigeria</span>

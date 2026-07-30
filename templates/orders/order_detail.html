@@ -7,7 +7,7 @@
 {% block content %}
 
 <section
-    class="px-margin-mobile md:px-margin-desktop pt-20 pb-12 max-w-container-max mx-auto border-b border-muted-steel">
+    class="px-margin-mobile md:px-margin-desktop pt-24 pb-8 max-w-container-max mx-auto border-b border-muted-steel">
     <a href="{% url 'orders:order_history' %}"
         class="font-mono text-label-caps text-outline hover:text-stark-white transition-colors inline-flex items-center gap-2 mb-8">
         <span class="material-symbols-outlined text-base">arrow_back</span> ORDER HISTORY
@@ -28,7 +28,7 @@
             {# Status timeline #}
             <div>
                 <h2 class="font-display text-headline-md text-stark-white mb-8">STATUS</h2>
-
+            
                 {% if order.status == 'cancelled' or order.status == 'failed' %}
                 <div class="border border-error px-6 py-5 flex items-center gap-4">
                     <span class="material-symbols-outlined text-error">error</span>
@@ -37,12 +37,39 @@
                     </p>
                 </div>
                 {% else %}
-                <div class="flex items-start">
+            
+                {# Mobile: vertical timeline, circle + label side by side, connector runs down #}
+                <div class="md:hidden flex flex-col">
+                    {% for step_label, step_key in order_status_steps %}
+                    <div class="flex items-start gap-4">
+                        <div class="flex flex-col items-center flex-shrink-0">
+                            <div
+                                class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0
+                                {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-surface-gray border border-muted-steel{% endif %}">
+                                {% if forloop.counter0 <= order_status_index %} <span
+                                    class="material-symbols-outlined text-pitch-black text-sm">check</span>
+                                    {% endif %}
+                            </div>
+                            {% if not forloop.last %}
+                            <div class="w-px flex-1 min-h-[28px]
+                                {% if forloop.counter0 < order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
+                            </div>
+                            {% endif %}
+                        </div>
+                        <p class="font-mono text-[10px] uppercase tracking-widest pt-1 {% if not forloop.last %}pb-6{% endif %}
+                            {% if forloop.counter0 <= order_status_index %}text-stark-white{% else %}text-outline{% endif %}">
+                            {{ step_label }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            
+                {# Desktop: original horizontal layout, connector runs across #}
+                <div class="hidden md:flex items-start">
                     {% for step_label, step_key in order_status_steps %}
                     <div class="flex-1 flex flex-col items-center text-center relative">
                         {% if not forloop.first %}
-                        <div
-                            class="absolute top-3 h-px w-full right-1/2
+                        <div class="absolute top-3 h-px w-full right-1/2
                               {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
                         </div>
                         {% endif %}
@@ -53,14 +80,14 @@
                                 class="material-symbols-outlined text-pitch-black text-sm">check</span>
                                 {% endif %}
                         </div>
-                        <p
-                            class="font-mono text-[10px] uppercase tracking-widest mt-3
+                        <p class="font-mono text-[10px] uppercase tracking-widest mt-3
                           {% if forloop.counter0 <= order_status_index %}text-stark-white{% else %}text-outline{% endif %}">
                             {{ step_label }}
                         </p>
                     </div>
                     {% endfor %}
                 </div>
+            
                 {% endif %}
             </div>
 

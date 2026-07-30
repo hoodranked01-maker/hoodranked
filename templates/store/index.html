@@ -1,40 +1,32 @@
 {% extends "base.html" %}
 {% load static %}
+
+{% block body_class %}has-transparent-header{% endblock %}
+{% block announcement_bar %}{% endblock %}
+
 {% block content %}
 
-{# ---------- Hero ---------- #}
 <section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
-    <div class="dark-overlay"></div>
+
     <div class="absolute inset-0 z-0">
-        <div class="hidden md:block w-full h-full bg-cover bg-center md:bg-[center_top_-50px] brightness-75"
-            style="background-image: url('{% static 'herodesktop.png' %}');"></div>
-        <div class="md:hidden w-full h-full bg-cover bg-center brightness-75"
-            style="background-image: url('{% static 'hero.jpeg' %}');"></div>
+        <img src="{% static 'newhero.jpeg' %}" alt="HOODRANKED"
+            class="hidden md:block w-full h-full object-cover object-top brightness-75">
+        <img src="{% static 'newhero.jpeg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
     </div>
+
+    <div class="dark-overlay absolute inset-0 z-[5]"></div>
 
     <div class="relative z-10 text-center px-margin-mobile">
-        <h1 class="font-display text-headline-lg text-stark-white max-w-2xl hidden md:block animate-fade-up">
-            RANKED ABOVE THE REST
+        <h1
+            class="font-display font-black uppercase text-headline-lg text-stark-white max-w-2xl hidden md:block animate-fade-up">
+            HOODRANKED
         </h1>
-        <h1 class="font-display text-headline-lg-mobile text-stark-white md:hidden mb-4">
-            RANKED ABOVE THE REST
+        <h1 class="font-display font-black uppercase text-headline-lg-mobile text-stark-white md:hidden mb-4">
+            HOODRANKED
         </h1>
-        <p class="font-body text-body-lg text-gray-300 max-w-xl mx-auto mb-10 tracking-widest uppercase">
-            Authentic. Urban. Prestigious.
-        </p>
-        <div class="flex flex-col md:flex-row gap-4 justify-center">
-            <a href="{% url 'products:store' %}"
-                class="font-body font-bold bg-blood text-stark-white text-button uppercase tracking-widest px-12 py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
-                Shop Now
-            </a>
-            <a href="{% url 'store:lookbook' %}"
-                class="font-body font-bold border border-stark-white text-stark-white text-button uppercase tracking-widest px-12 py-5 hover:bg-stark-white hover:text-pitch-black transition-all-custom active:scale-95">
-                View Lookbook
-            </a>
-        </div>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
         <span class="font-mono text-label-caps text-outline">SCROLL</span>
         <div class="w-[1px] h-12 bg-muted-steel relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1/2 bg-stark-white animate-bounce-slow"></div>
@@ -42,11 +34,29 @@
     </div>
 </section>
 
-<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-stark-white">
+<section class="relative h-screen w-full overflow-hidden flex items-end justify-start p-8 md:p-16">
+    <div class="absolute inset-0 z-0 overflow-hidden">
+        <video autoplay loop muted playsinline class="hidden md:block w-full h-full object-cover object-top brightness-75">
+            <source src="{% static 'second.mp4' %}" type="video/mp4">
+        </video>
+    
+        <video autoplay loop muted playsinline class="md:hidden w-full h-full object-cover brightness-75">
+            <source src="{% static 'second.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="relative z-10 max-w-xl text-white">
+        <p class="font-body text-lg md:text-xl text-gray-200">New female pieces soon.</p>
+    </div>
+</section>
+
+
+<!-- <section class="py-section-gap px-margin-mobile md:px-margin-desktop mx-auto bg-stark-white">
     <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
         <div>
             <span class="font-mono text-label-caps text-outline block mb-2">UPCOMING ARRIVALS</span>
-            <h2 class="font-display text-headline-lg-mobile lg:text-headline-lg text-pitch-black">WOMEN'S COLLECTION</h2>
+            <h2 class="font-display font-black uppercase text-headline-lg-mobile lg:text-headline-lg text-pitch-black">
+                WOMEN'S COLLECTION</h2>
         </div>
         <a href="{% url 'products:store' %}"
             class="font-body font-bold text-button uppercase tracking-widest text-pitch-black border-b border-pitch-black pb-2 hover:text-outline hover:border-outline transition-colors">
@@ -112,10 +122,10 @@
             </div>
         </a>
     </div>
-</section>
+</section> -->
 
 {# ---------- Brand spotlight ---------- #}
-<section class="relative py-section-gap bg-surface-gray">
+<!-- <section class="relative py-section-gap bg-surface-gray">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <div class="flex flex-col md:flex-row items-center gap-16">
 
@@ -148,7 +158,7 @@
 
         </div>
     </div>
-</section>
+</section> -->
 
 {# ---------- Marquee ---------- #}
 <section class="py-section-gap overflow-hidden" aria-hidden="true">
@@ -156,11 +166,10 @@
         <div class="flex animate-marquee items-center">
             {% for i in "1234" %}
             <span
-                class="font-display text-[160px] leading-none {% if forloop.counter|divisibleby:2 %}text-stark-white{% else %}text-outline-stroke{% endif %} mx-12">HOODRANKED</span>
+                class="font-displaysec text-[160px] leading-none {% if forloop.counter|divisibleby:2 %}text-blood{% else %}text-outline-stroke{% endif %} mx-12">HOODRANKED</span>
             {% endfor %}
         </div>
     </div>
 </section>
 
 {% endblock %}
-

@@ -23,13 +23,13 @@ def thank_you(request):
     return render(request, 'store/thanks.html')
     
 def privacy(request):
-    return render(request, 'store/privacy.html')
+    return render(request, 'legal/privacy.html')
     
 def terms(request):
-    return render(request, 'store/terms.html')
+    return render(request, 'legal/terms.html')
     
 def shipping(request):
-    return render(request, 'store/shipping.html')
+    return render(request, 'legal/shipping.html')
 
 def lookbook(request):
     looks = Look.objects.filter(is_published=True)
