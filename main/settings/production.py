@@ -41,6 +41,7 @@ CACHES = {
 # Static and media (production/cloud)
 # Serve static from Supabase/S3 endpoint when configured
 STATIC_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/static/" if AWS_S3_ENDPOINT_URL else '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/" if AWS_S3_ENDPOINT_URL else '/media/'
 
 # Use custom storage backend for static files (public) and S3-like storage for default files
