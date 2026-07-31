@@ -4,9 +4,9 @@ from decimal import Decimal
 from django.db.models import Q
 from django.views.decorators.cache import cache_page
 
-@cache_page(60 * 15)
+# @cache_page(60 * 15)
 def store(request):
-    products_list = Product.objects.all()
+    products_list = Product.objects.filter(is_active=True)
 
     collection_id = request.GET.get('collection')
     min_price = request.GET.get('min_price')

@@ -24,6 +24,7 @@ class Product(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, null=True, related_name='products')
     stock = models.PositiveIntegerField(default=0)
     is_available = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
