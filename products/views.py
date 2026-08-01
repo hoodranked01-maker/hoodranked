@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.db.models import Q
 from django.views.decorators.cache import cache_page
 
-@cache_page(60 * 15)
+# @cache_page(60 * 15)
 def store(request):
     products_list = Product.objects.filter(is_active=True)
 
