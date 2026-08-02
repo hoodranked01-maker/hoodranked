@@ -1,0 +1,155 @@
+/* HOODRANKED custom styles
+   Anything Tailwind's utility classes can't express lives here:
+   keyframes, the outlined-text effect, and scrollbar theming. */
+
+body {
+    background-color: #000000;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+.text-outline-stroke {
+    -webkit-text-stroke: 1px #7A0F0F;
+    color: transparent;
+}
+
+.transition-all-custom {
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1f2937;
+}
+
+/* Product card image zoom + dim on hover, no JS required */
+.product-card .product-card__img {
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+.product-card:hover .product-card__img {
+    transform: scale(1.05);
+    filter: brightness(0.7);
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    animation: marquee 30s linear infinite;
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up {
+    animation: fade-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bounce-slow {
+
+    0%,
+    100% {
+        transform: translateY(-100%);
+    }
+
+    50% {
+        transform: translateY(100%);
+    }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+    .animate-marquee,
+    .animate-fade-up,
+    .animate-bounce-slow,
+    .product-card .product-card__img {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Homepage hero: header floats transparently over the hero photo instead of
+   sitting above it. Opt-in via body.has-transparent-header so every other
+   page keeps the normal space-reserving sticky header. Specificity here
+   (body.class + [data-attr]) beats Tailwind's single-class .sticky/.top-0
+   utilities, so no !important needed. */
+/* Header text/icon color and background, controlled entirely here via
+   inheritance + these three rules — nothing in header.html sets its own
+   color or background.
+
+   1. Default (every page, unscrolled): transparent bg, black text/icons.
+      Reads fine against light pages (Shop/Info/Contact/etc.).
+   2. Homepage only (unscrolled): white text/icons instead, since it sits
+      over a dark hero photo rather than a light page. Also fixed-position
+      so the header floats over that photo instead of pushing it down.
+   3. Scrolled (every page): solid blood-red bg + white text/icons. Black
+      text would be unreadable against blood-red, so this always wins
+      regardless of which page-type rule applied above it. */
+[data-site-header] {
+    color: #000000;
+    background-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.has-no-transparent-header [data-site-header] {
+    color: #000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+body.has-transparent-header [data-site-header] {
+    color: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+[data-site-header].is-scrolled {
+    background-color: #7A0F0F;
+    color: #ffffff;
+}
+
+/* Cinematic dark-to-blood gradient over the hero photo — darkest at the top
+   (where header text sits) so nav stays legible, with a faint blood tint
+   bleeding in at the bottom for mood. Position/z-index are set via Tailwind
+   utilities on the element itself (absolute inset-0 z-[5]); this class only
+   supplies the gradient. */
+.dark-overlay {
+    background: linear-gradient(180deg,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.2) 45%,
+            rgba(122, 15, 15, 0.35) 100%);
+    pointer-events: none;
+}
