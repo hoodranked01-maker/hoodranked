@@ -2,6 +2,7 @@
 {% load static %}
 {% load humanize %}
 {% load waffle_tags %}
+{% load cache %}
 
 
 {% block title %}Store | HOODRANKED — Premium Streetwear Drops{% endblock %}
@@ -103,7 +104,7 @@ hits different.{% endblock %}
     <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
         <!-- 1. JavaScript will instantly inject skeletons here on load -->
     </div>
-
+    {% cache 900 store_grid_block current_filters.collection current_filters.min_price current_filters.max_price current_filters.q current_filters.sort %}
     {% if products %}
     {% flag 'enable_skeleton_load' %}
     <script src="{% static 'js/skeleton.js' %}"></script>
@@ -141,7 +142,7 @@ hits different.{% endblock %}
             <p class="font-body text-body-md text-outline">No available products right now — check back soon.</p>
         </div>
         {% endif %}
-
+    {% endcache %}
 
 </section>
 
