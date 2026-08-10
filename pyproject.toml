@@ -9,6 +9,7 @@ dependencies = [
     "cloudinary>=1.45.0",
     "django>=5.2.10",
     "django-allauth>=65.18.0",
+    "django-anymail[brevo]>=15.1",
     "django-cloudinary-storage>=0.3.0",
     "django-compressor>=4.6.0",
     "django-redis>=7.0.0",

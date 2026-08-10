@@ -185,15 +185,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # ================== EMAIL CONFIGURATION ==================
-EMAIL_SUBJECT_PREFIX = '[Hood Ranked] '
-DEFAULT_FROM_EMAIL="Hood Ranked <no-reply@hoodranked.store>"
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+# EMAIL_SUBJECT_PREFIX = '[Hood Ranked] '
+# DEFAULT_FROM_EMAIL="Hood Ranked <no-reply@hoodranked.store>"
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.getenv('EMAIL_HOST')
+# EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
+
+ANYMAIL = {
+    "BREVO_API_KEY": os.getenv("BREVO_API_KEY"),
+}
+
+DEFAULT_FROM_EMAIL = "Hood Ranked <no-reply@hoodranked.store>"
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_SUBJECT_PREFIX = "[Hood Ranked] "
 
 # Performance
 SECURE_BROWSER_XSS_FILTER = True
