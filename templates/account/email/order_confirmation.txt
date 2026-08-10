@@ -1,0 +1,12 @@
+Hi{% if user %} {{ user.get_full_name|default:user.email }}{% endif %},
+
+Thank you for your order!
+
+Order ID: #{{ order.order_id }}
+Total Paid: ₦{{ order.total_price }}
+
+We’ve received your payment and your order is now being processed.
+You’ll receive another email when it ships.
+
+– Hood Ranked
+https://www.hoodranked.com

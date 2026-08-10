@@ -70,17 +70,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".size-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
-      document.querySelectorAll(".size-btn").forEach((b) => b.classList.remove("bg-pitch-black", "text-stark-white"));
+      // 1. Reset ALL buttons back to the default HTML state
+      document.querySelectorAll(".size-btn").forEach((b) => {
+        b.classList.remove("bg-stark-white", "text-pitch-black");
+        b.classList.add("text-stark-white");
+      });
+
+      // 2. Apply active styles to the clicked button
+      this.classList.remove("text-stark-white");
       this.classList.add("bg-stark-white", "text-pitch-black");
+
+      // 3. Save selected data
       selectedVariant = {
         id: this.dataset.variantId,
         size: this.dataset.size,
         addPrice: parseFloat(this.dataset.addPrice || "0"),
         stock: parseInt(this.dataset.stock, 10),
       };
-      addToCartBtn.disabled = false;
+      
+      if (addToCartBtn) addToCartBtn.disabled = false;
     });
   });
+
 
   addToCartBtn?.addEventListener("click", () => {
     if (!selectedVariant) {

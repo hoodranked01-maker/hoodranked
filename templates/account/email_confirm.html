@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Confirm Email | HOODRANKED{% endblock %}
+
+{% block body_class %}has-transparent-header{% endblock %}
+{% block announcement_bar %}{% endblock %}
+
+{% block content %}
+
+<section class="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-pitch-black">
+
+    <!-- Background image (same style as your hero) -->
+    <div class="absolute inset-0 z-0">
+        <img src="{% static 'newhero.jpeg' %}" alt=""
+            class="w-full h-full object-cover object-center brightness-[0.35]">
+    </div>
+    <div class="absolute inset-0 z-[1] bg-gradient-to-b from-black/70 via-black/40 to-black/80"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 w-full max-w-xl mx-auto px-6 py-24 text-center">
+
+        <!-- Logo -->
+        <div class="mb-12">
+            <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-10 md:h-12 mx-auto opacity-90">
+        </div>
+
+        {% if confirmation %}
+        {# Success state #}
+        <div class="space-y-8 animate-fade-up">
+            <div
+                class="inline-flex items-center justify-center w-20 h-20 rounded-full border border-stark-white/30 bg-white/5 backdrop-blur-sm mb-2">
+                <span class="material-symbols-outlined text-4xl text-stark-white">check</span>
+            </div>
+
+            <h1
+                class="font-display font-black uppercase text-4xl md:text-5xl tracking-tight text-stark-white leading-none">
+                Email<br>Confirmed
+            </h1>
+
+            <p class="font-body text-base md:text-lg text-gray-300 max-w-md mx-auto leading-relaxed">
+                You’re in. Your account is now active and ready for the drop.
+            </p>
+
+            <div class="pt-6">
+                <a href="{% url 'account_login' %}"
+                    class="inline-block font-body font-bold bg-stark-white text-pitch-black text-sm uppercase tracking-[0.2em] px-12 py-4 hover:bg-outline transition-colors duration-300">
+                    Continue to Login
+                </a>
+            </div>
+        </div>
+
+        {% else %}
+        {# Invalid / expired link #}
+        <div class="space-y-8 animate-fade-up">
+            <div
+                class="inline-flex items-center justify-center w-20 h-20 rounded-full border border-red-500/40 bg-red-500/10 backdrop-blur-sm mb-2">
+                <span class="material-symbols-outlined text-4xl text-red-400">error</span>
+            </div>
+
+            <h1
+                class="font-display font-black uppercase text-4xl md:text-5xl tracking-tight text-stark-white leading-none">
+                Link Invalid
+            </h1>
+
+            <p class="font-body text-base md:text-lg text-gray-300 max-w-md mx-auto leading-relaxed">
+                This confirmation link is invalid or has expired.
+            </p>
+
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="{% url 'account_login' %}"
+                    class="inline-block font-body font-bold bg-stark-white text-pitch-black text-sm uppercase tracking-[0.2em] px-10 py-4 hover:bg-outline transition-colors duration-300">
+                    Go to Login
+                </a>
+                <a href="{% url 'account_signup' %}"
+                    class="inline-block font-body font-bold border border-stark-white/40 text-stark-white text-sm uppercase tracking-[0.2em] px-10 py-4 hover:bg-white/10 transition-colors duration-300">
+                    Sign Up Again
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

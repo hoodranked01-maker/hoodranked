@@ -1,0 +1,16 @@
+{% load i18n %}
+{% autoescape off %}
+Hello,
+
+You're receiving this email because you need to confirm your email address for your Hood Ranked account.
+
+Please click the link below to confirm:
+
+{{ activate_url }}
+
+If you did not create an account, you can safely ignore this email.
+
+Thanks,
+The Hood Ranked Team
+https://www.hoodranked.com
+{% endautoescape %}

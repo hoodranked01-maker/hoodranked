@@ -1,0 +1,16 @@
+{% load i18n %}
+{% autoescape off %}
+Welcome to Hood Ranked!
+
+Thanks for signing up. Please confirm your email address by clicking the link below:
+
+{{ activate_url }}
+
+This helps us keep your account secure.
+
+If you did not sign up for Hood Ranked, you can safely ignore this email.
+
+See you inside,
+The Hood Ranked Team
+https://www.hoodranked.com
+{% endautoescape %}

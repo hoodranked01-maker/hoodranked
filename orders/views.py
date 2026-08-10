@@ -1,5 +1,7 @@
 import os
 from django.shortcuts import render, get_object_or_404, redirect, reverse
+
+from main import settings
 from .models import Order, OrderItem
 from django.contrib.auth.decorators import user_passes_test
 from django.http import JsonResponse
@@ -12,6 +14,8 @@ import requests
 import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
 
@@ -133,6 +137,27 @@ def payment_success(request):
             order.status = 'processing'
             order.save()
 
+            try:
+                subject = f"Order Confirmed – #{order.order_id}"
+                from_email = settings.DEFAULT_FROM_EMAIL
+                to_email = [order.email]
+
+                context = {
+                    "order": order,
+                    "user": order.user if order.user_id else None,
+                }
+
+                text_content = render_to_string("account/email/order_confirmation.txt", context)
+                html_content = render_to_string("account/email/order_confirmation.html", context)
+
+                msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+                msg.attach_alternative(html_content, "text/html")
+                msg.send(fail_silently=False)
+
+                logger.info(f"Order confirmation email sent for {order.order_id}")
+            except Exception as e:
+                logger.error(f"Failed to send order confirmation for {order.order_id}: {e}")
+                
             request.session['clear_cart_after_success'] = True
             
             logger.info(f"Payment VERIFIED & SUCCESS for order {order.order_id} - ref: {reference}")

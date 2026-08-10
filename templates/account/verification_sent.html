@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Check Your Email | HOODRANKED{% endblock %}
+{% block body_class %}has-transparent-header{% endblock %}
+{% block announcement_bar %}{% endblock %}
+
+{% block content %}
+<section class="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-pitch-black">
+    <div class="absolute inset-0 z-0">
+        <img src="{% static 'newhero.jpeg' %}" alt="" class="w-full h-full object-cover brightness-[0.35]">
+    </div>
+    <div class="absolute inset-0 z-[1] bg-gradient-to-b from-black/70 via-black/40 to-black/80"></div>
+
+    <div class="relative z-10 w-full max-w-xl mx-auto px-6 py-24 text-center">
+        <div class="mb-12">
+            <img src="{% static 'hrlogowhite.png' %}" alt="HOODRANKED" class="h-10 md:h-12 mx-auto opacity-90">
+        </div>
+
+        <div class="space-y-8">
+            <div
+                class="inline-flex items-center justify-center w-20 h-20 rounded-full border border-stark-white/30 bg-white/5 backdrop-blur-sm">
+                <span class="material-symbols-outlined text-4xl text-stark-white">mail</span>
+            </div>
+
+            <h1
+                class="font-display font-black uppercase text-4xl md:text-5xl tracking-tight text-stark-white leading-none">
+                Check Your<br>Inbox
+            </h1>
+
+            <p class="font-body text-base md:text-lg text-gray-300 max-w-md mx-auto leading-relaxed">
+                We’ve sent a confirmation link to your email. Click it to activate your account.
+            </p>
+
+            <p class="font-mono text-xs text-gray-500 tracking-widest uppercase">
+                Didn’t receive it? Check spam or request a new one.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

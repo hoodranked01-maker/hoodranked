@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://hoodranked.store',
+    'https://hoodranked.com',
     'http://127.0.0.1',
     'https://remonstratingly-pretorial-gaynelle.ngrok-free.dev'
 ]
@@ -132,6 +133,10 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 
 # allauth settings
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "/accounts/login/"
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/"
+
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -186,7 +191,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # ================== EMAIL CONFIGURATION ==================
 # EMAIL_SUBJECT_PREFIX = '[Hood Ranked] '
-# DEFAULT_FROM_EMAIL="Hood Ranked <no-reply@hoodranked.store>"
+# DEFAULT_FROM_EMAIL="Hood Ranked <no-reply@hoodranked.com>"
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = os.getenv('EMAIL_HOST')
 # EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
@@ -200,7 +205,7 @@ ANYMAIL = {
     "BREVO_API_KEY": os.getenv("BREVO_API_KEY"),
 }
 
-DEFAULT_FROM_EMAIL = "Hood Ranked <no-reply@hoodranked.store>"
+DEFAULT_FROM_EMAIL = "Hood Ranked <no-reply@hoodranked.com>"
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = "[Hood Ranked] "
 
