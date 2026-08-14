@@ -61,4 +61,4 @@ STORAGES = {
     },
 }
 
-STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
+# STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
