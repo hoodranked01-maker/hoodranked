@@ -9,9 +9,9 @@
 <section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
 
     <div class="absolute inset-0 z-0">
-        <img src="{% static 'newhero.jpeg' %}" alt="HOODRANKED"
+        <img src="{% static 'newhero2.jpeg' %}" alt="HOODRANKED"
             class="hidden md:block w-full h-full object-cover object-top brightness-75">
-        <img src="{% static 'newhero.jpeg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
+        <img src="{% static 'newhero2.jpeg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
     </div>
 
     <div class="dark-overlay absolute inset-0 z-[5]"></div>
@@ -36,13 +36,16 @@
 
 <section class="relative h-screen w-full overflow-hidden flex items-end justify-start p-8 md:p-16">
     <div class="absolute inset-0 z-0 overflow-hidden">
-        <video autoplay loop muted playsinline class="hidden md:block w-full h-full object-cover object-top brightness-75">
+        <img src="{% static 'second.jpeg' %}" alt="HOODRANKED"
+            class="hidden md:block w-full h-full object-cover object-top brightness-75">
+        <img src="{% static 'second.jpeg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
+        <!-- <video autoplay loop muted playsinline class="hidden md:block w-full h-full object-cover object-top brightness-75">
             <source src="{% static 'second.mp4' %}" type="video/mp4">
         </video>
     
         <video autoplay loop muted playsinline class="md:hidden w-full h-full object-cover brightness-75">
             <source src="{% static 'second.mp4' %}" type="video/mp4">
-        </video>
+        </video> -->
     </div>
 
     <div class="relative z-10 max-w-xl text-white">
