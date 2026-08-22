@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 class Collection(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -50,6 +51,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('product_detail', kwargs={'slug': self.slug})
     
     def get_primary_image(self):
         primary = self.images.filter(is_primary=True).first()

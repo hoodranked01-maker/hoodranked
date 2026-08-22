@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'django.contrib.humanize',
     'django.contrib.sites',
+    'django.contrib.sitemaps',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

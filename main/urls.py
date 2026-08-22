@@ -3,6 +3,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from orders.views import admin_orders, update_order_status
+from django.contrib.sitemaps.views import sitemap
+from products.sitemaps import StaticViewSitemap, ProductSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'products': ProductSitemap,
+}
 
 urlpatterns = [
     path('admin/orders/', admin_orders, name='admin_orders'),
@@ -13,6 +20,7 @@ urlpatterns = [
     path('', include('products.urls')),
     path('', include('orders.urls')),
     path('', include('users.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
 handler400 = 'store.views.bad_request'
 handler403 = 'store.views.permission_denied'
