@@ -9,7 +9,7 @@ class StaticViewSitemap(Sitemap):
 
     def items(self):
         # Add the URL names of your static pages here (homepage, about, contact)
-        return ['index', 'store', 'contact', 'cart', 'shipping'] 
+        return ['store:index', 'products:store', 'store:contact', 'store:cart', 'store:shipping'] 
 
     def location(self, item):
         return reverse(item)
