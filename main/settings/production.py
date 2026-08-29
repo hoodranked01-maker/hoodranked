@@ -61,4 +61,5 @@ STORAGES = {
     },
 }
 
+STATICFILES_STORAGE = "cloudinary_storage.storage.StaticHashedCloudinaryStorage"
 # STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
