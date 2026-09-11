@@ -6,13 +6,15 @@
 
 {% block content %}
 
-<div class="era-popup" data-era-popup role="dialog" aria-modal="true" aria-labelledby="era-popup-title"
+<div class="era-popup{% if show_site_lock_modal %} era-popup--locked{% endif %}" data-era-popup role="dialog" aria-modal="true" aria-labelledby="era-popup-title"
     aria-describedby="era-popup-message">
-    <div class="era-popup__backdrop" data-era-popup-close></div>
+    <div class="era-popup__backdrop"></div>
     <div class="era-popup__panel">
+        {% if not show_site_lock_modal %}
         <button class="era-popup__close" type="button" data-era-popup-close aria-label="Close announcement">
             <span aria-hidden="true">&times;</span>
         </button>
+        {% endif %}
         <span class="era-popup__eyebrow">A NEW CHAPTER</span>
         <h2 id="era-popup-title" class="era-popup__title">WE'RE ENTERING<br> A NEW ERA</h2>
         <p id="era-popup-message" class="era-popup__message">
@@ -197,7 +199,12 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const popup = document.querySelector("[data-era-popup]");
-        if (!popup || sessionStorage.getItem("hoodranked_era_popup_seen")) return;
+        if (!popup || popup.classList.contains("era-popup--locked")) return;
+
+        if (sessionStorage.getItem("hoodranked_era_popup_seen")) {
+            popup.classList.add("is-dismissed");
+            return;
+        }
 
         const closePopup = () => {
             popup.classList.add("is-dismissed");
