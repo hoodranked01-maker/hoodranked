@@ -8,8 +8,118 @@ body {
     overflow-x: hidden;
 }
 
+.era-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.era-popup.is-dismissed {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.era-popup__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+}
+
+.era-popup__panel {
+    position: relative;
+    width: min(100%, 520px);
+    padding: 48px 40px 44px;
+    color: #ffffff;
+    background: #000000;
+    border: 1px solid #ffffff;
+    box-shadow: 10px 10px 0 #052F19;
+    animation: era-popup-enter 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.era-popup__close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    color: #ffffff;
+    font-family: Montserrat, sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.era-popup__close:hover,
+.era-popup__close:focus-visible {
+    border-color: #ffffff;
+    outline: none;
+}
+
+.era-popup__eyebrow {
+    display: block;
+    margin-bottom: 18px;
+    color: #8e9192;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+}
+
+.era-popup__title {
+    margin: 0 0 24px;
+    color: #ffffff;
+    font-family: Wallpoet, sans-serif;
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 0.95;
+}
+
+.era-popup__message,
+.era-popup__drop {
+    max-width: 390px;
+    margin: 0;
+    font-family: Montserrat, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.era-popup__drop {
+    margin-top: 16px;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+@keyframes era-popup-enter {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 600px) {
+    .era-popup__panel {
+        padding: 44px 24px 32px;
+    }
+
+    .era-popup__title {
+        font-size: 36px;
+    }
+}
+
 .text-outline-stroke {
-    -webkit-text-stroke: 1px #7A0F0F;
+    -webkit-text-stroke: 1px #052F19;
+    /* -webkit-text-stroke: 1px #7A0F0F; */
     color: transparent;
 }
 
@@ -91,6 +201,7 @@ body {
     .animate-marquee,
     .animate-fade-up,
     .animate-bounce-slow,
+    .era-popup__panel,
     .product-card .product-card__img {
         animation: none !important;
         transition: none !important;

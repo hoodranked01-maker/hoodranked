@@ -12,7 +12,8 @@
           "muted-steel": "#1F2937",
           "surface-gray": "#111111",
           "on-surface-variant": "#c4c7c8",
-          blood: "#7A0F0F",
+          blood: "#052F19",
+          // blood: "#7A0F0F",
         },
         borderRadius: {
           DEFAULT: "0px",
@@ -37,7 +38,11 @@
         fontSize: {
           "display-2xl": [
             "120px",
-            { lineHeight: "110px", letterSpacing: "-0.02em", fontWeight: "400" },
+            {
+              lineHeight: "110px",
+              letterSpacing: "-0.02em",
+              fontWeight: "400",
+            },
           ],
           "headline-lg": [
             "64px",
@@ -53,8 +58,14 @@
           ],
           "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
           "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
-          button: ["14px", { lineHeight: "14px", letterSpacing: "0.15em", fontWeight: "700" }],
-          "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "500" }],
+          button: [
+            "14px",
+            { lineHeight: "14px", letterSpacing: "0.15em", fontWeight: "700" },
+          ],
+          "label-caps": [
+            "12px",
+            { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "500" },
+          ],
         },
       },
     },

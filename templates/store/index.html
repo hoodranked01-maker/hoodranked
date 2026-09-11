@@ -6,15 +6,31 @@
 
 {% block content %}
 
+<div class="era-popup" data-era-popup role="dialog" aria-modal="true" aria-labelledby="era-popup-title"
+    aria-describedby="era-popup-message">
+    <div class="era-popup__backdrop" data-era-popup-close></div>
+    <div class="era-popup__panel">
+        <button class="era-popup__close" type="button" data-era-popup-close aria-label="Close announcement">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <span class="era-popup__eyebrow">A NEW CHAPTER</span>
+        <h2 id="era-popup-title" class="era-popup__title">WE'RE ENTERING<br> A NEW ERA</h2>
+        <p id="era-popup-message" class="era-popup__message">
+            We're sorry for the delay in orders. Thank you for your patience while we get things right.
+        </p>
+        <p class="era-popup__drop">A discounted drop lands by 8PM.</p>
+    </div>
+</div>
+
 <section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
 
     <div class="absolute inset-0 z-0">
-        <img src="{% static 'hr1.jpeg' %}" alt="HOODRANKED"
+        <img src="{% static 'tee.jpg' %}" alt="HOODRANKED"
             class="hidden md:block w-full h-full object-cover object-top brightness-75">
-        <img src="{% static 'hr1.jpeg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
+        <img src="{% static 'tee.jpg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
     </div>
 
-    <div class="dark-overlay absolute inset-0 z-[5]"></div>
+    <!-- <div class="dark-overlay absolute inset-0 z-[5]"></div> -->
 
     <div class="relative z-10 text-center px-margin-mobile">
         <h1
@@ -175,4 +191,25 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const popup = document.querySelector("[data-era-popup]");
+        if (!popup || sessionStorage.getItem("hoodranked_era_popup_seen")) return;
+
+        const closePopup = () => {
+            popup.classList.add("is-dismissed");
+            sessionStorage.setItem("hoodranked_era_popup_seen", "true");
+        };
+
+        popup.querySelectorAll("[data-era-popup-close]").forEach((element) => {
+            element.addEventListener("click", closePopup);
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !popup.classList.contains("is-dismissed")) closePopup();
+        });
+    });
+</script>
 {% endblock %}
