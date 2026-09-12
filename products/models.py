@@ -98,4 +98,5 @@ class Variant(models.Model):
         verbose_name_plural = "Size Variants"
 
     def __str__(self):
-        return f"{self.product.name} - {self.size}"
+        product_name = self.product.name if self.product_id else "No product"
+        return f"{product_name} - {self.size}"
