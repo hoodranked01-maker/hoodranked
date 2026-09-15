@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect, reverse
 
 from main import settings
 from .models import Order, OrderItem
+from products.models import Variant
 from django.contrib.auth.decorators import user_passes_test
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -16,6 +17,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
@@ -31,10 +33,57 @@ def process_checkout(request):
         if not cart_items:
             return JsonResponse({'error': 'Cart is empty'}, status=400)
 
-        service_fee = int(data.get('service_fee', 0))
-        items_total = sum(item['price'] * item['quantity'] for item in cart_items)
-        total = items_total + service_fee
+        # ---------- SERVER-SIDE VALIDATION ----------
+        validated_items = []
+        calculated_subtotal = Decimal('0.00')
 
+        for item in cart_items:
+            variant_id = item.get('variant_id')
+            quantity = int(item.get('quantity', 1))
+            client_price = Decimal(str(item.get('price', 0)))
+
+            if not variant_id or quantity < 1:
+                return JsonResponse({
+                    'error': 'Invalid cart item',
+                    'code': 'INVALID_CART'
+                }, status=400)
+
+            try:
+                variant = Variant.objects.select_related('product').get(id=variant_id)
+            except Variant.DoesNotExist:
+                return JsonResponse({
+                    'error': 'Product no longer available',
+                    'code': 'ITEM_NOT_FOUND'
+                }, status=400)
+
+            # Real price from database
+            real_price = variant.product.price + variant.additional_price
+
+            # Price mismatch → cheeky boy
+            if client_price != real_price:
+                return JsonResponse({
+                    'error': 'Price mismatch detected',
+                    'code': 'PRICE_MISMATCH'
+                }, status=400)
+
+            # Stock check
+            if variant.available_stock < quantity:
+                return JsonResponse({
+                    'error': f'Only {variant.available_stock} left for {variant.product.name} ({variant.size})',
+                    'code': 'INSUFFICIENT_STOCK'
+                }, status=400)
+
+            validated_items.append({
+                'variant': variant,
+                'quantity': quantity,
+                'price': real_price,
+            })
+            calculated_subtotal += real_price * quantity
+
+        service_fee = int(data.get('service_fee', 0))
+        total = calculated_subtotal + Decimal(service_fee)
+
+        # ---------- CREATE ORDER ----------
         user = request.user if request.user.is_authenticated else None
 
         order = Order.objects.create(
@@ -52,15 +101,16 @@ def process_checkout(request):
             status='pending'
         )
 
-        for item in cart_items:
+        for item in validated_items:
             OrderItem.objects.create(
                 order=order,
-                product_id=item.get('product_id'),
-                variant_id=item.get('variant_id'),
+                product=item['variant'].product,
+                variant=item['variant'],
                 quantity=item['quantity'],
                 price=item['price']
             )
 
+        # ---------- PAYSTACK ----------
         headers = {
             "Authorization": f"Bearer {os.getenv('PAYSTACK_SECRET_KEY')}",
             "Content-Type": "application/json",
@@ -69,9 +119,8 @@ def process_checkout(request):
         payload = {
             "email": order.email,
             "amount": int(total * 100),
-            "split_code": "SPL_nhsUhQOZ0k",
             "reference": order.reference,
-            "callback_url": request.build_absolute_uri(f"/payment/success/"),
+            "callback_url": request.build_absolute_uri("/payment/success/"),
             "metadata": {
                 "order_id": str(order.order_id),
                 "custom_fields": [
@@ -88,7 +137,6 @@ def process_checkout(request):
             timeout=15
         )
         response.raise_for_status()
-
         resp_data = response.json()
 
         if resp_data.get('status'):
@@ -97,16 +145,18 @@ def process_checkout(request):
                 'authorization_url': resp_data['data']['authorization_url']
             })
         else:
+
             order.payment_status = 'failed'
             order.status = 'failed'
             order.save()
-            return JsonResponse({'error': resp_data.get('message', 'Failed')}, status=400)
+            return JsonResponse({'error': resp_data.get('message', 'Payment initialization failed')}, status=400)
 
     except Exception as e:
         if 'order' in locals():
             order.payment_status = 'failed'
             order.status = 'failed'
             order.save()
+
         return JsonResponse({'error': str(e)}, status=500)
     
 def payment_success(request):

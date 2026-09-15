@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
       subtotal += itemTotal;
 
       const row = document.createElement("div");
-      row.className = "flex gap-4 pb-6 border-b border-muted-steel last:border-b-0 last:pb-0";
+      row.className =
+        "flex gap-4 pb-6 border-b border-muted-steel last:border-b-0 last:pb-0";
       row.innerHTML = `
         <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover object-top bg-pitch-black flex-shrink-0">
         <div class="flex-1 min-w-0">
@@ -46,9 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const total = subtotal + SERVICE_FEE;
-    document.getElementById("order-subtotal").textContent = `₦${subtotal.toLocaleString()}`;
-    document.getElementById("service-fee").textContent = `₦${SERVICE_FEE.toLocaleString()}`;
-    document.getElementById("order-total").textContent = `₦${total.toLocaleString()}`;
+    document.getElementById("order-subtotal").textContent =
+      `₦${subtotal.toLocaleString()}`;
+    document.getElementById("service-fee").textContent =
+      `₦${SERVICE_FEE.toLocaleString()}`;
+    document.getElementById("order-total").textContent =
+      `₦${total.toLocaleString()}`;
   }
 
   function getCookie(name) {
@@ -64,6 +68,42 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     return cookieValue;
+  }
+
+  function showCheekyPopup() {
+    // Remove any existing popup
+    document.getElementById("cheeky-popup")?.remove();
+
+    const modal = document.createElement("div");
+    modal.id = "cheeky-popup";
+    modal.innerHTML = `
+      <div class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 p-4">
+        <div class="bg-pitch-black border border-muted-steel p-8 md:p-10 text-center max-w-sm w-full">
+          <h2 class="font-display text-headline-md text-stark-white mb-4">Ah cheeky boy!</h2>
+          <p class="font-body text-body-md text-on-surface-variant mb-8">
+            Nice try. Prices are verified on the server.
+          </p>
+          <button id="cheeky-close-btn"
+            class="font-body font-bold bg-stark-white text-pitch-black px-8 py-4 uppercase tracking-widest hover:bg-on-surface-variant transition-all">
+            Okay
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document
+      .getElementById("cheeky-close-btn")
+      .addEventListener("click", () => {
+        modal.remove();
+      });
+
+    // Also close when clicking the dark overlay
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal.firstElementChild) {
+        modal.remove();
+      }
+    });
   }
 
   renderOrderSummary();
@@ -90,8 +130,16 @@ document.addEventListener("DOMContentLoaded", () => {
       cart_items: getCart(),
     };
 
-    if (!formData.full_name || !formData.email || !formData.phone || !formData.address || !formData.cart_items.length) {
-      alert("Please fill all required fields and ensure your cart is not empty.");
+    if (
+      !formData.full_name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.address ||
+      !formData.cart_items.length
+    ) {
+      alert(
+        "Please fill all required fields and ensure your cart is not empty.",
+      );
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = originalLabel;
       return;
@@ -108,6 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       const data = await response.json();
+
+      // Price mismatch → cheeky boy
+      if (data.code === "PRICE_MISMATCH") {
+        showCheekyPopup();
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong");
