@@ -67,11 +67,11 @@ def process_checkout(request):
                 }, status=400)
 
             # Stock check
-            if variant.available_stock < quantity:
-                return JsonResponse({
-                    'error': f'Only {variant.available_stock} left for {variant.product.name} ({variant.size})',
-                    'code': 'INSUFFICIENT_STOCK'
-                }, status=400)
+            # if variant.available_stock < quantity:
+            #     return JsonResponse({
+            #         'error': f'Only {variant.available_stock} left for {variant.product.name} ({variant.size})',
+            #         'code': 'INSUFFICIENT_STOCK'
+            #     }, status=400)
 
             validated_items.append({
                 'variant': variant,
