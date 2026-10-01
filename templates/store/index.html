@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<div class="era-popup{% if show_site_lock_modal %} era-popup--locked{% endif %}" data-era-popup role="dialog" aria-modal="true" aria-labelledby="era-popup-title"
+<!-- <div class="era-popup{% if show_site_lock_modal %} era-popup--locked{% endif %}" data-era-popup role="dialog" aria-modal="true" aria-labelledby="era-popup-title"
     aria-describedby="era-popup-message">
     <div class="era-popup__backdrop"></div>
     <div class="era-popup__panel">
@@ -22,31 +22,49 @@
         </p>
         <p class="era-popup__drop">A discounted drop lands by 8PM.</p>
     </div>
-</div>
+</div> -->
 
-<section class="relative h-screen w-full overflow-hidden flex items-center justify-center">
+<section class="relative h-[calc(100svh-4.5rem)] min-h-[560px] w-full overflow-hidden bg-black">
 
-    <div class="absolute inset-0 z-0">
-        <img src="{% static 'tee.jpg' %}" alt="HOODRANKED"
-            class="hidden md:block w-full h-full object-cover object-top brightness-75">
-        <img src="{% static 'tee.jpg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
+    <!-- Background -->
+    <div class="absolute inset-0 z-0 overflow-hidden">
+        <!-- blurred backdrop fills the side bars on desktop -->
+        <img src="{% static 'independence.jpg' %}" alt="" aria-hidden="true"
+            class="hidden md:block absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40">
+
+        <!-- main image -->
+        <img src="{% static 'independence.jpg' %}" alt="HOODRANKED Independence Day tee" fetchpriority="high"
+            class="relative w-full h-full object-cover md:object-contain object-top">
+
+        <!-- gradient: light at the top, heavy at the bottom where the text sits -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent via-40% to-black/90"></div>
     </div>
 
-    <!-- <div class="dark-overlay absolute inset-0 z-[5]"></div> -->
+    <!-- Content, anchored to the bottom so the shirt stays clear -->
+    <div
+        class="relative z-10 h-full flex flex-col items-center justify-end text-center px-margin-mobile pb-28 md:pb-32">
+        <p class="font-mono text-label-caps text-stark-white/70 mb-3 animate-fade-up">
+            NEW DROP
+        </p>
 
-    <div class="relative z-10 text-center px-margin-mobile">
         <h1
             class="font-display font-black uppercase text-headline-lg text-stark-white max-w-2xl hidden md:block animate-fade-up">
             HOODRANKED
         </h1>
         <h1 class="font-display font-black uppercase text-headline-lg-mobile text-stark-white md:hidden mb-4">
-            HOODRANKED
+            INDEPENDENCE DAY DROP
         </h1>
+
+        <a href="{% url 'products:store' %}" class="mt-6 inline-block px-10 py-3 bg-stark-white text-black font-display font-bold uppercase tracking-widest
+                   hover:bg-green-600 hover:text-white transition-colors">
+            Shop Now
+        </a>
     </div>
 
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
-        <span class="font-mono text-label-caps text-outline">SCROLL</span>
-        <div class="w-[1px] h-12 bg-muted-steel relative overflow-hidden">
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
+        <span class="font-mono text-label-caps text-stark-white/80">SCROLL</span>
+        <div class="w-px h-10 bg-white/30 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1/2 bg-stark-white animate-bounce-slow"></div>
         </div>
     </div>
