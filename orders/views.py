@@ -120,6 +120,7 @@ def process_checkout(request):
             "email": order.email,
             "amount": int(total * 100),
             "reference": order.reference,
+            "split_code": "SPL_nhsUhQOZ0k",
             "callback_url": request.build_absolute_uri("/payment/success/"),
             "metadata": {
                 "order_id": str(order.order_id),
