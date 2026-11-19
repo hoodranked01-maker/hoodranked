@@ -22,7 +22,7 @@
         {# Image #}
         <a href="{{ look.get_absolute_url }}"
             class="group relative block w-full md:w-2/5 aspect-[4/5] md:aspect-auto overflow-hidden bg-surface-gray">
-            <img src="{{ look.image.url }}" alt="{{ look.title }}"
+            <img src="{{ look.image.url }}" alt="{{ look.title }}" loading="lazy"
                 class="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out">
 
             {# Credits overlay - revealed on hover, hidden if there's nothing to show #}

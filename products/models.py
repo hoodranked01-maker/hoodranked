@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 class Collection(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -24,6 +25,7 @@ class Product(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.SET_NULL, null=True, related_name='products')
     stock = models.PositiveIntegerField(default=0)
     is_available = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -49,6 +51,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('products:product_detail', kwargs={'slug': self.slug})
     
     def get_primary_image(self):
         primary = self.images.filter(is_primary=True).first()
@@ -93,4 +98,5 @@ class Variant(models.Model):
         verbose_name_plural = "Size Variants"
 
     def __str__(self):
-        return f"{self.product.name} - {self.size}"
+        product_name = self.product.name if self.product_id else "No product"
+        return f"{product_name} - {self.size}"

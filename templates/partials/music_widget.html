@@ -1,6 +1,7 @@
 {% load static %}
 {% load waffle_tags %}
 {% flag 'music_widget' %}
+
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/store-widgets.css' %}">
 {% endblock %}
@@ -92,13 +93,18 @@
     </div>
 </div>
 
-<audio id="audioEl" preload="none"></audio>
+<audio id="audioEl" preload="auto"></audio>
 
 <script>
-    window.HOODRANKED_TRACK_SRCS = [
-        "{% static 'beauty-and-a-beat.mp3' %}",
+    window.HOODRANKED_TRACKS = [
+        {
+            title: "FOR REAL (Instrumental)",
+            artist: "Atjazz",
+            src: "{% static 'audio/for-real.mp3' %}"
+        }
     ];
 </script>
 <script src="{% static 'js/store-filters.js' %}"></script>
 <script src="{% static 'js/floating-widgets.js' %}"></script>
 {% endflag %}
+

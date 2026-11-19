@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Profile | HOODRANKED{% endblock %}
+{% block meta_description %}Manage your HOODRANKED account details and delivery address.{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Styled by tag/type rather than per-field classes, so the form.py stays
+     free of Tailwind class strings — same approach as the auth pages. */
+    form input[type="text"],
+    form input[type="email"],
+    form input[type="tel"],
+    form textarea {
+        width: 100%;
+        background: #1b1b1b;
+        border: 1px solid #1F2937;
+        color: #ffffff;
+        padding: 1rem 1.25rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+    }
+
+    form textarea {
+        resize: vertical;
+    }
+
+    form input[type="text"]:focus,
+    form input[type="email"]:focus,
+    form input[type="tel"]:focus,
+    form textarea:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #ffffff;
+    }
+
+    form input::placeholder,
+    form textarea::placeholder {
+        color: #444748;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section
+    class="px-margin-mobile md:px-margin-desktop pt-20 pb-12 max-w-container-max mx-auto border-b border-muted-steel">
+    <span class="font-mono text-label-caps text-outline block mb-4">ACCOUNT</span>
+    <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none">
+        MY PROFILE
+    </h1>
+</section>
+
+<section class="px-margin-mobile md:px-margin-desktop py-16 max-w-container-max mx-auto">
+
+    {# Messages - styled with our tokens instead of hardcoded Tailwind greens #}
+    {% if messages %}
+    {% for message in messages %}
+    <div
+        class="border {% if message.tags == 'error' %}border-error{% else %}border-stark-white{% endif %} px-6 py-4 mb-8 flex items-center gap-3">
+        <span
+            class="material-symbols-outlined {% if message.tags == 'error' %}text-error{% else %}text-stark-white{% endif %}">
+            {% if message.tags == 'error' %}error{% else %}check_circle{% endif %}
+        </span>
+        <p
+            class="font-body text-body-md {% if message.tags == 'error' %}text-error{% else %}text-stark-white{% endif %}">
+            {{ message }}
+        </p>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {# ---------- Account summary sidebar mobile ---------- #}
+    <div class="lg:hidden">
+        <div class="bg-surface-gray border border-muted-steel p-8 sticky top-24 space-y-8">
+    
+            <div>
+                <span class="font-mono text-label-caps text-outline block mb-2">SIGNED IN AS</span>
+                <p class="font-body font-bold text-body-md text-stark-white truncate">{{ user.email }}</p>
+            </div>
+    
+            <a href="{% url 'orders:order_history' %}"
+                class="flex items-center justify-between bg-pitch-black hover:bg-stark-white hover:text-pitch-black transition-colors p-6 group">
+                <div>
+                    <span
+                        class="font-mono text-label-caps text-outline block mb-1 group-hover:text-pitch-black/60">ORDERS</span>
+                    <span
+                        class="font-displaysec text-body-lg text-stark-white group-hover:text-pitch-black leading-none">View
+                        History</span>
+                </div>
+                <span
+                    class="material-symbols-outlined text-2xl text-stark-white group-hover:text-pitch-black transition-colors">arrow_forward</span>
+            </a>
+    
+            <form method="post" action="{% url 'account_logout' %}" class="pt-6 border-t border-muted-steel">
+                {% csrf_token %}
+                <button type="submit"
+                    class="w-full font-body font-bold border border-muted-steel text-outline text-button uppercase tracking-widest py-4 hover:border-error hover:text-error transition-colors">
+                    Log Out
+                </button>
+            </form>
+    
+        </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-16">
+
+        {# ---------- Form ---------- #}
+        <div class="md:col-span-2">
+
+            {% if form.non_field_errors %}
+            <div class="border border-error px-5 py-4 mb-8">
+                {% for error in form.non_field_errors %}
+                <p class="font-body text-body-md text-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="space-y-8">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}"
+                            class="block font-mono text-label-caps text-outline mb-3">First Name</label>
+                        {{ form.first_name }}
+                        {% for error in form.first_name.errors %}
+                        <p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}"
+                            class="block font-mono text-label-caps text-outline mb-3">Last Name</label>
+                        {{ form.last_name }}
+                        {% for error in form.last_name.errors %}
+                        <p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <label for="{{ form.email.id_for_label }}"
+                        class="block font-mono text-label-caps text-outline mb-3">Email Address</label>
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                    <p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="{{ form.phone.id_for_label }}"
+                        class="block font-mono text-label-caps text-outline mb-3">Phone Number</label>
+                    {{ form.phone }}
+                    {% for error in form.phone.errors %}
+                    <p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="{{ form.address.id_for_label }}"
+                        class="block font-mono text-label-caps text-outline mb-3">Delivery Address</label>
+                    {{ form.address }}
+                    {% for error in form.address.errors %}
+                    <p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <label for="{{ form.city.id_for_label }}"
+                            class="block font-mono text-label-caps text-outline mb-3">City</label>
+                        {{ form.city }}
+                        {% for error in form.city.errors %}
+                        <p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <label for="{{ form.state.id_for_label }}"
+                            class="block font-mono text-label-caps text-outline mb-3">State</label>
+                        {{ form.state }}
+                        {% for error in form.state.errors %}
+                        <p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+                    Update Profile
+                </button>
+            </form>
+        </div>
+
+        {# ---------- Account summary sidebar ---------- #}
+        <div class="hidden lg:block">
+            <div class="bg-surface-gray border border-muted-steel p-8 sticky top-24 space-y-8">
+
+                <div>
+                    <span class="font-mono text-label-caps text-outline block mb-2">SIGNED IN AS</span>
+                    <p class="font-body font-bold text-body-md text-stark-white truncate">{{ user.email }}</p>
+                </div>
+
+                <a href="{% url 'orders:order_history' %}"
+                    class="flex items-center justify-between bg-pitch-black hover:bg-stark-white hover:text-pitch-black transition-colors p-6 group">
+                    <div>
+                        <span
+                            class="font-mono text-label-caps text-outline block mb-1 group-hover:text-pitch-black/60">ORDERS</span>
+                        <span
+                            class="font-displaysec text-headline-md text-stark-white group-hover:text-pitch-black leading-none">View
+                            History</span>
+                    </div>
+                    <span
+                        class="material-symbols-outlined text-2xl text-stark-white group-hover:text-pitch-black transition-colors">arrow_forward</span>
+                </a>
+
+                <form method="post" action="{% url 'account_logout' %}" class="pt-6 border-t border-muted-steel">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="w-full font-body font-bold border border-muted-steel text-outline text-button uppercase tracking-widest py-4 hover:border-error hover:text-error transition-colors">
+                        Log Out
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

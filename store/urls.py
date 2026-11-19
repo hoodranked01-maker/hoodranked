@@ -1,7 +1,10 @@
 from django.urls import path
-from .views import index, cart, checkout, thank_you, contact, lookbook, lookbook_detail
+from .views import index, cart, checkout, shipping, terms, thank_you, contact, lookbook, lookbook_detail, privacy
 
 app_name = 'store'
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 urlpatterns = [
     path('', index, name='index'),
@@ -9,6 +12,10 @@ urlpatterns = [
     path('cart/', cart, name='cart'),
     path('checkout/', checkout, name='checkout'),
     path('thank-you/', thank_you, name='thank_you'),
+    path('privacy/', privacy, name='privacy'),
+    path('terms/', terms, name='terms'),
+    path('shipping/', shipping, name='shipping'),
     path("lookbook/", lookbook, name="lookbook"),
     path("lookbook/<slug:slug>/", lookbook_detail, name="lookbook_detail"),
+    path('sentry-debug/', trigger_error),
 ]

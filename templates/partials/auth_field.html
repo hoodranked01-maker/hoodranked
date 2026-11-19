@@ -1,0 +1,26 @@
+{% comment %}
+Usage: {% include "partials/auth_field.html" with field=field %}
+Handles both regular inputs (label above, styled box) and checkboxes
+(inline label beside a small checkbox) since allauth's LoginForm injects
+a 'remember' BooleanField alongside the regular text fields.
+{% endcomment %}
+
+{% if field.field.widget.input_type == "checkbox" %}
+<label class="flex items-start gap-3 cursor-pointer">
+    {{ field }}
+    <span class="font-body text-body-md text-on-surface-variant">{{ field.label }}</span>
+</label>
+{% else %}
+<div>
+    <label for="{{ field.id_for_label }}" class="block font-mono text-label-caps text-outline mb-3">
+        {{ field.label }}
+    </label>
+    {{ field }}
+    {% if field.help_text %}
+    <p class="font-mono text-[10px] text-outline mt-2">{{ field.help_text }}</p>
+    {% endif %}
+</div>
+{% endif %}
+{% for error in field.errors %}
+<p class="font-mono text-[10px] text-error mt-2 uppercase tracking-wide">{{ error }}</p>
+{% endfor %}

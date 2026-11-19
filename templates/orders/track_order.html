@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Track Your Order | HOODRANKED{% endblock %}
+{% block meta_description %}Look up the status of your HOODRANKED order using your order ID and email.{% endblock %}
+
+{% block extra_head %}
+<style>
+    form input[type="text"],
+    form input[type="email"] {
+        width: 100%;
+        background: #1b1b1b;
+        border: 1px solid #1F2937;
+        color: #ffffff;
+        padding: 1rem 1.25rem;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+        text-transform: none;
+    }
+
+    form input[type="text"]:focus,
+    form input[type="email"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #ffffff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{# ---------- Result ---------- #}
+{% if order %}
+<section class="px-margin-mobile md:px-margin-desktop py-20 max-w-container-max mx-auto">
+
+    <div class="flex items-center justify-between flex-wrap gap-4 mb-12">
+        <div>
+            <span class="font-mono text-label-caps text-outline block mb-2">ORDER {{ order.order_id }}</span>
+            <h2 class="font-display text-headline-md text-stark-white">PLACED {{ order.created_at|date:"d M Y" }}</h2>
+        </div>
+        {% if order.status == 'delivered' %}
+        <span
+            class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-stark-white text-stark-white">Delivered</span>
+        {% elif order.status == 'shipped' %}
+        <span
+            class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-outline text-outline">Shipped</span>
+        {% elif order.status == 'processing' %}
+        <span
+            class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-outline text-outline">Processing</span>
+        {% elif order.status == 'cancelled' or order.status == 'failed' %}
+        <span class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-error text-error">{{
+            order.get_status_display }}</span>
+        {% else %}
+        <span
+            class="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border border-muted-steel text-outline">Pending</span>
+        {% endif %}
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-16">
+
+        <div class="md:col-span-2 space-y-16">
+
+            {# Status timeline #}
+            <div>
+                <h3 class="font-display text-headline-md text-stark-white mb-8">STATUS</h3>
+            
+                {% if order.status == 'cancelled' or order.status == 'failed' %}
+                <div class="border border-error px-6 py-5 flex items-center gap-4">
+                    <span class="material-symbols-outlined text-error">error</span>
+                    <p class="font-body font-bold text-body-md text-error uppercase tracking-wide">
+                        {{ order.get_status_display }}
+                    </p>
+                </div>
+                {% else %}
+                <!-- Responsive Container: Stacked on mobile, row on desktop -->
+                <div class="flex flex-col md:flex-row items-stretch md:items-start gap-6 md:gap-0">
+                    {% for step_label, step_key in order_status_steps %}
+                    <!-- Responsive Step: Left-aligned on mobile, centered on desktop -->
+                    <div
+                        class="flex-1 flex flex-row md:flex-col items-center md:items-center text-left md:text-center relative gap-4 md:gap-0">
+            
+                        <!-- Connecting Line -->
+                        {% if not forloop.first %}
+                        <!-- Vertical line for mobile -->
+                        <div class="absolute left-3 bottom-1/2 w-px h-full -translate-y-1/2 md:hidden 
+                          {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
+                        </div>
+                        <!-- Horizontal line for desktop -->
+                        <div class="absolute top-3 h-px w-full right-1/2 hidden md:block 
+                          {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-muted-steel{% endif %}">
+                        </div>
+                        {% endif %}
+            
+                        <!-- Step Indicator Circle -->
+                        <div
+                            class="w-6 h-6 rounded-full flex items-center justify-center z-10 shrink-0
+                        {% if forloop.counter0 <= order_status_index %}bg-stark-white{% else %}bg-surface-gray border border-muted-steel{% endif %}">
+                            {% if forloop.counter0 <= order_status_index %} <span
+                                class="material-symbols-outlined text-pitch-black text-sm">check</span>
+                                {% endif %}
+                        </div>
+            
+                        <!-- Step Label Text -->
+                        <p class="font-mono text-[10px] uppercase tracking-widest md:mt-3 
+                        {% if forloop.counter0 <= order_status_index %}text-stark-white{% else %}text-outline{% endif %}">
+                            {{ step_label }}
+                        </p>
+            
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+
+            <div>
+                <h2 class="font-display text-headline-md text-stark-white mb-8">ITEMS</h2>
+            
+                {% if order.items %}
+                <div class="flex flex-col divide-y divide-muted-steel border-t border-b border-muted-steel">
+                    {% for item in order.items.all %}
+                    <div class="flex items-center gap-6 py-6">
+                        {% if item.product.get_primary_image %}
+                        <img src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}"
+                            class="w-20 h-24 object-cover bg-surface-gray flex-shrink-0" loading="lazy">
+                        {% endif %}
+                        <div class="flex-1 min-w-0">
+                            <p class="font-body font-bold text-body-md text-stark-white max-w-[180px]">{{ item.product.name }}</p>
+                            <p class="font-mono text-label-caps text-outline mt-1">Size: {{ item.variant.size }} × {{ item.quantity }}</p>
+                        </div>
+                        <p class="font-mono text-label-caps text-stark-white flex-shrink-0">
+                            ₦{{ item.price|intcomma }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="font-body text-body-md text-outline">Item details aren't available for this order.</p>
+                {% endif %}
+            </div>
+
+            {# Shipping address #}
+            <div>
+                <h3 class="font-display text-headline-md text-stark-white mb-8">SHIPPING TO</h3>
+                <div class="bg-surface-gray border border-muted-steel p-8 space-y-2">
+                    <p class="font-body font-bold text-body-md text-stark-white">{{ order.name }}</p>
+                    <p class="font-body text-body-md text-on-surface-variant">{{ order.address }}</p>
+                    <p class="font-body text-body-md text-on-surface-variant">
+                        {{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}{% if order.postal_code %} {{ order.postal_code }}{% endif %}
+                    </p>
+                    <div class="pt-4 mt-4 border-t border-muted-steel flex flex-col sm:flex-row sm:gap-8 gap-1">
+                        <p class="font-mono text-label-caps text-outline">{{ order.email }}</p>
+                        <p class="font-mono text-label-caps text-outline">{{ order.phone }}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {# Summary column #}
+        <div>
+            <div class="bg-surface-gray border border-muted-steel p-8">
+                <h3 class="font-display text-headline-md text-stark-white mb-8">SUMMARY</h3>
+
+                <div class="space-y-4 mb-8">
+                    
+                    <div class="flex justify-between">
+                        <span class="font-mono text-label-caps text-outline">Payment</span>
+                        <span
+                            class="font-mono text-label-caps
+                        {% if order.payment_status == 'paid' %}text-stark-white{% elif order.payment_status == 'failed' %}text-error{% else %}text-outline{% endif %}">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-mono text-label-caps text-outline">Service Fee</span>
+                        <span class="font-mono text-label-caps text-stark-white">₦{{ order.service_fee|intcomma }}</span>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-muted-steel flex justify-between items-baseline mb-10">
+                    <span class="font-body font-bold text-body-md text-stark-white uppercase tracking-wide">Total</span>
+                    <span class="font-display text-headline-md text-stark-white">₦{{ order.total_price|default:0|intcomma }}</span>
+                </div>
+
+                <a href="{% url 'store:contact' %}"
+                    class="block text-center font-body font-bold border border-stark-white text-stark-white text-button uppercase tracking-widest px-8 py-4 hover:bg-stark-white hover:text-pitch-black transition-all-custom active:scale-95">
+                    Need Help?
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endif %}
+
+{# ---------- Lookup form ---------- #}
+<section
+    class="relative bg-pitch-black px-margin-mobile py-20 border-b border-muted-steel {% if not order %}min-h-[70vh] flex items-center justify-center{% endif %}">
+    <div class="absolute inset-0 bg-[radial-gradient(at_center,#1f1f1f_0%,#000000_75%)]"></div>
+
+    <div class="relative pt-8 z-10 w-full max-w-md mx-auto">
+
+        <div class="text-center mb-12">
+            <span class="font-mono text-label-caps text-outline block mb-4">WHERE'S MY ORDER</span>
+            <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none mb-6">
+                TRACK YOUR ORDER
+            </h1>
+            <p class="font-body text-body-md text-on-surface-variant">
+                Enter your order ID and the email you used at checkout.
+            </p>
+        </div>
+
+        {% if error %}
+        <div class="border border-error px-5 py-4 mb-8">
+            <p class="font-body text-body-md text-error">{{ error }}</p>
+        </div>
+        {% endif %}
+
+        <form method="get" action="{% url 'orders:track_order' %}" class="space-y-6" novalidate>
+            <div>
+                <label for="order_id" class="block font-mono text-label-caps text-outline mb-3">Order ID</label>
+                <input type="text" id="order_id" name="order_id" placeholder="HR-XXXXXXXXXX"
+                    value="{{ submitted_order_id|default:'' }}" required>
+            </div>
+            <div>
+                <label for="email" class="block font-mono text-label-caps text-outline mb-3">Email used to order</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com"
+                    value="{{ submitted_email|default:'' }}" required>
+            </div>
+            <button type="submit"
+                class="w-full font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+                Track Order
+            </button>
+        </form>
+
+        <p class="text-center font-body text-body-md text-on-surface-variant mt-10">
+            Have an account?
+            <a href="{% url 'account_login' %}" class="text-stark-white hover:underline underline-offset-4">Log in</a>
+            to see your full order history.
+        </p>
+
+    </div>
+</section>
+
+{% endblock %}

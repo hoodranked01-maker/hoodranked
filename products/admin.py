@@ -47,28 +47,32 @@ class CollectionAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+
     list_display = (
         'name',
         'collection',
         'price_display',
+        'is_active',
         'availability_status',
         'total_stock',
         'primary_image_preview',
         'created_at'
     )
-    list_filter = ('collection', 'is_available', 'created_at')
+    list_filter = ('collection', 'is_available', 'is_active', 'created_at')
     search_fields = ('name', 'description', 'slug')
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductImageInline, VariantInline]
     readonly_fields = ('created_at', 'updated_at')
     date_hierarchy = 'created_at'
 
+    actions = ['make_active', 'make_inactive']
+
     fieldsets = (
         ('Basic Information', {
             'fields': ('name', 'slug', 'collection', 'category', 'description', 'price')
         }),
         ('Inventory & Status', {
-            'fields': ('stock', 'is_available')
+            'fields': ('stock', 'is_active', 'is_available')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -105,6 +109,17 @@ class ProductAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="max-height: 60px; border-radius: 4px;" />', first.image.url)
         return "No image"
     primary_image_preview.short_description = "Main Image"
+
+    def make_active(self, request, queryset):
+        updated = queryset.update(is_active=True)
+        self.message_user(request, f'{updated} products successfully activated.')
+    make_active.short_description = "Mark selected products as Active"
+
+    def make_inactive(self, request, queryset):
+        updated = queryset.update(is_active=False)
+        self.message_user(request, f'{updated} products successfully deactivated.')
+    make_inactive.short_description = "Mark selected products as Inactive"
+
 
 
 @admin.register(ProductImage)

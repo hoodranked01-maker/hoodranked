@@ -1,324 +1,123 @@
+{% extends "base.html" %}
 {% load static %}
 {% load humanize %}
 
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cart – Hood Ranked</title>
-    <meta name="description" content="Your Hood Ranked cart – premium streetwear ready to checkout." />
-    
-    <link rel="icon" href="{% static 'hrlogowhite.jpg' %}" type="image/png" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: { 
-                    fontFamily: { 
-                        bebas: ['Bebas Neue', 'sans-serif'],
-                        Poppins: ['Poppins', 'sans-serif'],
-                    } 
-                } 
-            }
-        }
-    </script>
+{% block title %}Your Cart | HOODRANKED{% endblock %}
+{% block meta_description %}Your HOODRANKED cart — premium streetwear ready to checkout.{% endblock %}
 
-    <style>
+{% block extra_head %}
+<style>
+    #cart-toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #ffffff;
+        color: #000000;
+        padding: 16px 32px;
+        z-index: 60;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        pointer-events: none;
+    }
+
+    #cart-toast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (max-width: 639px) {
         #cart-toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: black;
-            color: white;
-            padding: 16px 32px;
-            border-radius: 8px;
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-            font-weight: 500;
+            right: 16px;
+            bottom: 16px;
         }
-        #cart-toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    @keyframes marquee {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-    </style>
-</head>
+    }
+</style>
+{% endblock %}
 
-<body class="bg-white text-black font-Poppins antialiased">
+{% block content %}
 
-    <header class="sticky top-0 z-50 bg-white backdrop-blur-sm border-b border-gray-800">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="hidden md:flex space-x-8">
-                <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'products:store' %}" class="font-medium">SHOP</a>
-                <a href="{% url 'store:contact' %}" class="font-medium">CONTACT</a>
-            </div>
+<section
+    class="px-margin-mobile md:px-margin-desktop pt-28 pb-12 max-w-container-max mx-auto border-b border-muted-steel">
+    <span class="font-mono text-label-caps text-outline block mb-4">SHOPPING BAG</span>
+    <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none">
+        YOUR CART
+    </h1>
+</section>
 
-            <button id="menu-toggle" class="md:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
+<main class="px-margin-mobile md:px-margin-desktop py-16 max-w-container-max mx-auto min-h-[50vh]">
 
-            <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[240px] md:w-[120px] -my-3" src="{% static 'hrlogowhite.jpg' %}" alt="Hood Ranked Logo">
-                <!-- <p class="">hoodranked</p> -->
-            </a>
-
-            <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
-                <i class="fas fa-shopping-bag mr-2"></i> 
-                (<span class="cart-count">0</span>)
-            </a>
-        </nav>
-    </header>
-
-    <div class="mobile-menu-container md:hidden">
-        <div id="mobile-menu"
-            class="fixed inset-0 z-50 bg-white transform translate-x-full transition-transform duration-300 overflow-y-auto">
-            <div class="container mx-auto px-6 py-4 flex justify-end">
-                <button id="menu-close" class="text-black focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-black transition-colors">SHOP</a>
-                <a href="#story" class="menu-link block py-2 text-black transition-colors">STORY</a>
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-black transition-colors">DROPS</a>
-            </div>
-        </div>
+    {# ---------- Empty state ---------- #}
+    <div id="cart-empty" class="hidden text-center py-24">
+        <span class="material-symbols-outlined text-6xl text-outline mb-6 block">shopping_bag</span>
+        <p class="font-display text-headline-md text-stark-white mb-4">YOUR CART IS EMPTY</p>
+        <p class="font-body text-body-md text-outline mb-10">Looks like you haven't added anything yet.</p>
+        <a href="{% url 'products:store' %}"
+            class="inline-block font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest px-12 py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+            Start Shopping
+        </a>
     </div>
 
-    <main class="container mx-auto px-6 py-12 md:py-16 min-h-[70vh]">
-        <h1 class="font-bebas text-5xl md:text-7xl text-center mb-12 tracking-tighter">
-            YOUR CART
-        </h1>
+    {# ---------- Cart content ---------- #}
+    <div id="cart-content" class="hidden">
 
-        <div id="cart-empty" class="text-center py-20 hidden">
-            <p class="text-2xl md:text-3xl font-medium mb-6">Your cart is empty</p>
-            <a href="{% url 'products:store' %}" class="inline-block bg-black text-white  px-10 py-4 font-bold uppercase tracking-wider hover:bg-gray-800 transition rounded">
-                Start Shopping
-            </a>
-        </div>
-
-        <div id="cart-content" class="hidden">
-            <div class="space-y-6 mb-12">
-                <div class="hidden md:grid grid-cols-12 gap-4 p-6 bg-gray-50 font-medium uppercase text-sm tracking-wider border-b border-gray-200">
-                    <div class="col-span-6">Product</div>
-                    <div class="col-span-2 text-center">Size</div>
-                    <div class="col-span-2 text-center">Price</div>
-                    <div class="col-span-2 text-center">Qty</div>
-                </div>
-
-                <div id="cart-items" class="space-y-6"></div>
+        <div class="space-y-6 mb-16">
+            <div
+                class="hidden md:grid grid-cols-12 gap-4 p-6 bg-surface-gray border-b border-muted-steel font-mono text-label-caps text-outline">
+                <div class="col-span-6">Product</div>
+                <div class="col-span-2 text-center">Size</div>
+                <div class="col-span-2 text-center">Price</div>
+                <div class="col-span-2 text-center">Qty</div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="md:col-start-2">
-                    <div class="bg-white text-black border border-gray-200 rounded-lg p-6 md:p-8">
-                        <h3 class="font-bebas text-3xl md:text-4xl tracking-tight mb-6">Order Summary</h3>
-                        
-                        <div class="space-y-4 mb-8">
-                            <div class="flex justify-between text-lg">
-                                <span>Subtotal</span>
-                                <span id="cart-subtotal">₦0</span>
-                            </div>
-                            <div class="flex justify-between text-xl font-bold border-t border-gray-200 pt-4">
-                                <span>Total</span>
-                                <span id="cart-total">₦0</span>
-                            </div>
-                        </div>
+            <div id="cart-items" class="space-y-6"></div>
+        </div>
 
-                        <div class="space-y-4">
-                            <a href="{% url 'store:checkout' %}" id="checkout-btn">
-                                <button class="w-full bg-black text-sm md:text-base text-white py-5 text-center font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded">
-                                Proceed to Checkout
-                                </button>
-                            </a>
-                            <a href="{% url 'products:store' %}"
-                               class="block w-full border-2 text-sm md:text-base border-black py-5 text-center font-bold uppercase tracking-wider hover:bg-white hover:text-black transition rounded">
-                                Continue Shopping
-                            </a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="md:col-start-2">
+                <div class="bg-surface-gray border border-muted-steel p-6 md:p-8">
+                    <h3 class="font-display text-headline-md text-stark-white mb-8">ORDER SUMMARY</h3>
+
+                    <div class="space-y-4 mb-10">
+                        <div class="flex justify-between font-body text-body-md text-on-surface-variant">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal" class="text-stark-white">₦0</span>
                         </div>
+                        <p class="font-mono text-[10px] text-outline">Service fee calculated at checkout.</p>
+                        <div class="flex justify-between items-baseline pt-4 border-t border-muted-steel">
+                            <span
+                                class="font-body font-bold text-body-md text-stark-white uppercase tracking-wide">Total</span>
+                            <span id="cart-total" class="font-display text-headline-md text-stark-white">₦0</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <a href="{% url 'store:checkout' %}" id="checkout-btn"
+                            class="block w-full text-center font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+                            Proceed to Checkout
+                        </a>
+                        <a href="{% url 'products:store' %}"
+                            class="block w-full text-center font-body font-bold border border-stark-white text-stark-white text-button uppercase tracking-widest py-5 hover:bg-stark-white hover:text-pitch-black transition-all-custom active:scale-95">
+                            Continue Shopping
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
 
-    <div id="cart-toast"></div>
+    </div>
+</main>
 
-    <footer class="py-12 border-t border-gray-800">
-        <div>
-            <div class="flex flex-col items-center space-y-4">
-                <div class="flex space-x-8">
-                    <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
-                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i
-                            class="fa-brands fa-snapchat"></i></a>
-                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
-                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
-                </div>
-                <p>© <span id="year"></span>, HoodRanked</p>
-            </div>
-        </div>
-    </footer>
+<div id="cart-toast"></div>
 
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear()
-        
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuLinks = document.querySelectorAll('.menu-link');
+{% endblock %}
 
-        menuToggle?.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
-        });
-
-        menuClose?.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-        });
-
-        menuLinks?.forEach(link => link.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
-        }));
-
-        function getCart() {
-            const cart = localStorage.getItem('hoodranked_cart');
-            return cart ? JSON.parse(cart) : [];
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem('hoodranked_cart', JSON.stringify(cart));
-            updateCartCount();
-            renderCart();
-        }
-
-        function updateCartCount() {
-            const cart = getCart();
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelectorAll('.cart-count').forEach(el => {
-                el.textContent = count;
-            });
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('cart-toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
-        function renderCart() {
-            const cart = getCart();
-            const container = document.getElementById('cart-items');
-            container.innerHTML = '';
-
-            if (cart.length === 0) {
-                document.getElementById('cart-content').classList.add('hidden');
-                document.getElementById('cart-empty').classList.remove('hidden');
-                return;
-            }
-
-            document.getElementById('cart-content').classList.remove('hidden');
-            document.getElementById('cart-empty').classList.add('hidden');
-
-            let subtotal = 0;
-
-            cart.forEach((item, index) => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-
-                const row = `
-                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden md:grid md:grid-cols-12 md:gap-6 md:p-6 md:items-center transition">
-                        <!-- Product Info -->
-                        <div class="md:col-span-6 p-5 md:p-0 flex items-start md:items-center gap-5">
-                            <img src="${item.image}" alt="${item.name}" class="w-28 h-28 md:w-24 md:h-24 object-cover object-top rounded flex-shrink-0">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-lg md:text-base">${item.name}</h4>
-                                <a href="/product/${item.slug}" class="text-gray-400 text-sm hover:underline mt-1 block">
-                                    View product
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Size -->
-                        <div class="md:col-span-2 px-5 py-3 md:p-0 text-sm md:text-base md:text-center">
-                            <span class="font-medium md:hidden inline-block mr-2">Size:</span> ${item.size}
-                        </div>
-
-                        <!-- Price -->
-                        <div class="md:col-span-2 px-5 py-3 md:p-0 text-sm md:text-base md:text-center">
-                            <span class="font-medium md:hidden inline-block mr-2">Price:</span> ₦${item.price.toLocaleString()}
-                        </div>
-
-                        <!-- Quantity & Remove -->
-                        <div class="md:col-span-2 px-5 py-5 md:p-0 flex items-center justify-between md:justify-center gap-6">
-                            <div class="flex items-center border border-gray-400 rounded overflow-hidden">
-                                <button class="px-4 py-2 bg-white transition text-lg" 
-                                        onclick="updateQuantity(${index}, -1)">-</button>
-                                <span class="px-6 py-2 text-lg">${item.quantity}</span>
-                                <button class="px-4 py-2 bg-white transition text-lg" 
-                                        onclick="updateQuantity(${index}, 1)">+</button>
-                            </div>
-                            <button class="text-red-600 hover:text-red-800 text-xl md:text-base" 
-                                    onclick="removeItem(${index})">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                container.innerHTML += row;
-            });
-
-            document.getElementById('cart-subtotal').textContent = `₦${subtotal.toLocaleString()}`;
-            document.getElementById('cart-total').textContent = `₦${subtotal.toLocaleString()}`;
-        }
-
-        function updateQuantity(index, change) {
-            let cart = getCart();
-            const newQty = cart[index].quantity + change;
-            if (newQty < 1) return;
-            cart[index].quantity = newQty;
-            saveCart(cart);
-        }
-
-        function removeItem(index) {
-            let cart = getCart();
-            cart.splice(index, 1);
-            saveCart(cart);
-            showToast('Item removed');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCart();
-            updateCartCount();
-        });
-    </script>
-</body>
-</html>
+{% block extra_scripts %}
+<script src="{% static 'js/cart.js' %}"></script>
+{% endblock %}

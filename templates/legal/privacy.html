@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Privacy Policy | HOODRANKED{% endblock %}
+{% block meta_description %}How HOODRANKED collects, uses, and protects your information.{% endblock %}
+
+{% block content %}
+
+{% include "partials/legal_header.html" with legal_title="PRIVACY POLICY" legal_updated="July 2026" %}
+
+<section class="px-margin-mobile md:px-margin-desktop py-8 max-w-3xl mx-auto space-y-14">
+
+    <p class="font-body text-body-lg text-on-surface-variant leading-relaxed">
+        HOODRANKED ("we," "us," "our") respects your privacy. This policy explains what information we collect when you
+        use hoodranked.com, why we collect it, and the choices you have.
+    </p>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">INFORMATION WE COLLECT</h2>
+        <ul class="space-y-4">
+            <li class="font-body text-body-md text-on-surface-variant leading-relaxed">
+                <span class="font-bold text-stark-white">Contact &amp; order details</span> — name, email, phone number,
+                shipping
+                and billing address when you place an order or reach out to us.
+            </li>
+            <li class="font-body text-body-md text-on-surface-variant leading-relaxed">
+                <span class="font-bold text-stark-white">Payment information</span> — processed directly by our payment
+                provider. We do not store your full card details on our servers.
+            </li>
+            <li class="font-body text-body-md text-on-surface-variant leading-relaxed">
+                <span class="font-bold text-stark-white">Usage data</span> — pages visited, device/browser type, and
+                general
+                location, collected automatically to help us understand how the site is used.
+            </li>
+            <li class="font-body text-body-md text-on-surface-variant leading-relaxed">
+                <span class="font-bold text-stark-white">Cart data</span> — your cart is stored locally in your browser
+                so
+                items persist between visits; it isn't tied to your identity unless you check out.
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">HOW WE USE YOUR INFORMATION</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            We use the information above to process and ship your orders, respond to inquiries, send order updates,
+            improve the site, and — only if you've opted in — send you news about drops and restocks. We do not sell
+            your personal information to third parties.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">COOKIES</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            We use essential cookies and local storage to keep your cart working and remember basic preferences (like
+            your
+            selected display currency). We don't use third-party advertising trackers.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">THIRD-PARTY SERVICES</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            We rely on trusted third parties to run the store — for example, a payment processor to handle transactions
+            and a shipping carrier to deliver orders. These providers only receive the information they need to do their
+            job and are bound by their own privacy obligations.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">DATA RETENTION</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            We keep order records as long as needed for accounting, warranty, and legal purposes. You can ask us to
+            delete
+            other personal information we hold about you at any time (see Contact Us below).
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">YOUR RIGHTS</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            You can request a copy of the personal data we hold about you, ask us to correct it, or ask us to delete it,
+            subject to our legal obligations (like keeping tax records). Email us and we'll respond within a reasonable
+            time.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">CHILDREN'S PRIVACY</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            HOODRANKED is not directed at children under 13, and we do not knowingly collect personal information from
+            them.
+        </p>
+    </div>
+
+    <div>
+        <h2 class="font-display text-headline-md text-stark-white mb-6">CHANGES TO THIS POLICY</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            We may update this policy from time to time. Changes take effect once posted here, with the "Last updated"
+            date above reflecting the most recent revision.
+        </p>
+    </div>
+
+    <div class="pt-10 border-t border-muted-steel">
+        <h2 class="font-display text-headline-md text-stark-white mb-4">CONTACT US</h2>
+        <p class="font-body text-body-md text-on-surface-variant leading-relaxed">
+            Questions about this policy? Email
+            <a href="mailto:hoodranked2@gmail.com"
+                class="text-stark-white hover:underline underline-offset-4">hoodranked2@gmail.com</a>
+            or visit our <a href="{% url 'store:contact' %}"
+                class="text-stark-white hover:underline underline-offset-4">Contact page</a>.
+        </p>
+    </div>
+
+</section>
+
+{% endblock %}

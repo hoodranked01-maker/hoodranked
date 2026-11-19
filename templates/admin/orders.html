@@ -230,7 +230,7 @@
                                 {% for item in order.items.all %}
                                 <div class="flex gap-4 bg-zinc-950 p-4 rounded-xl">
                                     <img class="w-16 h-16 bg-zinc-800 rounded-lg flex-shrink-0 object-cover"
-                                        src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}">
+                                        src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}" loading="lazy">
                                     <div class="flex-1 min-w-0">
                                         <p class="font-medium truncate">{{ item.product.name }}</p>
                                         <p class="text-sm text-zinc-400">Size: {{ item.variant.size }} × {{ item.quantity }}</p>

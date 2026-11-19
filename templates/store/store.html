@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% load humanize %}
+{% load waffle_tags %}
+{% load cache %}
+
 
 {% block title %}Store | HOODRANKED — Premium Streetwear Drops{% endblock %}
 {% block meta_description %}Shop the latest HOODRANKED drops — premium hoodies, tees, limited editions. Streetwear that
@@ -8,11 +11,14 @@ hits different.{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/store-widgets.css' %}">
+
 {% endblock %}
 
+{% block body_class %}has-transparent-header{% endblock %}
+{% block announcement_bar %}{% endblock %}
 {% block content %}
 
-<section class="bg-stark-white py-12 md:py-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<section class="bg-stark-white py-20 md:py-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
 
     <div class="flex justify-between items-center pb-6 border-b border-muted-steel mb-8">
         <button type="button" id="filter-toggle"
@@ -94,40 +100,49 @@ hits different.{% endblock %}
         </div>
     </div>
 
-    {# Product grid #}
+    <!-- Single unified grid wrapper matching your exact responsive column counts -->
+    <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+        <!-- 1. JavaScript will instantly inject skeletons here on load -->
+    </div>
+    {% cache 900 store_grid_block current_filters.collection current_filters.min_price current_filters.max_price current_filters.q current_filters.sort %}
     {% if products %}
-    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
-        {% for product in products %}
-        {% if product.is_sold_out %}
-        <div class="product-card group relative bg-surface-gray overflow-hidden cursor-not-allowed opacity-60">
-            {% else %}
-            <a href="{% url 'products:product_detail' product.slug %}"
-                class="product-card group block bg-surface-gray overflow-hidden">
-                {% endif %}
-                <div class="relative overflow-hidden aspect-[4/5] bg-surface-gray">
-                    <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
-                        class="product-card__img w-full h-full object-cover object-top">
-                    {% if product.is_sold_out %}
-                    <div class="absolute top-4 left-4 bg-pitch-black border border-stark-white px-3 py-1">
-                        <span class="font-mono text-[10px] text-stark-white uppercase tracking-widest">Sold Out</span>
-                    </div>
+    {% flag 'enable_skeleton_load' %}
+    <script src="{% static 'js/skeleton.js' %}"></script>
+    <div id="real-products" class="hidden">
+        {% else %}
+        <div id="real-products" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+            {% endflag %}
+            {% for product in products %}
+            {% if product.is_sold_out %}
+            <div class="product-card group relative overflow-hidden">
+                {% else %}
+                <a href="{% url 'products:product_detail' product.slug %}"
+                    class="product-card group block overflow-hidden">
                     {% endif %}
-                </div>
-                <div class="py-4 px-4">
-                    <h3 class="font-body text-body-md text-stark-white mb-1 group-hover:underline underline-offset-4">
-                        {{product.name }}</h3>
-                    <p class="font-mono text-label-caps text-outline" data-ngn-price="{{ product.price }}">
-                        ₦{{product.price|intcomma }}</p>
-                </div>
-                {% if product.is_sold_out %}
-        </div>{% else %}</a>{% endif %}
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="text-center py-20">
-        <p class="font-body text-body-md text-outline">No available products right now — check back soon.</p>
-    </div>
-    {% endif %}
+                    <div class="relative overflow-hidden bg-stark-white">
+                        <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
+                            class="product-card__img w-full h-auto object-contain" loading="lazy">
+                        {% if product.is_sold_out %}
+                        <div class="absolute bottom-3 right-3 bg-stark-white/90 rounded-full px-3 py-1 shadow-sm">
+                            <span class="font-body text-xs text-pitch-black">Sold out</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="py-4 px-1">
+                        <h3
+                            class="font-display text-body-md text-pitch-black mb-1 group-hover:underline underline-offset-4"> {{ product.name }}</h3>
+                        <p class="font-display text-label-caps text-outline" data-ngn-price="{{ product.price }}">₦{{ product.price|intcomma }}</p>
+                    </div>
+                    {% if product.is_sold_out %}
+            </div>{% else %}</a>{% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-20">
+            <p class="font-body text-body-md text-outline">No available products right now — check back soon.</p>
+        </div>
+        {% endif %}
+    {% endcache %}
 
 </section>
 

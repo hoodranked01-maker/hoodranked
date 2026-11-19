@@ -2,17 +2,16 @@
 {% load static %}
 
 {% block title %}Contact | HOODRANKED{% endblock %}
-{% block meta_description %}Get in touch with HOODRANKED. Questions about orders, drops, or collaborations? We're
-here.{% endblock %}
+{% block meta_description %}Get in touch with HOODRANKED. Questions about orders, drops, or collaborations? We'rehere.{% endblock %}
 
 {% block extra_head %}
 <meta property="og:title" content="Contact | HOODRANKED">
 <meta property="og:description" content="Get in touch with the team behind the streets.">
 <meta property="og:type" content="website">
 {% endblock %}
-
+{% block body_class %}has-transparent-header{% endblock %}
+{% block announcement_bar %}{% endblock %}
 {% block content %}
-
 {# ---------- Hero ---------- #}
 <section
     class="relative bg-pitch-black h-[420px] md:h-[520px] flex items-center justify-center overflow-hidden border-b border-muted-steel">
@@ -90,8 +89,4 @@ here.{% endblock %}
     </div>
 </section>
 
-{% endblock %}
-
-{% block extra_scripts %}
-<script src="{% static 'js/contact-form.js' %}"></script>
 {% endblock %}

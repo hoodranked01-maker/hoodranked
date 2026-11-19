@@ -1,6 +1,7 @@
+// HOODRANKED site behavior
 document.addEventListener("DOMContentLoaded", () => {
   const header = document.querySelector("[data-site-header]");
- 
+
   // --- Cart count badge ---
   // Reads a simple localStorage cart so the header badge stays accurate
   // across pages without a server round-trip. Swap this for a session/DB-backed
@@ -20,9 +21,24 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartCount();
   window.hoodranked = window.hoodranked || {};
   window.hoodranked.updateCartCount = updateCartCount;
- 
+
   if (!header) return;
 
+  // --- Header: adds "is-scrolled" past 30px on every page. style.css uses
+  // this to force a solid blood-red background + white text once scrolled,
+  // regardless of page (overriding the black-text default and the
+  // homepage's white-on-transparent hero state alike).
+  const handleScroll = () => {
+    if (window.scrollY > 30) {
+      header.classList.add("is-scrolled");
+    } else {
+      header.classList.remove("is-scrolled");
+    }
+  };
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+
+  // --- Mobile nav drawer ---
   const drawer = document.querySelector("[data-mobile-menu]");
   const backdrop = document.querySelector("[data-mobile-menu-backdrop]");
   const toggles = document.querySelectorAll("[data-mobile-menu-toggle]");
@@ -32,18 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!drawer || !backdrop) return;
 
-  // 1. Smooth Header Shrink/Blur Scroll Effect
-  const handleScroll = () => {
-    if (window.scrollY > 30) {
-      header.classList.add("bg-pitch-black/90", "backdrop-blur-md", "py-1");
-    } else {
-      header.classList.remove("bg-pitch-black/90", "backdrop-blur-md", "py-1");
-    }
-  };
-  window.addEventListener("scroll", handleScroll, { passive: true });
-  handleScroll(); // Initial pass check
-
-  // 2. Clear State Navigation Actions
   const openDrawer = () => {
     drawer.classList.remove("translate-x-full");
     backdrop.classList.remove("opacity-0", "pointer-events-none");
@@ -70,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const isDrawerOpen = () => !drawer.classList.contains("translate-x-full");
 
-  // 3. Event Triggers
   toggles.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -88,7 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("click", closeDrawer);
   });
 
-  // Structural viewport safety check
   window.matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
     if (e.matches && isDrawerOpen()) closeDrawer();
   });

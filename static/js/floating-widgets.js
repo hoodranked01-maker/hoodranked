@@ -1,10 +1,7 @@
 // HOODRANKED floating widgets: music player + currency converter.
 // Track list is a plain array so this stays easy to edit without touching
 // the markup — point src at real files in your static/audio/ folder.
-const HOODRANKED_TRACKS = [
-  { title: "BEAUTY AND A BEAT", artist: "Justin Bieber (feat. Nicki Minaj)", src: window.HOODRANKED_TRACK_SRCS?.[0] || "" },
-//   { title: "OBA", artist: "Asake", src: window.HOODRANKED_TRACK_SRCS?.[1] || "" },
-];
+const HOODRANKED_TRACKS = window.HOODRANKED_TRACKS || [];
 
 document.addEventListener("DOMContentLoaded", () => {
   function initWidgetToggle(pillId, widgetId, bodyId, otherWidgetId, otherBodyId) {
@@ -68,7 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
       currentTimeEl.textContent = "0:00";
 
       if (t.src) {
-        audioEl.src = t.src;
+        const cleanSrc = t.src.replaceAll('&amp;', '&');
+        audioEl.src = cleanSrc;
         audioEl.load();
       }
       if (autoPlay && t.src) audioEl.play().then(() => setPlaying(true)).catch(() => {});

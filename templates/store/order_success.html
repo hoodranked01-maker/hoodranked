@@ -1,263 +1,118 @@
-<!-- templates{% url 'products:store' %}/checkout_success.html -->
+{% extends "base.html" %}
 {% load static humanize %}
 
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ order.order_id }} – Hood Ranked</title>
-    <meta name="description" content="{{ product.description|truncatewords:30 }}" />
-    
-    <link rel="icon" href="{% static 'hrlogowhite.jpg' %}" type="image/png" />
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: { 
-                    fontFamily: { 
-                        bebas: ['Bebas Neue', 'sans-serif'],
-                        Poppins: ['Poppins', 'sans-serif'],
-                    } 
-                } 
-            }
-        }
-    </script>
+{% block title %}{{ order.order_id }} | HOODRANKED{% endblock %}
+{% block meta_description %}Your HOODRANKED order has been confirmed.{% endblock %}
 
-    <style>
-        .thumbnail:hover {
-            border-color: black;
-        }
-        .main-image {
-            transition: transform 0.6s ease;
-        }
-        .main-image:hover {
-            transform: scale(1.03);
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-        #cart-toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: black;
-            color: white;
-            padding: 16px 32px;
-            border-radius: 8px;
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-            font-weight: 500;
-        }
-        #cart-toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    @keyframes marquee {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-    </style>
-</head>
-<body class="bg-white text-black font-Poppins antialiased">
-    <div class="overflow-hidden bg-black text-white py-2 border-b border-gray-800">
-        <div class="flex whitespace-nowrap" style="animation: marquee 20s linear infinite;">
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
-            <span class="mx-12 text-xs uppercase tracking-widest font-medium">📦 Delivery takes 1–2 weeks</span>
+{% block content %}
+
+<main class="px-margin-mobile md:px-margin-desktop py-20 md:py-28 max-w-container-max mx-auto text-center">
+    <div class="max-w-2xl mx-auto">
+
+        <div class="mb-16">
+            <span class="material-symbols-outlined text-6xl text-blood mb-6 block">check_circle</span>
+            <h1
+                class="font-display font-black uppercase text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none mb-6">
+                ORDER CONFIRMED
+            </h1>
+            <p class="font-body text-body-lg text-on-surface-variant">
+                Thank you{% if order.name %}, {{ order.name }}{% endif %}. Your order
+                <span class="text-stark-white font-bold">#{{ order.order_id }}</span> has been received.
+            </p>
         </div>
-    </div>
-    <header class="sticky top-0 z-50 bg-white backdrop-blur-sm border-b border-gray-800">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="hidden md:flex space-x-8">
-                <a href="/" class="font-medium">HOME</a>
-                <a href="{% url 'products:store' %}" class="font-medium">SHOP</a>
-                <a href="{% url 'store:contact' %}" class="font-medium">CONTACT</a>
-            </div>
-            <button id="menu-toggle" class="focus:outline-none md:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
 
-            <a href="/" class="font-bebas text-3xl tracking-wider">
-                <img class="w-[150px] md:w-[120px]" src="{% static 'hrlogowhite.jpg' %}" alt="Hood Ranked Logo">
-                <!-- <p class="">hoodranked</p> -->
-            </a>
+        <div class="bg-surface-gray border border-muted-steel p-6 md:p-10 mb-16 text-left">
+            <h2 class="font-display text-headline-md text-stark-white mb-10">ORDER DETAILS</h2>
 
-            <a href="{% url 'store:cart' %}" class="py-2 flex items-center">
-                <i class="fas fa-shopping-bag mr-2"></i>
-                (<span class="cart-count">0</span>)
-            </a>
-        </nav>
-    </header>
-
-    <div class="mobile-menu-container md:hidden">
-        <div id="mobile-menu"
-            class="fixed inset-0 z-50 bg-black transform translate-x-full transition-transform duration-300 overflow-y-auto">
-            <div class="container mx-auto px-6 py-4 flex justify-end">
-                <button id="menu-close" class="text-white focus:outline-none">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="flex flex-col items-center justify-center h-[80vh] space-y-8 text-2xl">
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-white transition-colors">SHOP</a>
-                <a href="#story" class="menu-link block py-2 text-white transition-colors">STORY</a>
-                <a href="{% url 'products:store' %}" class="menu-link block py-2 text-white transition-colors">DROPS</a>
-            </div>
-        </div>
-    </div>
-
-    <main class="container mx-auto px-6 py-16 text-center">
-        <div class="max-w-2xl mx-auto">
-            <div class="mb-12">
-                <i class="fas fa-check-circle text-8xl text-green-600 mb-6"></i>
-                <h1 class="font-bebas text-6xl md:text-8xl tracking-tighter mb-4">
-                    ORDER CONFIRMED!
-                </h1>
-                <p class="text-xl text-gray-700">
-                    Thank you {{ order.name }}!<br>
-                    Your order <strong>#{{ order.order_id }}</strong> has been received.
-                </p>
-            </div>
-
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-10 mb-12 text-left">
-                <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center md:text-left">Order Details</h2>
-                
-                <!-- Order Items List -->
-                <div class="space-y-6 mb-10">
-                    {% for item in order.items.all %}
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 pb-6 border-b border-gray-200 last:border-b-0 last:pb-0">
-                        <!-- Product Image (fallback if no image) -->
-                        <div class="w-24 h-24 bg-gray-200 rounded flex-shrink-0 flex items-center justify-center">
-                            {% if item.product and item.product.get_primary_image %}
-                            <img src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}" class="w-full h-full object-cover object-top rounded">
-                            {% else %}
-                            <span class="text-gray-500 text-sm">No image</span>
-                            {% endif %}
-                        </div>
-
-                        <!-- Item Info -->
-                        <div class="flex-1">
-                            <h4 class="font-bold text-lg">{{ item.product.name|default:"Product" }}</h4>
-                            <p class="text-gray-600 text-sm mt-1">
-                                Size: <strong>{{ item.variant.size|default:"—" }}</strong>
-                            </p>
-                            <p class="text-gray-800 font-medium mt-2">
-                                ₦{{ item.price|intcomma }} × {{ item.quantity }} = 
-                                <strong>₦{{ item.get_subtotal|floatformat:0|intcomma }}</strong>
-                            </p>
-                        </div>
+            <div class="space-y-6 mb-10">
+                {% for item in order.items.all %}
+                <div
+                    class="flex flex-col sm:flex-row items-start sm:items-center gap-5 pb-6 border-b border-muted-steel last:border-b-0 last:pb-0">
+                    <div
+                        class="w-24 h-24 bg-pitch-black flex-shrink-0 flex items-center justify-center overflow-hidden">
+                        {% if item.product and item.product.get_primary_image %}
+                        <img src="{{ item.product.get_primary_image }}" alt="{{ item.product.name }}"
+                            class="w-full h-full object-cover object-top" loading="lazy">
+                        {% else %}
+                        <span class="font-mono text-[10px] text-outline">No image</span>
+                        {% endif %}
                     </div>
-                    {% empty %}
-                    <p class="text-gray-600 text-center py-8">No items found in this order</p>
-                    {% endfor %}
-                </div>
 
-                <!-- Total & Contact Info -->
-                <div class="border-t border-gray-300 pt-6">
-                    <div class="flex justify-between text-xl font-bold mb-4">
-                        <span>Total Amount</span>
-                        <span>₦{{ order.total_price|intcomma }}</span>
+                    <div class="flex-1">
+                        <h4 class="font-body font-bold text-body-lg text-stark-white">{{ item.product.name|default:"Product" }}</h4>
+                        <p class="font-mono text-label-caps text-outline mt-1">
+                            SIZE {{ item.variant.size|default:"—" }}
+                        </p>
+                        <p class="font-body text-body-md text-on-surface-variant mt-2">
+                            ₦{{ item.price|intcomma }} &times; {{ item.quantity }} &mdash;
+                            <span class="text-stark-white font-bold">₦{{ item.get_subtotal|floatformat:0|intcomma   }}</span>
+                        </p>
                     </div>
-                    <p class="text-gray-600 text-sm md:text-base">
-                        • Confirmation sent to: <strong>{{ order.email }}</strong><br>
-                        • Updates via WhatsApp/SMS to: <strong>{{ order.phone }}</strong><br>
-                        • Order Status: <strong>{{ order.get_status_display }}</strong>
-                    </p>
                 </div>
+                {% empty %}
+                <p class="font-body text-body-md text-outline text-center py-8">No items found in this order</p>
+                {% endfor %}
             </div>
 
-            <a href="{% url 'products:store' %}" class="inline-block bg-black text-sm md:text-base text-white px-12 py-5 font-bold uppercase tracking-wider hover:bg-gray-900 transition rounded">
-                Continue Shopping
-            </a>
-        </div>
-    </main>
-
-    <footer class="py-12 border-t border-gray-800">
-        <div>
-            <div class="flex flex-col items-center space-y-4">
-                <div class="flex space-x-8">
-                    <a href="https://www.instagram.com/hoodranked?igsh=MXJsYW9tcW4wODN2Zw%3D%3D&utm_source=qr"
-                        target="_blank" class="transition text-2xl"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://t.snapchat.com/zZGXw5Ys" class="transition text-2xl"><i
-                            class="fa-brands fa-snapchat"></i></a>
-                    <a href="https://www.tiktok.com/@hoodranked1?_t=ZS-8ylizFPsEdc&_r=1" target="_blank"
-                        class="transition text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+            <div class="border-t border-muted-steel pt-8">
+                <div class="flex justify-between items-baseline mb-8">
+                    <span class="font-body font-bold text-body-lg text-stark-white uppercase tracking-wide">Total</span>
+                    <span class="font-display text-headline-md text-stark-white">₦{{ order.total_price|intcomma }}</span>
                 </div>
-                <p>© <span id="year"></span>, HoodRanked</p>
+                <div class="space-y-2">
+                    <p class="font-mono text-[11px] text-outline">CONFIRMATION SENT TO — <span
+                            class="text-stark-white">{{ order.email }}</span></p>
+                    <p class="font-mono text-[11px] text-outline">UPDATES VIA SMS/WHATSAPP TO — <span
+                            class="text-stark-white">{{ order.phone }}</span></p>
+                    <p class="font-mono text-[11px] text-outline">STATUS — <span class="text-stark-white">{{ order.get_status_display }}</span></p>
+                </div>
             </div>
         </div>
-    </footer>
 
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear()
-        
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuLinks = document.querySelectorAll('.menu-link');
+        <a href="{% url 'products:store' %}"
+            class="inline-block font-body font-bold bg-blood text-stark-white text-button uppercase tracking-widest px-12 py-5 hover:opacity-90 transition-all-custom active:scale-95">
+            Continue Shopping
+        </a>
+    </div>
+</main>
 
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
-            document.body.style.overflow = 'hidden';
-        });
+{% endblock %}
 
-        menuClose.addEventListener('click', () => {
-            closeMenu();
-        });
-
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                closeMenu();
-            });
-        });
-
-        mobileMenu.addEventListener('click', (e) => {
-            if (e.target === mobileMenu) {
-                closeMenu();
-            }
-        });
-
-        function closeMenu() {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            document.body.style.overflow = '';
+{% block extra_scripts %}
+<script>
+    // GA4 purchase event — uses order.items.all (same source as the visible
+    // order details above), not a separate order_items variable. The
+    // previous version referenced order_items, a variable this view never
+    // actually passed to the template, so the purchase event was firing
+    // with an empty items array on every single order.
+    function safeTrackEventIfAvailable(name, params) {
+        if (typeof window.trackEvent === "function") {
+            window.trackEvent(name, params);
+        } else {
+            console.warn(`trackEvent not available — skipped "${name}" event`);
         }
-        
-        {% if should_clear_cart %}
-        localStorage.removeItem('hoodranked_cart');
-        
-        document.querySelectorAll('.cart-count').forEach(el => {
-            el.textContent = '0';
-        });
-        
-        console.log('Cart cleared after successful payment');
-        {% endif %}
-    </script>
-</body>
-</html>
+    }
+
+    safeTrackEventIfAvailable('purchase', {
+        transaction_id: "{{ order.order_id }}",
+        value: {{ order.total_price|floatformat:2 }},
+        currency: "NGN",
+        items: [
+        {% for item in order.items.all %}
+    {
+        item_id: "{{ item.product.id|default:'' }}",
+            item_name: "{{ item.product.name|default:'Unknown Product' }}",
+                item_variant: "{{ item.variant.size|default:'' }}",
+                    price: { { item.price|floatformat:2 } },
+        quantity: { { item.quantity } }
+    } {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+    ]
+  });
+
+    {% if should_clear_cart %}
+    localStorage.removeItem('hoodranked_cart');
+    document.querySelectorAll('.cart-count').forEach((el) => (el.textContent = '0'));
+    {% endif %}
+</script>
+{% endblock %}

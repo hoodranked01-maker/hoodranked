@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load account %}
+
+{% block title %}Log In | HOODRANKED{% endblock %}
+{% block meta_description %}Log in to your HOODRANKED account to track orders and check out faster.{% endblock %}
+
+{% block extra_head %}
+{% include "partials/auth_styles.html" %}
+{% endblock %}
+
+{% block content %}
+
+<section
+    class="relative bg-pitch-black min-h-[70vh] flex items-center justify-center px-margin-mobile py-28 border-b border-muted-steel">
+    <div class="absolute inset-0 bg-[radial-gradient(at_center,#1f1f1f_0%,#000000_75%)]"></div>
+
+    <div class="relative z-10 w-full max-w-md">
+
+        <div class="text-center mb-12">
+            <span class="font-mono text-label-caps text-outline block mb-4">WELCOME BACK</span>
+            <h1 class="font-display text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none">
+                LOG IN
+            </h1>
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="border border-error px-5 py-4 mb-8">
+            {% for error in form.non_field_errors %}
+            <p class="font-body text-body-md text-error">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'account_login' %}" class="space-y-6" novalidate>
+            {% csrf_token %}
+
+            {% for field in form %}
+            {% if field.name != "remember" %}
+            {% include "partials/auth_field.html" with field=field %}
+            {% endif %}
+            {% endfor %}
+
+            <div class="flex items-center justify-between">
+                {% for field in form %}
+                {% if field.name == "remember" %}
+                {% include "partials/auth_field.html" with field=field %}
+                {% endif %}
+                {% endfor %}
+                <a href="{% url 'account_reset_password' %}"
+                    class="font-mono text-label-caps text-outline hover:text-stark-white transition-colors">
+                    Forgot password?
+                </a>
+            </div>
+
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+            {% endif %}
+
+            <button type="submit"
+                class="w-full font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95">
+                Log In
+            </button>
+        </form>
+
+        <p class="text-center font-body text-body-md text-on-surface-variant mt-10">
+            Don't have an account?
+            <a href="{% url 'account_signup' %}" class="text-stark-white hover:underline underline-offset-4">Sign up</a>
+        </p>
+
+    </div>
+</section>
+
+{% endblock %}
