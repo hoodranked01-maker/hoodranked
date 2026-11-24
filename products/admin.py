@@ -72,7 +72,7 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'slug', 'collection', 'category', 'description', 'price')
         }),
         ('Inventory & Status', {
-            'fields': ('stock', 'is_active', 'is_available')
+            'fields': ('stock', 'is_active', 'is_available', 'is_featured')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),

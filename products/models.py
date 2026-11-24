@@ -26,8 +26,16 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     is_available = models.BooleanField(default=True)
     is_active = models.BooleanField(default=False)
+    is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    weight = models.DecimalField(
+        max_digits=6, 
+        decimal_places=3, 
+        default=0.5,
+        help_text="Weight in KG"
+    )
     
     CATEGORY_CHOICES = [
         ('hoodies', 'Hoodies'),
