@@ -4,7 +4,7 @@ from .models import Look
 from products.models import Product
 
 def index(request):
-    products = Product.objects.all()[:4]
+    products = Product.objects.filter(is_active=True, is_featured=True)[:4]
     context = {
         'products': products,
     }
