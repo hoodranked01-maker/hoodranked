@@ -23,8 +23,13 @@ class OrderAdmin(admin.ModelAdmin):
     date_hierarchy = 'created_at'
     readonly_fields = ('order_id', 'reference', 'created_at', 'updated_at', 'total_price')
 
-    actions = ['export_successful_orders_excel']
+    actions = ['export_successful_orders_excel', 'mark_as_shipped']
     inlines = []
+
+    @admin.action(description='Mark selected orders as shipped')
+    def mark_as_shipped(self, request, queryset):
+        updated_count = queryset.update(status='shipped')
+        self.message_user(request, f'{updated_count} order(s) marked as shipped.')
 
     def export_successful_orders_excel(self, request, queryset):
         orders = queryset.filter(payment_status='paid').prefetch_related('items')

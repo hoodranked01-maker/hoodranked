@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from psycopg import logger
 from products.models import Product, Variant
 import random
 import string
@@ -50,6 +51,18 @@ class Order(models.Model):
     )
     service_fee = models.IntegerField(default=0)
     total_price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+
+    # ---------- Shipbubble / Shipping fields ----------
+    shipping_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
+    shipping_courier = models.CharField(max_length=100, blank=True, null=True)
+    shipbubble_request_token = models.CharField(max_length=255, blank=True, null=True)
+    shipbubble_service_code = models.CharField(max_length=100, blank=True, null=True)
+    shipbubble_courier_id = models.CharField(max_length=100, blank=True, null=True)
+    shipbubble_order_id = models.CharField(max_length=100, blank=True, null=True)
+    tracking_code = models.CharField(max_length=100, blank=True, null=True)
+    tracking_url = models.URLField(blank=True, null=True)
+    shipbubble_status = models.CharField(max_length=50, blank=True, null=True)
+    receiver_address_code = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Order"

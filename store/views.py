@@ -4,7 +4,7 @@ from .models import Look
 from products.models import Product
 
 def index(request):
-    products = Product.objects.filter(is_active=True, is_featured=True)[:4]
+    products = Product.objects.filter(is_active=True, is_featured=True)[:5]
     context = {
         'products': products,
     }
@@ -61,3 +61,10 @@ def page_not_found(request, exception):
     
 def internal_server_error(request):
     return render(request, 'errors/500.html', status=500)
+
+def test(request):
+    products = Product.objects.filter(is_active=True, is_featured=True)[:5]
+    context = {
+        'products': products,
+    }
+    return render(request, 'test/test.html', context)

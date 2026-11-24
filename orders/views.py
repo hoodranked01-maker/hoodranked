@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from decimal import Decimal
+from .services.shipbubble import validate_address, fetch_rates, create_shipment
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +111,15 @@ def process_checkout(request):
                 price=item['price']
             )
 
+        order.shipping_fee = Decimal(str(data.get("shipping_fee", 0)))
+        order.shipping_courier = data.get("shipping_courier", "")
+        order.shipbubble_request_token = data.get("request_token", "")
+        order.shipbubble_service_code = data.get("service_code", "")
+        order.shipbubble_courier_id = data.get("courier_id", "")
+        order.receiver_address_code = data.get("receiver_address_code")
+        order.total_price = calculated_subtotal + Decimal(service_fee) + order.shipping_fee
+        order.save()
+
         # ---------- PAYSTACK ----------
         headers = {
             "Authorization": f"Bearer {os.getenv('PAYSTACK_SECRET_KEY')}",
@@ -118,9 +128,9 @@ def process_checkout(request):
 
         payload = {
             "email": order.email,
-            "amount": int(total * 100),
+            "amount": int((calculated_subtotal + Decimal(service_fee) + order.shipping_fee) * 100),
             "reference": order.reference,
-            "split_code": "SPL_nhsUhQOZ0k",
+            # "split_code": "SPL_nhsUhQOZ0k",
             "callback_url": request.build_absolute_uri("/payment/success/"),
             "metadata": {
                 "order_id": str(order.order_id),
@@ -187,6 +197,23 @@ def payment_success(request):
             order.payment_status = 'paid'
             order.status = 'processing'
             order.save()
+
+            # Create Shipbubble shipment
+            if order.shipbubble_request_token and order.shipbubble_service_code:
+                try:
+                    shipment = create_shipment(
+                        order.shipbubble_request_token,
+                        order.shipbubble_service_code,
+                        order.shipbubble_courier_id
+                    )
+                    order.shipbubble_order_id = shipment.get("order_id")
+                    order.tracking_url = shipment.get("tracking_url", "")
+                    order.shipbubble_status = shipment.get("status", "pending")
+                    order.shipping_courier = shipment.get("courier", {}).get("name", order.shipping_courier)
+                    order.save()
+                    logger.info(f"Shipbubble shipment created for {order.order_id}: {order.shipbubble_order_id}")
+                except Exception as e:
+                    logger.error(f"Shipbubble create failed for {order.order_id}: {e}")
 
             try:
                 subject = f"Order Confirmed – #{order.order_id}"
@@ -360,3 +387,50 @@ def track_order(request):
         context["order_status_index"] = order_status_index
  
     return render(request, "orders/track_order.html", context)
+
+@require_POST
+@csrf_exempt
+def get_shipping_rates(request):
+    try:
+        data = json.loads(request.body)
+        full_name = data.get("full_name")
+        email = data.get("email")
+        phone = data.get("phone")
+        address = data.get("address")
+        city = data.get("city")
+        state = data.get("state")
+        cart_items = data.get("cart_items", [])
+
+        if not all([full_name, email, phone, address, city, state, cart_items]):
+            return JsonResponse({"error": "Missing required fields"}, status=400)
+
+        full_address = f"{address}, {city}, {state}, Nigeria"
+        validated = validate_address(full_name, email, phone, full_address)
+        receiver_code = validated["address_code"]
+
+        package_items = []
+        for item in cart_items:
+            variant = Variant.objects.select_related("product").get(id=item["variant_id"])
+            package_items.append({
+                "name": variant.product.name,
+                "description": f"{variant.product.name} ({variant.size})",
+                "unit_weight": float(variant.product.weight or 0.5),
+                "unit_amount": float(variant.product.price + variant.additional_price),
+                "quantity": int(item["quantity"]),
+            })
+
+        rates_data = fetch_rates(receiver_code, package_items)
+
+        return JsonResponse({
+            "success": True,
+            "request_token": rates_data["request_token"],
+            "couriers": rates_data["couriers"],
+            "receiver_address_code": receiver_code,
+            "formatted_address": validated.get("formatted_address"),
+            "validated_city": validated.get("city"),
+            "validated_state": validated.get("state"),
+        })
+    except Exception as e:
+        logger.error(f"Shipbubble rate error: {e}")
+        return JsonResponse({"error": str(e)}, status=400)
+    
