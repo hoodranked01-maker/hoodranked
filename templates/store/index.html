@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block body_class %}has-transparent-header{% endblock %}
 {% block announcement_bar %}{% endblock %}
@@ -24,68 +25,61 @@
     </div>
 </div> -->
 
-<section class="relative h-[calc(100svh-4.5rem)] min-h-[560px] w-full overflow-hidden bg-black">
+<section class="relative bg-black text-white pt-28 pb-16 md:pt-36">
+    <div class="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+        <div class="flex items-end justify-between mb-10 md:mb-14">
+            <div>
+                <p class="font-mono text-label-caps text-outline mb-3">NEW/FEATURED DROP</p>
+                <h1 class="font-display font-black uppercase text-4xl md:text-6xl tracking-tight">
+                    HOODRANKED
+                </h1>
+            </div>
+            <a href="{% url 'products:store' %}"
+                class="hidden md:inline-block font-body font-bold uppercase tracking-widest text-sm border-b border-white pb-1 hover:text-outline hover:border-outline transition-colors">
+                View All
+            </a>
+        </div>
 
-    <!-- Background -->
-    <div class="absolute inset-0 z-0 overflow-hidden">
-        <!-- blurred backdrop fills the side bars on desktop -->
-        <img src="{% static 'independence.jpg' %}" alt="" aria-hidden="true"
-            class="hidden md:block absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-40">
+        <!-- Horizontal scroll on mobile, grid on desktop -->
+        <div
+            class="flex md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 overflow-x-auto pb-6 md:pb-0 snap-x snap-mandatory -mx-margin-mobile md:mx-0 px-margin-mobile md:px-0">
+            <!-- Product Card (repeat / loop over real products later) -->
+            {% for product in products %}
+            <a href="#" class="group flex-none w-72 md:w-auto snap-start">
+                <div class="relative bg-surface-gray aspect-[3/4] overflow-hidden mb-4">
+                    <img src="{{ product.get_primary_image }}" alt="{{ product.name }}"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <h3 class="font-body font-bold text-base group-hover:underline underline-offset-4">{{ product.name }}</h3>
+                <p class="font-mono text-sm text-outline mt-1">₦{{ product.price|floatformat:2|intcomma }}</p>
+            </a>
+            {% endfor %}
+        </div>
 
-        <!-- main image -->
-        <img src="{% static 'independence.jpg' %}" alt="HOODRANKED Independence Day tee" fetchpriority="high"
-            class="relative w-full h-full object-cover md:object-contain object-top">
-
-        <!-- gradient: light at the top, heavy at the bottom where the text sits -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent via-40% to-black/90"></div>
-    </div>
-
-    <!-- Content, anchored to the bottom so the shirt stays clear -->
-    <div
-        class="relative z-10 h-full flex flex-col items-center justify-end text-center px-margin-mobile pb-28 md:pb-32">
-        <p class="font-mono text-label-caps text-stark-white/70 mb-3 animate-fade-up">
-            NEW DROP
-        </p>
-
-        <h1
-            class="font-display font-black uppercase text-headline-lg text-stark-white max-w-2xl hidden md:block animate-fade-up">
-            HOODRANKED
-        </h1>
-        <h1 class="font-display font-black uppercase text-headline-lg-mobile text-stark-white md:hidden mb-4">
-            INDEPENDENCE DAY DROP
-        </h1>
-
-        <a href="{% url 'products:store' %}" class="mt-6 inline-block px-10 py-3 bg-stark-white text-black font-display font-bold uppercase tracking-widest
-                   hover:bg-green-600 hover:text-white transition-colors">
-            Shop Now
-        </a>
-    </div>
-
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
-        <span class="font-mono text-label-caps text-stark-white/80">SCROLL</span>
-        <div class="w-px h-10 bg-white/30 relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1/2 bg-stark-white animate-bounce-slow"></div>
+        <div class="mt-8 md:hidden text-center">
+            <a href="{% url 'products:store' %}"
+                class="inline-block font-body font-bold uppercase tracking-widest text-sm border-b border-white pb-1">
+                View All
+            </a>
         </div>
     </div>
 </section>
 
-<section class="relative h-screen w-full overflow-hidden flex items-end justify-start p-8 md:p-16">
-    <div class="absolute inset-0 z-0 overflow-hidden">
-        <img src="{% static 'second.jpeg' %}" alt="HOODRANKED"
-            class="hidden md:block w-full h-full object-cover object-top brightness-75">
-        <img src="{% static 'second.jpeg' %}" alt="HOODRANKED" class="md:hidden w-full h-full object-cover brightness-75">
-        <!-- <video autoplay loop muted playsinline class="hidden md:block w-full h-full object-cover object-top brightness-75">
-            <source src="{% static 'second.mp4' %}" type="video/mp4">
-        </video>
-    
-        <video autoplay loop muted playsinline class="md:hidden w-full h-full object-cover brightness-75">
-            <source src="{% static 'second.mp4' %}" type="video/mp4">
-        </video> -->
-    </div>
-
-    <div class="relative z-10 max-w-xl text-white">
-        <p class="font-body text-lg md:text-xl text-gray-200">Female pieces live now.</p>
+<!-- Full-width statement / secondary visual -->
+<section class="relative h-[70vh] min-h-[500px] bg-black overflow-hidden">
+    <img src="{% static 'second.jpeg' %}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-60">
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+    <div class="relative z-10 h-full flex items-end px-margin-mobile md:px-margin-desktop pb-16 md:pb-24">
+        <div class="max-w-xl">
+            <p class="font-mono text-label-caps text-white/70 mb-3">NOW LIVE</p>
+            <h2 class="font-display font-black uppercase text-4xl md:text-6xl text-white leading-none">
+                Female pieces<br>live now.
+            </h2>
+            <a href="{% url 'products:store' %}"
+                class="mt-6 inline-block px-8 py-3 bg-white text-black font-body font-bold uppercase tracking-widest text-sm hover:bg-outline transition-colors">
+                Shop Collection
+            </a>
+        </div>
     </div>
 </section>
 
