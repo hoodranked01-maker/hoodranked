@@ -37,7 +37,8 @@ body {
     color: #ffffff;
     background: #000000;
     border: 1px solid #ffffff;
-    box-shadow: 10px 10px 0 #052F19;
+    /* box-shadow: 10px 10px 0 #052F19; */
+    box-shadow: 10px 10px 0 #7A0F0F;
     animation: era-popup-enter 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -118,8 +119,8 @@ body {
 }
 
 .text-outline-stroke {
-    -webkit-text-stroke: 1px #052F19;
-    /* -webkit-text-stroke: 1px #7A0F0F; */
+    /* -webkit-text-stroke: 1px #052F19; */
+    -webkit-text-stroke: 1px #7A0F0F;
     color: transparent;
 }
 
@@ -263,4 +264,16 @@ body.has-transparent-header [data-site-header] {
             rgba(0, 0, 0, 0.2) 45%,
             rgba(122, 15, 15, 0.35) 100%);
     pointer-events: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* old Edge / IE */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Edge */
 }
