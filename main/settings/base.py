@@ -33,6 +33,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://hoodranked.com',
     'http://127.0.0.1',
     'https://remonstratingly-pretorial-gaynelle.ngrok-free.dev'
+    'https://devoted-olva-digicrafts-54661615.apps.mistral.run'
 ]
 
 # Application definition

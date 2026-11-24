@@ -6,7 +6,7 @@ load_dotenv()
 DEBUG = False
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = ['hoodranked.store', 'www.hoodranked.store', 'hoodranked.com', 'www.hoodranked.com', '*.ngrok-free.dev']
+ALLOWED_HOSTS = ['hoodranked.store', 'www.hoodranked.store', 'hoodranked.com', 'www.hoodranked.com', '*.ngrok-free.dev', 'devoted-olva-digicrafts-54661615.apps.mistral.run']
 
 # Production Database (PostgreSQL)
 DATABASES = {
