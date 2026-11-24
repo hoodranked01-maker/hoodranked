@@ -43,6 +43,19 @@
 
     <script src="https://kit.fontawesome.com/5c85fd2f27.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            /* old Edge / IE */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Edge */
+        }
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
 {% with request.resolver_match.url_name as url_name %}
