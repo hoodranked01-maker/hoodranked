@@ -9,6 +9,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
+    * {
+        scroll-behavior: smooth;
+    }
+
     .drop-card {
         position: absolute;
         top: 50%;
@@ -65,16 +69,17 @@
 
 {% block content %}
 <!-- Full-width statement / secondary visual -->
-<section class="relative h-[70vh] min-h-[500px] bg-black overflow-hidden">
-    <!-- Background video -->
-    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-70">
+<!-- Hero -->
+<section class="relative h-[100svh] min-h-[600px] bg-black overflow-hidden">
+    <!-- Background video (poster shows while it loads or if it fails) -->
+    <video autoplay loop muted playsinline preload="auto"
+        class="absolute inset-0 w-full h-full object-cover opacity-80">
         <source src="{% static 'silence-drop.mp4' %}" type="video/mp4">
-        <!-- Fallback image if video fails -->
-        <img src="{% static 'second.jpeg' %}" alt="" class="w-full h-full object-cover">
     </video>
 
-    <!-- Gradient overlay -->
-    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+    <!-- Overlays: top darkening keeps the transparent header readable, bottom fades into the next section -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black"></div>
+    <div class="absolute inset-0 bg-black/20"></div>
 
     <!-- Content -->
     <div class="relative z-10 h-full flex items-end px-margin-mobile md:px-margin-desktop pb-16 md:pb-24">
@@ -92,6 +97,14 @@
             </a>
         </div>
     </div>
+
+    <!-- Scroll cue -->
+    <a href="#drop-carousel" aria-label="Scroll down"
+        class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-white/60 hover:text-white transition-colors animate-bounce">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6" />
+        </svg>
+    </a>
 </section>
 
 <section class="relative bg-black text-white pt-28 pb-16 md:pt-36 overflow-hidden">
