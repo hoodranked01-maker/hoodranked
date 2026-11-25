@@ -64,13 +64,41 @@
 {% endblock %}
 
 {% block content %}
+<!-- Full-width statement / secondary visual -->
+<section class="relative h-[70vh] min-h-[500px] bg-black overflow-hidden">
+    <!-- Background video -->
+    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-70">
+        <source src="{% static 'silence-drop.mp4' %}" type="video/mp4">
+        <!-- Fallback image if video fails -->
+        <img src="{% static 'second.jpeg' %}" alt="" class="w-full h-full object-cover">
+    </video>
 
-<!-- New Release Carousel / Grid -->
+    <!-- Gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 h-full flex items-end px-margin-mobile md:px-margin-desktop pb-16 md:pb-24">
+        <div class="max-w-xl">
+            <p class="font-mono text-label-caps text-white/70 mb-3">COMING SOON</p>
+            <h2 class="font-display font-black uppercase text-4xl md:text-6xl text-white leading-none">
+                Silence Drop
+            </h2>
+            <p class="font-body text-white/80 mt-4 text-lg max-w-md">
+                New pieces. Better Service. Dropping soon.
+            </p>
+            <a href="{% url 'products:store' %}"
+                class="mt-6 inline-block px-8 py-3 bg-white text-black font-body font-bold uppercase tracking-widest text-sm hover:bg-outline transition-colors">
+                Get Notified
+            </a>
+        </div>
+    </div>
+</section>
+
 <section class="relative bg-black text-white pt-28 pb-16 md:pt-36 overflow-hidden">
-    <h1 class="text-center font-display font-black uppercase text-4xl md:text-7xl tracking-wider mb-10 md:mb-14"
+    <!-- <h1 class="text-center font-display font-black uppercase text-4xl md:text-7xl tracking-wider mb-10 md:mb-14"
         style="text-shadow: 0 0 20px rgba(255,255,255,.55), 0 0 40px rgba(255,255,255,.25);">
-        HOODRANKED NEW DROP
-    </h1>
+        HOODRANKED
+    </h1> -->
 
     <!-- Carousel -->
     <div id="drop-carousel" class="relative h-[400px] md:h-[500px] select-none touch-pan-y">
@@ -101,24 +129,6 @@
                 <path d="M9 18l6-6-6-6" />
             </svg>
         </button>
-    </div>
-</section>
-
-<!-- Full-width statement / secondary visual -->
-<section class="relative h-[70vh] min-h-[500px] bg-black overflow-hidden">
-    <img src="{% static 'second.jpeg' %}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-60">
-    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-    <div class="relative z-10 h-full flex items-end px-margin-mobile md:px-margin-desktop pb-16 md:pb-24">
-        <div class="max-w-xl">
-            <p class="font-mono text-label-caps text-white/70 mb-3">NOW LIVE</p>
-            <h2 class="font-display font-black uppercase text-4xl md:text-6xl text-white leading-none">
-                Female pieces<br>live now.
-            </h2>
-            <a href="{% url 'products:store' %}"
-                class="mt-6 inline-block px-8 py-3 bg-white text-black font-body font-bold uppercase tracking-widest text-sm hover:bg-outline transition-colors">
-                Shop Collection
-            </a>
-        </div>
     </div>
 </section>
 
