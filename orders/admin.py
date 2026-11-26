@@ -1,10 +1,28 @@
-from django.contrib import admin
-from .models import Order, OrderItem
-from django.utils.html import format_html
+import secrets
+from datetime import timedelta
 
 import openpyxl
 from openpyxl.styles import Font
+
+from django.contrib import admin
 from django.http import HttpResponse
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.html import format_html
+
+from .models import Order, OrderItem, Coupon
+
+
+def naira(value):
+    return f"₦{value:,.2f}" if value is not None else "—"
+
+
+# ---------------------------------------------------------------- Orders
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    fields = ('product', 'variant', 'quantity', 'price')
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -15,43 +33,124 @@ class OrderAdmin(admin.ModelAdmin):
         'payment_status_colored',
         'order_status_colored',
         'total_price_display',
+        'coupon',
+        'shipping_courier',
         'created_at',
-        'item_count'
+        'item_count',
     )
-    list_filter = ('payment_status', 'status', 'created_at')
-    search_fields = ('order_id', 'reference', 'name', 'email', 'phone')
+    list_filter = ('payment_status', 'status', 'shipping_courier', 'coupon__kind', 'created_at')
+    search_fields = ('order_id', 'reference', 'name', 'email', 'phone', 'coupon__code')
     date_hierarchy = 'created_at'
-    readonly_fields = ('order_id', 'reference', 'created_at', 'updated_at', 'total_price')
+    list_select_related = ('coupon',)
+    inlines = [OrderItemInline]
 
-    actions = ['export_successful_orders_excel']
-    inlines = []
+    # Money and Shipbubble fields are set by the checkout flow, not by hand
+    readonly_fields = (
+        'order_id', 'reference', 'created_at', 'updated_at',
+        'subtotal_display', 'coupon', 'discount_amount', 'service_fee',
+        'shipping_fee', 'total_price',
+        'shipping_courier', 'shipbubble_order_id', 'shipbubble_status',
+        'receiver_address_code',
+    )
 
+    fieldsets = (
+        ('Order Info', {
+            'fields': ('order_id', 'reference', 'user')
+        }),
+        ('Customer', {
+            'fields': ('name', 'email', 'phone')
+        }),
+        ('Shipping Address', {
+            'fields': ('address', 'city', 'state', 'postal_code')
+        }),
+        ('Pricing', {
+            'fields': (
+                'subtotal_display', 'coupon', 'discount_amount',
+                'service_fee', 'shipping_fee', 'total_price',
+            )
+        }),
+        ('Delivery', {
+            'fields': (
+                'shipping_courier', 'shipbubble_status', 'shipbubble_order_id',
+                'receiver_address_code', 'tracking_code', 'tracking_url',
+            )
+        }),
+        ('Status', {
+            'fields': ('payment_status', 'status')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    actions = ['export_successful_orders_excel', 'mark_as_shipped']
+
+    # ---- list columns
+    def payment_status_colored(self, obj):
+        colors = {'paid': 'green', 'pending': 'orange', 'failed': 'red', 'refunded': 'purple'}
+        color = colors.get(obj.payment_status, 'gray')
+        return format_html('<span style="color: {};">{}</span>', color, obj.payment_status.capitalize())
+    payment_status_colored.short_description = "Payment"
+
+    def order_status_colored(self, obj):
+        colors = {
+            'processing': 'blue', 'shipped': 'teal', 'delivered': 'green',
+            'pending': 'orange', 'cancelled': 'red', 'failed': 'red',
+        }
+        color = colors.get(obj.status, 'gray')
+        return format_html('<span style="color: {};">{}</span>', color, obj.status.capitalize())
+    order_status_colored.short_description = "Order"
+
+    def total_price_display(self, obj):
+        return naira(obj.total_price)
+    total_price_display.short_description = "Total"
+
+    def subtotal_display(self, obj):
+        return naira(obj.subtotal)
+    subtotal_display.short_description = "Items subtotal"
+
+    def item_count(self, obj):
+        return obj.items.count()
+    item_count.short_description = "Items"
+
+    # ---- actions
+    @admin.action(description='Mark selected orders as shipped')
+    def mark_as_shipped(self, request, queryset):
+        updated_count = queryset.update(status='shipped')
+        self.message_user(request, f'{updated_count} order(s) marked as shipped.')
+
+    @admin.action(description='Export SUCCESSFUL orders to Excel')
     def export_successful_orders_excel(self, request, queryset):
-        orders = queryset.filter(payment_status='paid').prefetch_related('items')
+        orders = (
+            queryset.filter(payment_status='paid')
+            .select_related('coupon')
+            .prefetch_related('items__product', 'items__variant')
+        )
 
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Successful Orders"
 
         headers = [
-            'Order ID', 'Customer Name', 'Email', 'Phone',
-            'Address', 'Payment Status', 'Total Price', 'Created At', 'Order Items'
+            'Order ID', 'Customer Name', 'Email', 'Phone', 'Address',
+            'Payment Status', 'Order Status', 'Subtotal', 'Coupon', 'Discount',
+            'Service Fee', 'Shipping Fee', 'Courier', 'Tracking URL',
+            'Total Price', 'Created At', 'Order Items',
         ]
         ws.append(headers)
         for cell in ws[1]:
             cell.font = Font(bold=True)
 
         for order in orders:
-            address_parts = [order.address, order.city, order.state]
-            full_address = ", ".join(part for part in address_parts if part)
+            full_address = ", ".join(p for p in [order.address, order.city, order.state] if p)
 
-            items_list = []
-            for item in order.items.all():
-                variant_str = f" ({item.variant})" if item.variant else ""
-                items_list.append(
-                    f"{variant_str} x{item.quantity} @ ₦{item.price:,.2f}"
-                )
-            items_str = "; ".join(items_list)
+            items_str = "; ".join(
+                f"{item.product.name if item.product else 'Item'}"
+                f"{f' ({item.variant})' if item.variant else ''}"
+                f" x{item.quantity} @ ₦{item.price:,.2f}"
+                for item in order.items.all()
+            )
 
             ws.append([
                 order.order_id,
@@ -60,7 +159,15 @@ class OrderAdmin(admin.ModelAdmin):
                 order.phone,
                 full_address,
                 order.payment_status,
-                float(order.total_price),
+                order.status,
+                float(order.subtotal),
+                order.coupon.code if order.coupon else '',
+                float(order.discount_amount or 0),
+                order.service_fee,
+                float(order.shipping_fee or 0),
+                order.shipping_courier or '',
+                order.tracking_url or '',
+                float(order.total_price or 0),
                 order.created_at.strftime('%Y-%m-%d %H:%M'),
                 items_str,
             ])
@@ -76,68 +183,6 @@ class OrderAdmin(admin.ModelAdmin):
         wb.save(response)
         return response
 
-    export_successful_orders_excel.short_description = "Export SUCCESSFUL orders to Excel"
-
-    fieldsets = (
-        ('Order Info', {
-            'fields': ('order_id', 'reference', 'total_price')
-        }),
-        ('Customer', {
-            'fields': ('name', 'email', 'phone')
-        }),
-        ('Shipping', {
-            'fields': ('address', 'city', 'state', 'postal_code')
-        }),
-        ('Status', {
-            'fields': ('payment_status', 'status')
-        }),
-        ('Timestamps', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
-    )
-
-    def payment_status_colored(self, obj):
-        colors = {
-            'paid': 'green',
-            'pending': 'orange',
-            'failed': 'red',
-            'refunded': 'purple',
-        }
-        color = colors.get(obj.payment_status, 'gray')
-        return format_html('<span style="color: {};">{}</span>', color, obj.payment_status.capitalize())
-    payment_status_colored.short_description = "Payment"
-
-    def order_status_colored(self, obj):
-        colors = {
-            'processing': 'blue',
-            'shipped': 'teal',
-            'delivered': 'green',
-            'pending': 'orange',
-            'cancelled': 'red',
-        }
-        color = colors.get(obj.status, 'gray')
-        return format_html('<span style="color: {};">{}</span>', color, obj.status.capitalize())
-    order_status_colored.short_description = "Order"
-
-    def total_price_display(self, obj):
-        return f"₦{obj.total_price:,.2f}"
-    total_price_display.short_description = "Total"
-
-    def item_count(self, obj):
-        return obj.items.count()
-    item_count.short_description = "Items"
-
-
-# Inline for Order Items
-class OrderItemInline(admin.TabularInline):
-    model = OrderItem
-    extra = 0
-    fields = ('product', 'variant', 'quantity', 'price')
-
-
-OrderAdmin.inlines = [OrderItemInline]
-
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
@@ -147,9 +192,64 @@ class OrderItemAdmin(admin.ModelAdmin):
     readonly_fields = ('order', 'product', 'variant', 'quantity', 'price')
 
     def order_link(self, obj):
-        return format_html('<a href="/admin/store/order/{}/change/">{}</a>', obj.order.id, obj.order.order_id)
+        url = reverse(
+            f'admin:{obj.order._meta.app_label}_{obj.order._meta.model_name}_change',
+            args=[obj.order.pk],
+        )
+        return format_html('<a href="{}">{}</a>', url, obj.order.order_id)
     order_link.short_description = "Order"
 
     def subtotal(self, obj):
-        return f"₦{(obj.quantity * obj.price):,.2f}"
+        return naira(obj.quantity * obj.price)
     subtotal.short_description = "Subtotal"
+
+
+# --------------------------------------------------------------- Coupons
+@admin.register(Coupon)
+class CouponAdmin(admin.ModelAdmin):
+    list_display = ('code', 'kind', 'value_display', 'email', 'status_colored', 'expires_at', 'created_at', 'orders_used_on')
+    list_filter = ('kind', 'used', 'created_at')
+    search_fields = ('code', 'email')
+    date_hierarchy = 'created_at'
+    actions = ['expire_now', 'extend_7_days']
+
+    def get_readonly_fields(self, request, obj=None):
+        # Codes and creation date are fixed once issued
+        return ('code', 'created_at') if obj else ('created_at',)
+
+    def get_changeform_initial_data(self, request):
+        # Prefill so you can create promo codes by hand in one click
+        return {
+            'code': 'HR-' + secrets.token_hex(3).upper(),
+            'expires_at': timezone.now() + timedelta(days=7),
+        }
+
+    def value_display(self, obj):
+        return "Free delivery" if obj.kind == Coupon.FREE_DELIVERY else f"{obj.percent}% off"
+    value_display.short_description = "Reward"
+
+    def status_colored(self, obj):
+        if obj.used:
+            return format_html('<span style="color: gray;">Used</span>')
+        if obj.expires_at <= timezone.now():
+            return format_html('<span style="color: red;">Expired</span>')
+        return format_html('<span style="color: green;">Active</span>')
+    status_colored.short_description = "Status"
+
+    def orders_used_on(self, obj):
+        return obj.orders.count()
+    orders_used_on.short_description = "Orders"
+
+    @admin.action(description='Expire selected coupons now')
+    def expire_now(self, request, queryset):
+        n = queryset.update(expires_at=timezone.now())
+        self.message_user(request, f'{n} coupon(s) expired.')
+
+    @admin.action(description='Extend selected coupons by 7 days')
+    def extend_7_days(self, request, queryset):
+        n = 0
+        for coupon in queryset.filter(used=False):
+            coupon.expires_at = max(coupon.expires_at, timezone.now()) + timedelta(days=7)
+            coupon.save(update_fields=['expires_at'])
+            n += 1
+        self.message_user(request, f'{n} coupon(s) extended.')

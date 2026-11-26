@@ -12,8 +12,8 @@
           "muted-steel": "#1F2937",
           "surface-gray": "#111111",
           "on-surface-variant": "#c4c7c8",
-          blood: "#052F19",
-          // blood: "#7A0F0F",
+          // blood: "#052F19",
+          blood: "#7A0F0F",
         },
         borderRadius: {
           DEFAULT: "0px",

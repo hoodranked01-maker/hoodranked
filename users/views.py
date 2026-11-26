@@ -10,7 +10,7 @@ def profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully!')
-            return redirect('profile')
+            return redirect('users:profile')
     else:
         form = UserProfileForm(instance=request.user)
     

@@ -10,4 +10,6 @@ urlpatterns = [
     path('order/history/', order_history, name='order_history'),
     path('order/detail/<str:order_id>/', order_detail, name='order_detail'),
     path("track-order/", track_order, name="track_order"),
+    path('orders/shipping-rates/', get_shipping_rates, name='get_shipping_rates'),
+    path('apply-coupon/', apply_coupon_view, name='apply_coupon'),
 ]
