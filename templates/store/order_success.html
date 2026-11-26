@@ -6,30 +6,25 @@
 
 {% block content %}
 
-<main class="px-margin-mobile md:px-margin-desktop py-20 md:py-28 max-w-container-max mx-auto">
+<main class="px-margin-mobile md:px-margin-desktop py-20 md:py-28 max-w-container-max mx-auto text-center">
     <div class="max-w-2xl mx-auto">
 
-        {# ---------- Confirmation header ---------- #}
-        <div class="text-center mb-16">
+        <div class="mb-16">
             <span class="material-symbols-outlined text-6xl text-blood mb-6 block">check_circle</span>
             <h1
-                class="font-display uppercase text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none mb-6">
+                class="font-display font-black uppercase text-headline-lg-mobile md:text-headline-lg text-stark-white leading-none mb-6">
                 ORDER CONFIRMED
             </h1>
             <p class="font-body text-body-lg text-on-surface-variant">
                 Thank you{% if order.name %}, {{ order.name }}{% endif %}. Your order
                 <span class="text-stark-white font-bold">#{{ order.order_id }}</span> has been received.
             </p>
-            <p class="font-mono text-label-caps text-outline mt-4">
-                PLACED {{ order.created_at|date:"d M Y, H:i" }}
-            </p>
         </div>
 
-        {# ---------- Items ---------- #}
-        <div class="bg-surface-gray border border-muted-steel p-6 md:p-10 mb-8">
+        <div class="bg-surface-gray border border-muted-steel p-6 md:p-10 mb-16 text-left">
             <h2 class="font-display text-headline-md text-stark-white mb-10">ORDER DETAILS</h2>
 
-            <div class="space-y-6">
+            <div class="space-y-6 mb-10">
                 {% for item in order.items.all %}
                 <div
                     class="flex flex-col sm:flex-row items-start sm:items-center gap-5 pb-6 border-b border-muted-steel last:border-b-0 last:pb-0">
@@ -49,8 +44,8 @@
                             SIZE {{ item.variant.size|default:"—" }}
                         </p>
                         <p class="font-body text-body-md text-on-surface-variant mt-2">
-                            ₦{{ item.price|floatformat:0|intcomma }} &times; {{ item.quantity }} &mdash;
-                            <span class="text-stark-white font-bold">₦{{ item.get_subtotal|floatformat:0|intcomma }}</span>
+                            ₦{{ item.price|intcomma }} &times; {{ item.quantity }} &mdash;
+                            <span class="text-stark-white font-bold">₦{{ item.get_subtotal|floatformat:0|intcomma   }}</span>
                         </p>
                     </div>
                 </div>
@@ -58,110 +53,26 @@
                 <p class="font-body text-body-md text-outline text-center py-8">No items found in this order</p>
                 {% endfor %}
             </div>
-        </div>
 
-        {# ---------- Payment summary ---------- #}
-        <div class="bg-surface-gray border border-muted-steel p-6 md:p-10 mb-8">
-            <h2 class="font-display text-headline-md text-stark-white mb-8">PAYMENT SUMMARY</h2>
-
-            <div class="space-y-4">
-                <div class="flex justify-between font-body text-body-md text-on-surface-variant">
-                    <span>Subtotal</span>
-                    <span class="text-stark-white">₦{{ order.subtotal|floatformat:0|intcomma }}</span>
+            <div class="border-t border-muted-steel pt-8">
+                <div class="flex justify-between items-baseline mb-8">
+                    <span class="font-body font-bold text-body-lg text-stark-white uppercase tracking-wide">Total</span>
+                    <span class="font-display text-headline-md text-stark-white">₦{{ order.total_price|intcomma }}</span>
                 </div>
-
-                {% if order.discount_amount and order.discount_amount > 0 %}
-                <div class="flex justify-between font-body text-body-md text-on-surface-variant">
-                    <span>Discount{% if order.coupon %} <span class="font-mono text-[11px] text-outline">({{ order.coupon.code }})</span>{% endif %}</span>
-                    <span class="text-stark-white">−₦{{ order.discount_amount|floatformat:0|intcomma }}</span>
-                </div>
-                {% endif %}
-
-                <div class="flex justify-between font-body text-body-md text-on-surface-variant">
-                    <span>Service Fee</span>
-                    <span class="text-stark-white">₦{{ order.service_fee|intcomma }}</span>
-                </div>
-
-                <div class="flex justify-between font-body text-body-md text-on-surface-variant">
-                    <span>Shipping{% if order.shipping_courier %} <span class="font-mono text-[11px] text-outline">({{ order.shipping_courier }})</span>{% endif %}</span>
-                    <span class="text-stark-white">
-                        {% if order.coupon and order.coupon.kind == 'free_delivery' %}FREE{% if order.coupon %} <span class="font-mono text-[11px] text-outline">({{ order.coupon.code }})</span>{% endif %}
-                        {% else %}
-                        ₦{{ order.shipping_fee|default:0|floatformat:0|intcomma }}
-                        {% endif %}
-                    </span>
-                </div>
-
-                <div class="flex justify-between items-baseline pt-6 border-t border-muted-steel">
-                    <span class="font-body font-bold text-body-lg text-stark-white uppercase tracking-wide">Total
-                        Paid</span>
-                    <span class="font-display text-headline-md text-stark-white">₦{{ order.total_price|floatformat:0|intcomma }}</span>
-                </div>
-            </div>
-
-            <div class="mt-8 pt-6 border-t border-muted-steel space-y-2">
-                <p class="font-mono text-[11px] text-outline">PAYMENT — <span class="text-stark-white">{{ order.get_payment_status_display|upper }}</span></p>
-                <p class="font-mono text-[11px] text-outline">REFERENCE — <span class="text-stark-white">{{ order.reference }}</span></p>
-            </div>
-        </div>
-
-        {# ---------- Delivery ---------- #}
-        <div class="bg-surface-gray border border-muted-steel p-6 md:p-10 mb-16">
-            <h2 class="font-display text-headline-md text-stark-white mb-8">DELIVERY</h2>
-
-            <div class="space-y-6">
-                <div>
-                    <p class="font-mono text-label-caps text-outline mb-2">SHIPPING TO</p>
-                    <p class="font-body text-body-md text-stark-white">{{ order.name }}</p>
-                    <p class="font-body text-body-md text-on-surface-variant">
-                        {{ order.address }}{% if order.city %}, {{ order.city }}{% endif %}{% if order.state %}, {{ order.state }}{% endif %}{% if order.postal_code %} {{ order.postal_code }}{% endif %}
-                    </p>
-                </div>
-
-                {% if order.shipping_courier %}
-                <div>
-                    <p class="font-mono text-label-caps text-outline mb-2">COURIER</p>
-                    <p class="font-body text-body-md text-stark-white">{{ order.shipping_courier }}</p>
-                </div>
-                {% endif %}
-
-                <div>
-                    <p class="font-mono text-label-caps text-outline mb-2">STATUS</p>
-                    <p class="font-body text-body-md text-stark-white">{{ order.get_status_display }}</p>
-                </div>
-
-                <div>
-                    <p class="font-mono text-label-caps text-outline mb-2">TRACKING</p>
-                    {% if order.tracking_url %}
-                    <a href="{{ order.tracking_url }}" target="_blank" rel="noopener"
-                        class="inline-block font-body font-bold border border-stark-white text-stark-white text-button uppercase tracking-widest px-8 py-3 hover:bg-stark-white hover:text-pitch-black transition-colors">
-                        Track Shipment
-                    </a>
-                    {% else %}
-                    <p class="font-body text-body-md text-on-surface-variant">
-                        Your tracking link will be available once the courier picks up your order.
-                        You can also look it up anytime on the
-                        <a href="{% url 'orders:track_order' %}?order_id={{ order.order_id }}"
-                            class="text-stark-white underline">track order</a> page.
-                    </p>
-                    {% endif %}
-                </div>
-
-                <div class="pt-6 border-t border-muted-steel space-y-2">
+                <div class="space-y-2">
                     <p class="font-mono text-[11px] text-outline">CONFIRMATION SENT TO — <span
                             class="text-stark-white">{{ order.email }}</span></p>
                     <p class="font-mono text-[11px] text-outline">UPDATES VIA SMS/WHATSAPP TO — <span
                             class="text-stark-white">{{ order.phone }}</span></p>
+                    <p class="font-mono text-[11px] text-outline">STATUS — <span class="text-stark-white">{{ order.get_status_display }}</span></p>
                 </div>
             </div>
         </div>
 
-        <div class="text-center">
-            <a href="{% url 'products:store' %}"
-                class="inline-block font-body font-bold bg-blood text-stark-white text-button uppercase tracking-widest px-12 py-5 hover:opacity-90 transition-all-custom active:scale-95">
-                Continue Shopping
-            </a>
-        </div>
+        <a href="{% url 'products:store' %}"
+            class="inline-block font-body font-bold bg-blood text-stark-white text-button uppercase tracking-widest px-12 py-5 hover:opacity-90 transition-all-custom active:scale-95">
+            Continue Shopping
+        </a>
     </div>
 </main>
 
@@ -169,32 +80,35 @@
 
 {% block extra_scripts %}
 <script>
+    // GA4 purchase event — uses order.items.all (same source as the visible
+    // order details above), not a separate order_items variable. The
+    // previous version referenced order_items, a variable this view never
+    // actually passed to the template, so the purchase event was firing
+    // with an empty items array on every single order.
     function safeTrackEventIfAvailable(name, params) {
         if (typeof window.trackEvent === "function") {
             window.trackEvent(name, params);
         } else {
-            console.warn('trackEvent not available — skipped "' + name + '" event');
+            console.warn(`trackEvent not available — skipped "${name}" event`);
         }
     }
 
     safeTrackEventIfAvailable('purchase', {
-        transaction_id: "{{ order.order_id|escapejs }}",
+        transaction_id: "{{ order.order_id }}",
         value: {{ order.total_price|floatformat:2 }},
         currency: "NGN",
-        coupon: "{{ order.coupon.code|default:''|escapejs }}",
-        shipping: {{ order.shipping_fee|default:0 | floatformat:2 }},
         items: [
         {% for item in order.items.all %}
     {
-        item_id: "{{ item.product.id|default:''|escapejs }}",
-            item_name: "{{ item.product.name|default:'Unknown Product'|escapejs }}",
-                item_variant: "{{ item.variant.size|default:''|escapejs }}",
-                    price: { { item.price | floatformat:2 } },
+        item_id: "{{ item.product.id|default:'' }}",
+            item_name: "{{ item.product.name|default:'Unknown Product' }}",
+                item_variant: "{{ item.variant.size|default:'' }}",
+                    price: { { item.price|floatformat:2 } },
         quantity: { { item.quantity } }
     } {% if not forloop.last %}, {% endif %}
     {% endfor %}
-        ]
-    });
+    ]
+  });
 
     {% if should_clear_cart %}
     localStorage.removeItem('hoodranked_cart');

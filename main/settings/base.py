@@ -32,15 +32,14 @@ CSRF_TRUSTED_ORIGINS = [
     'https://hoodranked.store',
     'https://hoodranked.com',
     'http://127.0.0.1',
-    'https://remonstratingly-pretorial-gaynelle.ngrok-free.dev',
-    'https://devoted-olva-digicrafts-54661615.apps.mistral.run'
+    'https://remonstratingly-pretorial-gaynelle.ngrok-free.dev'
 ]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.staticfiles',
     'cloudinary_storage',
+    'django.contrib.staticfiles',
     'cloudinary',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,7 +69,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'waffle.middleware.WaffleMiddleware',
     "allauth.account.middleware.AccountMiddleware",
 ]
@@ -174,9 +172,12 @@ USE_TZ = True
 #     os.path.join(BASE_DIR, 'static'),
 # ]
 
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # MEDIA_URL = '/media/'
@@ -214,15 +215,15 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 # Optional: Use Redis for sessions
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
@@ -247,3 +248,5 @@ sentry_sdk.init(
     # run the profiler on when there is an active transaction
     profile_lifecycle="trace",
 )
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

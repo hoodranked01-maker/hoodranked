@@ -6,7 +6,7 @@ load_dotenv()
 DEBUG = False
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = ['hoodranked.store', 'www.hoodranked.store', 'hoodranked.com', 'www.hoodranked.com', '*.ngrok-free.dev', 'devoted-olva-digicrafts-54661615.apps.mistral.run']
+ALLOWED_HOSTS = ['hoodranked.store', 'www.hoodranked.store', 'hoodranked.com', 'www.hoodranked.com', '*.ngrok-free.dev']
 
 # Production Database (PostgreSQL)
 DATABASES = {
@@ -28,15 +28,15 @@ CSRF_COOKIE_SECURE = True
 # Email (configure later with SendGrid or similar)
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/1'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 # Static and media (production/cloud)
 STATIC_URL = '/static/'
@@ -52,20 +52,14 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET')
 }
 
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-#     },
-#     "staticfiles": {
-#         "BACKEND": "cloudinary_storage.storage.StaticHashedCloudinaryStorage",
-#     },
-# }
-
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "cloudinary_storage.storage.StaticHashedCloudinaryStorage",
     },
 }
+
+STATICFILES_STORAGE = "cloudinary_storage.storage.StaticHashedCloudinaryStorage"
+# STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]

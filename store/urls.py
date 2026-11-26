@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import index, cart, checkout, shipping, terms, thank_you, contact, lookbook, lookbook_detail, privacy, test
-from store.wheel import spin_wheel
+from .views import index, cart, checkout, shipping, terms, thank_you, contact, lookbook, lookbook_detail, privacy
 
 app_name = 'store'
 
@@ -18,7 +17,5 @@ urlpatterns = [
     path('shipping/', shipping, name='shipping'),
     path("lookbook/", lookbook, name="lookbook"),
     path("lookbook/<slug:slug>/", lookbook_detail, name="lookbook_detail"),
-    path("test/", test, name="test"),
     path('sentry-debug/', trigger_error),
-    path('spin/', spin_wheel, name='spin_wheel'),
 ]

@@ -124,49 +124,25 @@
         <div class="lg:col-span-2">
             <div class="bg-surface-gray border border-muted-steel p-6 md:p-8 sticky top-24">
                 <h2 class="font-display text-headline-md text-stark-white mb-8">ORDER SUMMARY</h2>
-        
-                <div id="order-items" class="space-y-6 mb-8"></div>
-        
-                <!-- Shipping options will be injected here -->
-                <div id="shipping-options" class="mb-8"></div>
 
-                <!-- Promo code -->
-                <div class="mb-8">
-                    <label for="coupon-input" class="block font-mono text-label-caps text-outline mb-3">Promo Code</label>
-                    <div class="flex gap-3">
-                        <input type="text" id="coupon-input" placeholder="HR-XXXXXX" autocomplete="off"
-                            value="{{ request.session.wheel.code|default:'' }}" class="uppercase">
-                        <button type="button" id="coupon-apply"
-                            class="px-6 border border-stark-white text-stark-white font-body font-bold text-button uppercase tracking-widest hover:bg-stark-white hover:text-pitch-black transition-colors">
-                            Apply
-                        </button>
-                    </div>
-                    <p id="coupon-msg" class="font-mono text-[11px] mt-3 min-h-[16px]"></p>
-                </div>
-        
+                <div id="order-items" class="space-y-6 mb-8"></div>
+
                 <div class="space-y-4 border-t border-muted-steel pt-6">
                     <div class="flex justify-between font-body text-body-md text-on-surface-variant">
                         <span>Subtotal</span>
                         <span id="order-subtotal" class="text-stark-white">₦0</span>
                     </div>
-                    <div id="discount-row" class="hidden justify-between font-body text-body-md text-on-surface-variant">
-                        <span>Discount</span>
-                        <span id="discount-amount" class="text-stark-white">−₦0</span>
-                    </div>
                     <div class="flex justify-between font-body text-body-md text-on-surface-variant">
                         <span>Service Fee</span>
                         <span id="service-fee" class="text-stark-white">Calculated</span>
                     </div>
-                    <div class="flex justify-between font-body text-body-md text-on-surface-variant">
-                        <span>Shipping</span>
-                        <span id="shipping-fee" class="text-stark-white">—</span>
-                    </div>
                     <div class="flex justify-between items-baseline pt-4 border-t border-muted-steel">
-                        <span class="font-body font-bold text-body-md text-stark-white uppercase tracking-wide">Total</span>
-                        <span id="order-total" class="font-body text-headline-md text-stark-white">₦0</span>
+                        <span
+                            class="font-body font-bold text-body-md text-stark-white uppercase tracking-wide">Total</span>
+                        <span id="order-total" class="font-display text-headline-md text-stark-white">₦0</span>
                     </div>
                 </div>
-        
+
                 <button type="submit" id="place-order-btn"
                     class="w-full mt-10 font-body font-bold bg-stark-white text-pitch-black text-button uppercase tracking-widest py-5 hover:bg-on-surface-variant transition-all-custom active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-stark-white"
                     disabled>
@@ -183,56 +159,6 @@
 {% block extra_scripts %}
 <script>
     window.HOODRANKED_CHECKOUT_ENDPOINT = "{% url 'orders:process_checkout' %}";
-</script>
-<script>
-    window.HR_COUPON = null;
-    (function () {
-        const input = document.getElementById('coupon-input');
-        const btn = document.getElementById('coupon-apply');
-        const msg = document.getElementById('coupon-msg');
-
-        input.addEventListener('input', () => {
-            if (window.HR_COUPON && input.value.trim().toUpperCase() !== window.HR_COUPON.code) {
-                window.HR_COUPON = null;
-                msg.textContent = '';
-                document.dispatchEvent(new CustomEvent('coupon-changed'));
-            }
-        });
-        
-        btn.addEventListener('click', async () => {
-            const code = input.value.trim();
-            if (!code) return;
-            btn.disabled = true;
-            msg.className = 'font-mono text-[11px] mt-3 text-outline';
-            msg.textContent = 'Checking...';
-            try {
-                const res = await fetch("{% url 'orders:apply_coupon' %}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    },
-                    body: JSON.stringify({ code, email: document.getElementById('email').value }),
-                });
-                const data = await res.json();
-                if (!res.ok || !data.valid) {
-                    window.HR_COUPON = null;
-                    msg.className = 'font-mono text-[11px] mt-3 text-blood';
-                    msg.textContent = data.error || 'Invalid code';
-                } else {
-                    window.HR_COUPON = data;
-                    msg.className = 'font-mono text-[11px] mt-3 text-stark-white';
-                    msg.textContent = data.kind === 'free_delivery'
-                        ? 'Free delivery applied'
-                        : data.percent + '% off applied';
-                }
-            } catch (e) {
-                msg.textContent = 'Something went wrong. Try again.';
-            }
-            btn.disabled = false;
-            document.dispatchEvent(new CustomEvent('coupon-changed'));
-        });
-    })();
 </script>
 <script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}

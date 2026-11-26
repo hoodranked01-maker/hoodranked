@@ -25,7 +25,7 @@ DATABASES = {
 }
 
 # Email - Console backend for development
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Static and media (development/local)
 STATIC_URL = '/static/'
@@ -35,38 +35,11 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET')
-}
-
 # Use WhiteNoise in development to serve static files locally
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Storages configuration (Supabase/S3)
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "storages.backends.s3.S3Storage",
-#         "OPTIONS": {
-#             "access_key": AWS_ACCESS_KEY_ID,
-#             "secret_key": AWS_SECRET_ACCESS_KEY,
-#             "bucket_name": AWS_STORAGE_BUCKET_NAME,
-#             "endpoint_url": AWS_S3_ENDPOINT_URL,
-#             "region_name": AWS_S3_REGION_NAME,
-#             "signature_version": AWS_S3_SIGNATURE_VERSION,
-#             "querystring_auth": AWS_QUERYSTRING_AUTH,
-#         },
-#     },
-#     "staticfiles": {
-#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-#     },
-# }
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media/'
 
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# Local file storage for uploaded media
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
