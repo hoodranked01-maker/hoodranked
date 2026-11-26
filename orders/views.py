@@ -2,7 +2,7 @@ import os
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 
 from main import settings
-from .models import Order, OrderItem
+from .models import Order, OrderItem, Coupon
 from products.models import Variant
 from django.contrib.auth.decorators import user_passes_test
 from django.http import JsonResponse
@@ -19,6 +19,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from decimal import Decimal
 from .services.shipbubble import validate_address, fetch_rates, create_shipment
+from .coupons import get_valid_coupon, apply_coupon
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +83,19 @@ def process_checkout(request):
             calculated_subtotal += real_price * quantity
 
         service_fee = int(data.get('service_fee', 0))
-        total = calculated_subtotal + Decimal(service_fee)
+        shipping_fee = Decimal(str(data.get('shipping_fee', 0)))
+
+        # ---------- COUPON (validated again on the server) ----------
+        coupon = None
+        discount = Decimal('0.00')
+        code = (data.get('coupon_code') or '').strip()
+        if code:
+            coupon, err = get_valid_coupon(code, data.get('email'))
+            if err:
+                return JsonResponse({'error': err, 'code': 'INVALID_COUPON'}, status=400)
+            discount, shipping_fee = apply_coupon(coupon, calculated_subtotal, shipping_fee)
+
+        total = calculated_subtotal - discount + Decimal(service_fee) + shipping_fee
 
         # ---------- CREATE ORDER ----------
         user = request.user if request.user.is_authenticated else None
@@ -96,8 +109,16 @@ def process_checkout(request):
             city=data.get('city'),
             state=data.get('state'),
             postal_code=data.get('postal_code', ''),
-            total_price=total,
             service_fee=service_fee,
+            shipping_fee=shipping_fee,
+            shipping_courier=data.get("shipping_courier", ""),
+            shipbubble_request_token=data.get("request_token", ""),
+            shipbubble_service_code=data.get("service_code", ""),
+            shipbubble_courier_id=data.get("courier_id", ""),
+            receiver_address_code=data.get("receiver_address_code"),
+            coupon=coupon,
+            discount_amount=discount,
+            total_price=total,
             payment_status='pending',
             status='pending'
         )
@@ -111,15 +132,6 @@ def process_checkout(request):
                 price=item['price']
             )
 
-        order.shipping_fee = Decimal(str(data.get("shipping_fee", 0)))
-        order.shipping_courier = data.get("shipping_courier", "")
-        order.shipbubble_request_token = data.get("request_token", "")
-        order.shipbubble_service_code = data.get("service_code", "")
-        order.shipbubble_courier_id = data.get("courier_id", "")
-        order.receiver_address_code = data.get("receiver_address_code")
-        order.total_price = calculated_subtotal + Decimal(service_fee) + order.shipping_fee
-        order.save()
-
         # ---------- PAYSTACK ----------
         headers = {
             "Authorization": f"Bearer {os.getenv('PAYSTACK_SECRET_KEY')}",
@@ -128,7 +140,7 @@ def process_checkout(request):
 
         payload = {
             "email": order.email,
-            "amount": int((calculated_subtotal + Decimal(service_fee) + order.shipping_fee) * 100),
+            "amount": int(order.total_price * 100),
             "reference": order.reference,
             # "split_code": "SPL_nhsUhQOZ0k",
             "callback_url": request.build_absolute_uri("/payment/success/"),
@@ -175,12 +187,12 @@ def payment_success(request):
     
     if not reference:
         logger.warning("No reference received in Paystack callback")
-        return redirect('cart')
+        return redirect('store:cart')
 
     order = get_object_or_404(Order, reference=reference)
 
     if order.payment_status == 'paid':
-        return redirect('order_success_clean', order_id=order.order_id)
+        return redirect('orders:order_success_clean', order_id=order.order_id)
 
     headers = {"Authorization": f"Bearer {os.getenv('PAYSTACK_SECRET_KEY')}"}
     
@@ -197,6 +209,11 @@ def payment_success(request):
             order.payment_status = 'paid'
             order.status = 'processing'
             order.save()
+
+            if order.coupon_id:
+                Coupon.objects.filter(pk=order.coupon_id, used=False).update(used=True)
+                request.session.get('wheel', {}).pop('code', None)
+                request.session.modified = True
 
             # Create Shipbubble shipment
             if order.shipbubble_request_token and order.shipbubble_service_code:
@@ -246,14 +263,14 @@ def payment_success(request):
             order.status = 'failed'
             order.save()
             logger.warning(f"Payment failed verification for ref {reference}: {data.get('message')}")
-            return redirect('order_failed')
+            return redirect('orders:order_failed')
 
     except Exception as e:
         logger.error(f"Paystack verify request failed for ref {reference}: {str(e)}")
         order.payment_status = 'failed'
         order.status = 'failed'
         order.save()
-        return redirect('order_failed')
+        return redirect('orders:order_failed')
     
 def order_success_clean(request, order_id):
     order = get_object_or_404(Order, order_id=order_id)
@@ -433,4 +450,21 @@ def get_shipping_rates(request):
     except Exception as e:
         logger.error(f"Shipbubble rate error: {e}")
         return JsonResponse({"error": str(e)}, status=400)
-    
+
+@require_POST
+def apply_coupon_view(request):
+    try:
+        data = json.loads(request.body or "{}")
+    except ValueError:
+        return JsonResponse({"valid": False, "error": "Bad request"}, status=400)
+
+    coupon, err = get_valid_coupon(data.get("code"), data.get("email"))
+    if err:
+        return JsonResponse({"valid": False, "error": err}, status=400)
+
+    return JsonResponse({
+        "valid": True,
+        "code": coupon.code,
+        "kind": coupon.kind,
+        "percent": coupon.percent,
+    })

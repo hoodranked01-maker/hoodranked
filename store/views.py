@@ -2,11 +2,13 @@ import os
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Look
 from products.models import Product
+from store.wheel import WHEEL_PRIZES
 
 def index(request):
     products = Product.objects.filter(is_active=True, is_featured=True)[:5]
     context = {
         'products': products,
+        "wheel_prizes": [{"id": p["id"], "label": p["label"]} for p in WHEEL_PRIZES],
     }
     return render(request, 'store/index.html', context)
 
@@ -66,5 +68,6 @@ def test(request):
     products = Product.objects.filter(is_active=True, is_featured=True)[:5]
     context = {
         'products': products,
+        "wheel_prizes": [{"id": p["id"], "label": p["label"]} for p in WHEEL_PRIZES],
     }
     return render(request, 'test/test.html', context)

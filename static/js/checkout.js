@@ -15,6 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Coupon is set by the inline script in checkout.html (window.HR_COUPON).
+  // Display only: the server recalculates every amount before charging.
+  function getDiscount(subtotal) {
+    const c = window.HR_COUPON;
+    if (c && c.kind === "percent") {
+      return Math.round((subtotal * c.percent) / 100);
+    }
+    return 0;
+  }
+
   function updateTotals() {
     const cart = getCart();
     let subtotal = 0;
@@ -22,15 +32,35 @@ document.addEventListener("DOMContentLoaded", () => {
       subtotal += item.price * item.quantity;
     });
 
-    const shipping = selectedRate ? selectedRate.shipping_fee : 0;
-    const total = subtotal + SERVICE_FEE + shipping;
+    const coupon = window.HR_COUPON;
+    const freeShipping = !!(coupon && coupon.kind === "free_delivery");
+    const shipping = freeShipping
+      ? 0
+      : selectedRate
+        ? selectedRate.shipping_fee
+        : 0;
+    const discount = getDiscount(subtotal);
+    const total = subtotal - discount + SERVICE_FEE + shipping;
 
     document.getElementById("order-subtotal").textContent =
       `₦${subtotal.toLocaleString()}`;
     document.getElementById("service-fee").textContent =
       `₦${SERVICE_FEE.toLocaleString()}`;
     document.getElementById("shipping-fee").textContent =
-      shipping > 0 ? `₦${shipping.toLocaleString()}` : "—";
+      freeShipping && selectedRate
+        ? "FREE"
+        : shipping > 0
+          ? `₦${shipping.toLocaleString()}`
+          : "—";
+
+    const row = document.getElementById("discount-row");
+    if (row) {
+      row.classList.toggle("hidden", discount <= 0);
+      row.classList.toggle("flex", discount > 0);
+      const amount = document.getElementById("discount-amount");
+      if (amount) amount.textContent = `−₦${discount.toLocaleString()}`;
+    }
+
     document.getElementById("order-total").textContent =
       `₦${total.toLocaleString()}`;
   }
@@ -68,6 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateTotals();
   }
+
+  // Re-run totals whenever a coupon is applied, changed or cleared
+  document.addEventListener("coupon-changed", updateTotals);
 
   function renderShippingOptions(couriers, requestToken, receiverAddressCode) {
     const container = document.getElementById("shipping-options");
@@ -317,6 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
         service_code: selectedRate.service_code,
         courier_id: selectedRate.courier_id,
         receiver_address_code: selectedRate.receiver_address_code,
+        coupon_code: window.HR_COUPON ? window.HR_COUPON.code : "",
       };
 
       try {

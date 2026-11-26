@@ -100,7 +100,7 @@
 
     <!-- Scroll cue -->
     <a href="#drop-carousel" aria-label="Scroll down"
-        class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-white/60 hover:text-white transition-colors animate-bounce">
+        class="hidden md:absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-white/60 hover:text-white transition-colors animate-bounce">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M6 9l6 6 6-6" />
         </svg>
@@ -143,6 +143,41 @@
             </svg>
         </button>
     </div>
+</section>
+
+<!-- Spin the wheel -->
+<section id="spin"
+    class="relative bg-pitch-black text-stark-white py-section-gap border-t border-white/10 overflow-hidden">
+    <div class="text-center px-margin-mobile md:px-margin-desktop">
+        <p class="font-mono text-label-caps text-on-surface-variant mb-4">FEELING LUCKY?</p>
+        <h2 class="font-display uppercase text-headline-lg-mobile md:text-headline-lg">Spin The Wheel</h2>
+        <p class="font-body text-body-lg text-on-surface-variant mt-4 max-w-md mx-auto">
+            One spin on the house. Win free delivery or a discount on your next order.
+        </p>
+    </div>
+
+    <div class="relative mx-auto mt-14 w-[300px] h-[300px] md:w-[420px] md:h-[420px]">
+        <!-- Pointer -->
+        <svg class="absolute -top-5 left-1/2 -translate-x-1/2 z-20 drop-shadow-lg" width="34" height="42"
+            viewBox="0 0 34 42">
+            <polygon points="2,2 32,2 17,40" fill="#7A0F0F" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round" />
+        </svg>
+
+        <!-- Wheel -->
+        <canvas id="wheel" class="w-full h-full rounded-full"
+            style="transition: transform 5s cubic-bezier(.12,.7,.1,1); box-shadow: 0 0 70px rgba(122,15,15,.55);"></canvas>
+
+        <!-- Hub -->
+        <button id="spin-btn"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-20 h-20 md:w-24 md:h-24 rounded-full
+                   bg-stark-white text-pitch-black border-4 border-pitch-black font-display uppercase text-button
+                   hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed">
+            Spin
+        </button>
+    </div>
+
+    <p id="wheel-result"
+        class="text-center font-display uppercase text-headline-md mt-12 min-h-[40px] px-margin-mobile"></p>
 </section>
 
 <!-- Marquee -->
@@ -214,6 +249,121 @@
 
         window.addEventListener('resize', render);
         render();
+    })();
+</script>
+
+{{ wheel_prizes|json_script:"wheel-prizes" }}
+<script>
+    (function () {
+        const prizes = JSON.parse(document.getElementById('wheel-prizes').textContent);
+        const canvas = document.getElementById('wheel');
+        const btn = document.getElementById('spin-btn');
+        const result = document.getElementById('wheel-result');
+        const n = prizes.length;
+        const arc = 360 / n;
+        let rotation = 0;
+
+        // Canvas can't read Tailwind classes, so the tokens are mirrored here
+        const STYLE = {
+            free_delivery: { bg: '#7A0F0F', fg: '#FFFFFF' },   // blood
+            five_off: { bg: '#FFFFFF', fg: '#000000' },
+            ten_off: { bg: '#FFFFFF', fg: '#000000' },
+            spin_again: { bg: '#000000', fg: '#FFFFFF' },
+            none: { bg: '#111111', fg: '#8e9192' },   // surface-gray / outline
+        };
+
+        function draw() {
+            const size = canvas.clientWidth;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.height = size * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            const c = size / 2;
+            const fs = Math.round(size * 0.038);
+
+            prizes.forEach((p, i) => {
+                const s = STYLE[p.id] || STYLE.none;
+                const start = (i * arc - 90) * Math.PI / 180;
+                const end = ((i + 1) * arc - 90) * Math.PI / 180;
+
+                ctx.beginPath();
+                ctx.moveTo(c, c);
+                ctx.arc(c, c, c - 4, start, end);
+                ctx.closePath();
+                ctx.fillStyle = s.bg;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,.2)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Two-line label, reading outward from the hub
+                const lines = p.label.split(' ');
+                const lh = fs * 1.2;
+                ctx.save();
+                ctx.translate(c, c);
+                ctx.rotate((start + end) / 2);
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = s.fg;
+                ctx.font = `900 ${fs}px Orbitron, sans-serif`;
+                lines.forEach((line, k) => {
+                    ctx.fillText(line, c - 22, (k - (lines.length - 1) / 2) * lh);
+                });
+                ctx.restore();
+            });
+
+            ctx.beginPath();
+            ctx.arc(c, c, c - 3, 0, Math.PI * 2);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+        }
+
+        function landOn(index) {
+            const jitter = (Math.random() - 0.5) * arc * 0.6;
+            const target = 360 - ((index + 0.5) * arc + jitter);
+            rotation = rotation - (rotation % 360) + 360 * 6 + target;
+            canvas.style.transform = `rotate(${rotation}deg)`;
+        }
+
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            result.textContent = '';
+
+            let data;
+            try {
+                const res = await fetch("{% url 'store:spin_wheel' %}", {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                });
+                data = await res.json();
+                if (!res.ok) {
+                    result.textContent = "You've already spun!";
+                    return;
+                }
+            } catch (e) {
+                result.textContent = 'Something went wrong. Try again.';
+                btn.disabled = false;
+                return;
+            }
+
+            landOn(data.index);
+
+            canvas.addEventListener('transitionend', function done(e) {
+                if (e.propertyName !== 'transform') return;
+                canvas.removeEventListener('transitionend', done);
+
+                if (window.gtag) gtag('event', 'wheel_spin', { prize: data.id });
+
+                if (data.id === 'none') result.textContent = 'No luck this time';
+                else if (data.id === 'spin_again') { result.textContent = 'Spin again!'; btn.disabled = false; }
+                else result.textContent = 'You won ' + data.label + (data.code ? ' · CODE: ' + data.code : '');
+            });
+        });
+
+        // Canvas text needs Orbitron loaded before the first draw
+        document.fonts.load('900 16px Orbitron').then(draw, draw);
+        window.addEventListener('resize', draw);
     })();
 </script>
 {% endblock %}
